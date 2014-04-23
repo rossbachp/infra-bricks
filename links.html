@@ -1,0 +1,19 @@
+---
+layout: page
+title: Links
+header: Interessante Verweise
+group: navigation
+links:
+ - Serverspec: http://serverspec.org/
+ - ServerSpec und Sesnu: http://de.slideshare.net/m_richardson/serverspec-and-sensu-testing-and-monitoring-collide
+ - ServerSpec Andreas auf der OSDC-2014: http://de.slideshare.net/aschmidt75/testing-server-infrastructure-with-serverspec
+ - Vagrant: http://www.vagrantup.com/
+ - Virtualbox: https://www.virtualbox.org/
+---
+<ul>
+{% for link_hash in page.links %}
+  <li>{% for link in link_hash %}
+    <a href="{{ link[1] }}">{{ link[0] }}</a>
+  {% endfor %}</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,94 @@
+<! -- sidebar.html -->
+<header class="sidebar-header" role="banner">
+	<a href="{{ site.BASE_PATH }}/">
+		<img src="{{ site.BASE_PATH }}/assets/media/logo2.png" class="img-rounded" />
+	</a>
+	<h3 class="title">
+        <a href="{{ site.BASE_PATH }}/">{{ site.title }}</a>
+    </h3>
+</header>
+
+{% for author in site.authors %}
+
+<div id="name" class="text-center">
+	{{ author.name }}
+</div>
+{% if author.bio %}
+<div id="bio" class="text-center">
+	{{ author.bio }}
+</div>
+{% endif %}
+
+<div id="contact-list-{{ author.id }}" class="text-center">
+	<ul class="list-unstyled list-inline">
+		{% if author.github %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/{{ author.github }}">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.twitter %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://twitter.com/{{ author.twitter }}">
+				<i class="fa fa-twitter fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.email %}
+		<li>
+			<a class="btn btn-default btn-sm" href="mailto:{{ author.email }}">
+				<i class="fa fa-envelope fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+	</ul>
+	<ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline">
+		{% if author.pinterest %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ author.pinterest }}">
+				<i class="fa fa-pinterest fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.linkedin %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/{{ author.linkedin }}">
+				<i class="fa fa-linkedin fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.xing %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://xing.com/profile/{{ author.xing }}">
+				<i class="fa fa-xing fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% endfor %}
+<div class="text-center">
+	<ul class="list-unstyled list-inline">
+		<li>
+			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/{{ site.rss_path }}">
+				<i class="fa fa-rss fa-lg"></i> rss
+			</a>
+		</li>
+	</ul>
+	<ul class="list-unstyled list-inline">
+		<li>
+			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/about.html">
+			    <i class="fa fa-lg"></i>Wir über uns
+			</a>
+		</li>
+		<li>
+			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/impressum.html">
+			    <i class="fa fa-lg"></i>Impressum
+			</a>
+		</li>
+	</ul>
+</div>
+	
+
+<! -- sidebar.html end -->

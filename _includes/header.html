@@ -1,0 +1,39 @@
+<! -- header.html -->
+<meta charset="utf-8">
+<title>{{ page.title }}</title>
+{% if page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+{% for author in site.authors %}<meta name="author" content="{{ author.name }}">
+{% endfor %}
+<meta property="og:site_name" content="{{ site.name }}" />
+<meta property="og:title" content="{{ site.name }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ site.BASE_PATH }}" />
+<meta property="og:image" content="{{ site.BASE_PATH }}/assets/media/logo.png" />
+<meta property="og:description" content="Die deutsche Seite zu testgetriebener Infrastruktur Entwicklung mit Serverspec." />
+<meta name="keywords" content="serverspec, infrastruktur, test, {{ site.name }}, serverspec tutorial">
+
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+ <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- styles -->
+<link href="{{ site.BASE_PATH }}/assets/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="{{ site.BASE_PATH }}/assets/resources/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link href="{{ site.BASE_PATH }}/assets/resources/syntax/syntax.css" rel="stylesheet">
+<link href="{{ site.BASE_PATH }}/assets/css/style.css" rel="stylesheet">
+
+<!-- fav and touch icons -->
+<!-- ToDo: change this to own logo -->
+<link rel="shortcut icon" href="{{ site.BASE_PATH }}/assets/ico/favicon.ico">
+<link rel="apple-touch-icon" href="{{ site.BASE_PATH }}/assets/ico/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="{{ site.BASE_PATH }}/assets/ico/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="{{ site.BASE_PATH }}/assets/ico/apple-touch-icon-114x114.png">
+
+<link rel="alternate" type="application/rss+xml" title="{{ site.name }} RSS Feed" href="{{ site.BASE_PATH }}/{{ site.rss_path }}">
+<link rel="alternate" type="application/atom+xml" title="{{ site.name }} ATOM Feed" href="{{ site.BASE_PATH }}/{{ site.atom_path }}">
+
+<! -- header.html end -->

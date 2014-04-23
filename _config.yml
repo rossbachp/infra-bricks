@@ -1,0 +1,71 @@
+# visit http://jekyllrb.com/docs/configuration/ for more settings
+
+paginate: 10
+paginate_path: "page:num"
+exclude: [".gitignore", "README.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
+pygments: true
+markdown: redcarpet
+permalink: /:categories/:year/:month/:day/:title 
+
+title: Infrastruktur mit Qualität
+description: Infrastruktur mit Qualität gestalten und betreiben
+name: tempomat.org
+
+author:
+  name: Peter Rossbach
+  email: peter.rossbach@bee42.com
+  short: pr
+  image: rossbach_peter.jpg
+  github: rossbachp
+  linkedin: rossbachp
+  xing: Peter_Rossbach
+  bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
+
+authors:
+  - rossbachp:
+    id: 1
+    name: Peter Rossbach
+    short: pr
+    email: peter.rossbach@bee42.com
+    image: rossbach_peter.jpg
+    github: rossbachp
+    linkedin: rossbachp
+    xing: Peter_Rossbach
+    bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
+  - schmidta:
+    id: 2
+    name: Andreas Schmidt
+    short: as
+    email: andreas.schmidt@cassini.de
+    github: aschmidt75
+    twitter: aschmidt75
+    image: schmidt_andreas.jpg
+    bio: Systemarchitekt, Berater
+
+rss_path: rss.xml
+atom_path: atom.xml
+categories_path: categories.html
+tags_path: tags.html
+links_path: links.html
+
+#BASE_PATH: http://tempomat.org
+
+# All links will be namespaced by BASE_PATH if defined.
+# Links in your website should always be prefixed with {{ site.BASE_PATH }}
+# Do not put a "/" at the end of the url.
+#
+# CNAME (http://yourcustomdomain.com)
+#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
+#   (urls will be prefixed with "/" and work relatively)
+#
+# GitHub Pages (http://username.github.io)
+#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
+#   (urls will be prefixed with "/" and work relatively)
+#
+# GitHub Project Pages (http://username.github.io/project-name)
+#  A GitHub Project site exists in the `gh-pages` branch of one of your repositories.
+#  REQUIRED! Set BASE_PATH to "http://username.github.io/project-name"
+
+analytics:
+   google: 
+       tracking_id: 'UA-48463790-1'

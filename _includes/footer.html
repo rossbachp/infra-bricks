@@ -1,0 +1,9 @@
+<!-- footer.html -->
+<footer>
+ <hr/>
+ <p>
+ 	&copy; {{ site.time | date: '%Y' }} {% for author in site.authors %}{{ author[].name }}{% if forloop.last == false %}, {% endif %}{% endfor %} mit <a href="http://jekyllrb.com/" target="_blank">Jekyll</a>, <a href="http://dbtek.github.io/dbyll/" target="_blank">Theme dbyll</a> und <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+ </p>
+</footer>
+
+<!-- footer.html end -->
