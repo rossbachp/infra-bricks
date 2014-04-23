@@ -16,10 +16,9 @@ Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
 
 ##   Andreas Schmidt
 
-    <strasse>
-    D-<plz> <ort>
-    Telefon: <telefon>
-    E-Mail: andreas.schmidt@cassin.de
+    Otenbergweg 6
+    D-53639 Königswinter
+    E-Mail: andreas.schmidt@dp-mail.de
     Internet: blog.tempomat.org
 
 ### Haftung für Inhalte
