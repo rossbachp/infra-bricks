@@ -22,6 +22,57 @@
 - Entwickler und die Infrastruktur
 - Deployment Pipeline
             
+- (M) Spezifikation von Infrastruktur-Schichten (Infrastruktur, Applikation, Security)
+  - Mit serverspec lassen sich sehr viele Aspekte eines Applikationsstacks
+    spezifizieren und testen. Es lohnt sich allerdings, nicht alle Aspekte "in einen
+    Topf" zu werfen, sondern nach Anwendungsfall bzw. -schicht zu unterscheiden.
+  - Warum das sinnvoll ist und wie das beispielhaft geht zeigt der Blogeintrag.
+
+- (C) Architektur von serverspec
+  - Serverspec wurde von seinen Erbauern modular in einen Fronten- und Backendbereich
+    refactored. 
+  - Wir zeigen, welche Aufgaben diese Bereiche haben und wie sie zusammenarbeiten 
+
+- (S) Testgetriebene Infrastruktur - nur etwas für Startups?
+  - Test driven infrastructure operiert mit neuen Werkzeugen aus verschiedenen Bereichen.
+  - Startups haben die wenigsten Berührungsängste, neue Technologien auszuprobieren. 
+  - Dabei ist testgetriebene Infrastruktur auch für Unternehmen interessant. Erst recht
+    steht in regulierten Bereichen wie Banken und Behörden-IT die Testbarkeit und 
+    Fähigkeit zur Auditierung im Vordergrund
+  - Der Blogartikel zeigt, für welche Unternehmensstrukturen eine testgetriebene
+    Arbeitsweise und die SPezifikation von IT-Infrastruktur sinnvoll sein kann. 
+
+- (C) Eigene Resource Types entwickeln am Beispiel Zertifikate
+  - Serverspec erlaubt es, eigene Ressourcentypen zu entwickeln, um angepasste
+    Spezifikationsfälle umzusetzen.
+  - Durch die Trennung in SpecInfra und Serverspec-Frontend ist es allerdings nicht
+    immer ganz klar, wo welche Teile einzubauen sind.
+  - Der Blogartikel zeigt, wie ein neuer Resource Type 'sslcertificate' entsteht. Danach
+    ist man in der Lage, die Inhalte von SSL-Zertifikaten zu spezifizieren und zu testen.
+
+- (Str) Spezifikation vs. Monitoring
+  - Ein oft gehörter Einwand gegen Infrastruktur-Spezifikation lautet, dass es quasi
+    identisch mit dem Thema Monitoring sei.
+  - Wir zeigen, wo die Unterschiede liegen
+
+- (C) Funktionstest mit Resource type 'web_resource'
+  - Im Monitoringbereich ist es weit verbreitet, Statusressourcen mit wget oder curl
+    abzufragen und auszuwerten.
+  - Ein Resourcetype für serverspec ist ebenfalls leicht umzusetzen.
+
+- (Sec) Sicherheitstest mit Resource type 'secure_ssl_resource'
+  - Serverspec lässt sich sehr gut zu Überprüfen von Sicherheitseinstellungen verwenden.
+  - Ein neuer Resource Type zeigt, wie man die SSL-Sicherheit von Webservern testen kann.
+
+- (Sec) Umsetzung der NSA Security Guides in serverspec
+  - In der Securityszene bekannt sind die Hardening Guides der NSA für verschiedene
+    Betriebssysteme.
+  - Sie lassen sich gut in serverspec umsetzen, um die Sicherheit der eigenen
+    Infrastruktur zu erhöhen.
+    
+- (M) Modellgetriebene Verbindungstests spezifizieren und testen
+ 
+
 ## ToDo
 - Name für den Blog finden
 - Überlegen ob man ein eigens gitrepo und eine eigene Domain nutzt.
