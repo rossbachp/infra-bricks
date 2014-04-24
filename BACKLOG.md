@@ -1,39 +1,35 @@
 # Tempomat: Infrastruktur mit Qualität fortentwickeln und betreiben
 
 ## Themen für weitere Artikel
-- Warum dieser Blog
-- Architektur von Serverspec (Zusammenspiel mit Rspec und serverinfra)
-- Beispiel serverspec und vagrant
-- Verschiedene Beispiele serverspec
-    - Auswertung von Andreas Beispielen
-- Arbeitsweisen
+- (O AS,PR) Warum dieser Blog
+- (S,P PR) Beispiel serverspec und vagrant
+- (M PR) Arbeitsweisen
     - Deployment Pipeline
     - Welche Schritte sind in welchen Reihenfolgen und Tools zu machen?
     - Bewertung
-- Provisinierung und Test
+- (P PR) Provisinierung und Test
     - Chef Kitchen
     - Cucumber
-- Eigene Betriebssystemen mit Virtualbox erstellen und testen
+- (P PR) Eigene Betriebssystemen mit Virtualbox erstellen und testen
     - Vagrant
     - Veewee
     - Packer?
     - Virtualbox native
     - Kickstart
-- Entwickler und die Infrastruktur
-- Deployment Pipeline
-            
-- (M) Spezifikation von Infrastruktur-Schichten (Infrastruktur, Applikation, Security)
+- (M PR) Entwickler und die Infrastruktur
+- (M PR) Deployment Pipeline
+- (Sec PR) Erzeuge ein Beispiel mit server_spec um die Anforderung an die Sicherheit eines Tomcats prüfbar zu machen
+   [Tomcat 8 Security](http://tomcat.apache.org/tomcat-8.0-doc/security-howto.html)
+- (M AS) Spezifikation von Infrastruktur-Schichten (Infrastruktur, Applikation, Security)
   - Mit serverspec lassen sich sehr viele Aspekte eines Applikationsstacks
     spezifizieren und testen. Es lohnt sich allerdings, nicht alle Aspekte "in einen
     Topf" zu werfen, sondern nach Anwendungsfall bzw. -schicht zu unterscheiden.
   - Warum das sinnvoll ist und wie das beispielhaft geht zeigt der Blogeintrag.
-
-- (C) Architektur von serverspec
+- (C AS,PR) Architektur von serverspec
   - Serverspec wurde von seinen Erbauern modular in einen Fronten- und Backendbereich
     refactored. 
   - Wir zeigen, welche Aufgaben diese Bereiche haben und wie sie zusammenarbeiten 
-
-- (S) Testgetriebene Infrastruktur - nur etwas für Startups?
+- (S AS) Testgetriebene Infrastruktur - nur etwas für Startups?
   - Test driven infrastructure operiert mit neuen Werkzeugen aus verschiedenen Bereichen.
   - Startups haben die wenigsten Berührungsängste, neue Technologien auszuprobieren. 
   - Dabei ist testgetriebene Infrastruktur auch für Unternehmen interessant. Erst recht
@@ -41,37 +37,52 @@
     Fähigkeit zur Auditierung im Vordergrund
   - Der Blogartikel zeigt, für welche Unternehmensstrukturen eine testgetriebene
     Arbeitsweise und die SPezifikation von IT-Infrastruktur sinnvoll sein kann. 
-
-- (C) Eigene Resource Types entwickeln am Beispiel Zertifikate
+- (C AS) Eigene Resource Types entwickeln am Beispiel Zertifikate
   - Serverspec erlaubt es, eigene Ressourcentypen zu entwickeln, um angepasste
     Spezifikationsfälle umzusetzen.
   - Durch die Trennung in SpecInfra und Serverspec-Frontend ist es allerdings nicht
     immer ganz klar, wo welche Teile einzubauen sind.
   - Der Blogartikel zeigt, wie ein neuer Resource Type 'sslcertificate' entsteht. Danach
     ist man in der Lage, die Inhalte von SSL-Zertifikaten zu spezifizieren und zu testen.
-
-- (Str) Spezifikation vs. Monitoring
+- (Str AS,PR) Spezifikation vs. Monitoring
   - Ein oft gehörter Einwand gegen Infrastruktur-Spezifikation lautet, dass es quasi
     identisch mit dem Thema Monitoring sei.
   - Wir zeigen, wo die Unterschiede liegen
-
-- (C) Funktionstest mit Resource type 'web_resource'
+- (C AS,PR) Funktionstest mit Resource type 'web_resource'
   - Im Monitoringbereich ist es weit verbreitet, Statusressourcen mit wget oder curl
     abzufragen und auszuwerten.
   - Ein Resourcetype für serverspec ist ebenfalls leicht umzusetzen.
-
-- (Sec) Sicherheitstest mit Resource type 'secure_ssl_resource'
+- (Sec AS) Sicherheitstest mit Resource type 'secure_ssl_resource'
   - Serverspec lässt sich sehr gut zu Überprüfen von Sicherheitseinstellungen verwenden.
   - Ein neuer Resource Type zeigt, wie man die SSL-Sicherheit von Webservern testen kann.
-
-- (Sec) Umsetzung der NSA Security Guides in serverspec
+- (Sec AS,PR) Umsetzung der NSA Security Guides in serverspec
   - In der Securityszene bekannt sind die Hardening Guides der NSA für verschiedene
     Betriebssysteme.
   - Sie lassen sich gut in serverspec umsetzen, um die Sicherheit der eigenen
     Infrastruktur zu erhöhen.
-    
-- (M) Modellgetriebene Verbindungstests spezifizieren und testen
+  - [NSA_RHEL_5_GUIDE](http://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf)  
+- (M AS) Modellgetriebene Verbindungstests spezifizieren und testen
  
+###Legende
+
+Artikelkennzeichnung
+
+|Kategorie|Erklärung      |
+|---------|:--------------|
+|C        |               |
+|M        | model         |
+|P        | provision     |
+|O        | other         |
+|S        | serverspec    |
+|Sec      | security      |
+|Str      |               |
+
+Autoren
+
+|Kürzel|Autor               |
+|------|:-------------------|
+|PR    | Peter Rossbach     |
+|AS    | Andreas Schmidt    |
 
 ## ToDo
 - Name für den Blog finden
