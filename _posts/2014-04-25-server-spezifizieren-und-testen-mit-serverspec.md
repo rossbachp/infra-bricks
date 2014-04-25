@@ -113,15 +113,15 @@ User und Gruppen bis zu Mounts und Filesystemen.
 ## Wofür ist das gut?
 
 Die Frage ist gar nicht so leicht zu beantworten, es hängt nämlich davon ab, was für ein Unternehmen man ist, und welcher Art von Einschränkungen man ggf. unterliegt. 
-Aber es gibt Mehrwert für fast alle Vorhaben. Ich möchte nur drei herausgreifen:
+Aber es gibt Mehrwert für fast alle Vorhaben. Die drei wichtigsten Gründe für die Verwendung von Tests in der Infrastruktur-Entwicklung sind:
 
-1. **Qualität**: Ich kann in meiner Deployment Pipeline eine zusätzliche Qualitätsstufe einbauen, die nicht nur die Artefakte auf dem Weg durch die Pipeline testet, sondern auch das Endergebnis.
-2. **Auditierbarkeit**: Ich kann zur Unterstützung eines IT-Audits eine natürlichsprachliche Spezfikation meiner Serverlandschaft verfassen und automatisiert testen lassen.
-3. **Regressionstest**: Auch meine Server lassen sich nun nach Veränderungen (z.B. Deployments) regressionstesten.
+1. **Qualität**: Die Deployment Pipeline kann um eine zusätzliche Qualitätsstufe erweitert werden, die nicht nur die Artefakte auf dem Weg durch die Pipeline testet, sondern auch das Endergebnis.
+2. **Auditierbarkeit**: Zur Unterstützung eines IT-Audits lässt sich eine natürlichsprachliche Spezfikation der Serverlandschaft verfassen und automatisiert testen.
+3. **Regressionstest**: Auch Server lassen sich nun nach Veränderungen (z.B. Deployments oder anderen Changes) regressionstesten.
 
 ## What's next?
 
-Jetzt haben wir nur an der Oberfläche gekratzt, aber hoffentlich interesse geweckt. Weitere Blogposts werden sich detailliert mit Serverspec befassen.
+Jetzt haben wir nur an der Oberfläche gekratzt, aber hoffentlich Interesse geweckt. Weitere Blogposts werden sich detailliert mit Serverspec befassen.
 
 
 
