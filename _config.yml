@@ -36,11 +36,12 @@ authors:
     id: 2
     name: Andreas Schmidt
     short: as
-    email: andreas.schmidt@cassini.de
+    email: andreas.schmidt@dp-mail.de
     github: aschmidt75
     twitter: aschmidt75
     image: schmidt_andreas.jpg
-    bio: Systemarchitekt, Berater
+    xing: Andreas_Schmidt38
+    bio: Infra-Coder, System Engineer, Softwareentwickler
 
 rss_path: rss.xml
 atom_path: atom.xml
