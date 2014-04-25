@@ -62,8 +62,13 @@
     Infrastruktur zu erhöhen.
   - [NSA_RHEL_5_GUIDE](http://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf)  
 - (M AS) Modellgetriebene Verbindungstests spezifizieren und testen
- 
-###Legende
+- (P PR) Container mit Docker
+  - Atomic: http://www.projectatomic.io/
+  - Docker: https://www.docker.io/
+  - geard: http://openshift.github.io/geard/
+  - Wie kann man dafür ein Infrastruktur aufbauen und Test einfliesen lassen?
+
+### Legende
 
 Artikelkennzeichnung
 
