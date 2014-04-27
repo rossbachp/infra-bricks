@@ -62,6 +62,10 @@
     Infrastruktur zu erhöhen.
   - [NSA_RHEL_5_GUIDE](http://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf)  
 - (M AS) Modellgetriebene Verbindungstests spezifizieren und testen
+- (S AS) Serverspec: Blackbox vs. Whitebox Spezifikation und -testing
+  - Serverspec lääst sich auf vielfältige Arten einsetzen, und relativ schnell kommt man
+    in die Situation, einen Blackbox-Test zu bauen, der Abhängigkeiten ausweist, die man
+    gar nicht haben wollte. Der Blogartikel zeigt die Unterschiede und Best Practises.
 - (P PR) Container mit Docker
   - Atomic: http://www.projectatomic.io/
   - Docker: https://www.docker.io/
