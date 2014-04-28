@@ -71,7 +71,15 @@
   - Docker: https://www.docker.io/
   - geard: http://openshift.github.io/geard/
   - Wie kann man dafür ein Infrastruktur aufbauen und Test einfliesen lassen?
-
+  - Schaffen eines Ausfallsicheren Repository
+     - Basis OpenStack Glance
+     - Welchen Storagen nutze ich
+  - Schaffen einer stabilen Package Basis für die Bereitstellung der Container   
+- (P PR) Nutzung von CoreOS
+  - CoreOS: https://coreos.com/
+  - Pain Point CoreOS: http://michael.stapelberg.de/Artikel/coreos_and_docker_first_steps
+     - Haben wir dafür ein Lösung
+      
 ### Legende
 
 Artikelkennzeichnung
