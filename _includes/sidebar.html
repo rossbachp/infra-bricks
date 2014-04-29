@@ -20,6 +20,30 @@
 {% endif %}
 
 <div id="contact-list-{{ author.id }}" class="text-center">
+	<!--ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline"-->
+	<ul class="list-unstyled list-inline">
+		{% if author.pinterest %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ author.pinterest }}">
+				<i class="fa fa-pinterest fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.linkedin %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/{{ author.linkedin }}">
+				<i class="fa fa-linkedin fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.xing %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://xing.com/profile/{{ author.xing }}">
+				<i class="fa fa-xing fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+	</ul>
 	<ul class="list-unstyled list-inline">
 		{% if author.github %}
 		<li>
@@ -39,29 +63,6 @@
 		<li>
 			<a class="btn btn-default btn-sm" href="mailto:{{ author.email }}">
 				<i class="fa fa-envelope fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-	</ul>
-	<ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline">
-		{% if author.pinterest %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ author.pinterest }}">
-				<i class="fa fa-pinterest fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if author.linkedin %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/{{ author.linkedin }}">
-				<i class="fa fa-linkedin fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if author.xing %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://xing.com/profile/{{ author.xing }}">
-				<i class="fa fa-xing fa-lg"></i>
 			</a>
 		</li>
 		{% endif %}

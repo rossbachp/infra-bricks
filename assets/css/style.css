@@ -7,7 +7,7 @@ body{
 .sidebar {
 	position: fixed;
 	top: 0px;
-	padding-top: 10%;
+	padding-top: 5%;
 }
 
 .sidebar-header {
@@ -15,7 +15,7 @@ body{
 	margin-bottom: 10px;
 }
 .sidebar-header .title{
-	letter-spacing: 3px;
+	#letter-spacing: 3px;
 	text-transform: uppercase;
 }
 
@@ -35,11 +35,26 @@ a.nav-link i{
 a.nav-link:hover { color: #777 }
 
 #bio {
-	font-family: "Courier New", Courier, monospace;
+	#font-family: "Courier New", Courier, monospace;
+	font-family: "Source Sans Pro", Courier, monospace;
 	font-size: 11px;
 	margin: 0 auto;
 	margin-bottom: 10px;
 }
+
+p {
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+}
+
+.language-text {
+	font-family: 'Source Code Pro', sans-serif;
+	font-weight: 200;
+}
+}
+
+
 
 #contact-list-secondary {
 	padding-bottom: 10px;
@@ -57,20 +72,40 @@ article{
 .post-date {
 	text-transform: uppercase;
 	font-size: 14px;
-	letter-spacing: 3px;
+	#letter-spacing: 3px;
 }
 
 article.home div a, article.home pre a { color: #2c3e50; }
 article.home div a:hover, article.home pre a:hover { color: #2c3e50; text-decoration: none; }
 article img { max-width: 100%; }
 
-h1,h2,h3,h4,h5,h6{ font-family: 'Ubuntu', sans-serif; color: rgb(165,176,205); }
-h1 a,h2 a,h3 a,h4 a{ color: rgb(165,176,205); }
+h1 { 
+	font-weight: 600;
+}
+
+a {
+	font-weight: 500;
+}
+
+h1,h2,h3,h4,h5,h6 { 
+	font-family: 'Source Sans Pro', sans-serif; 
+	color: rgb(128,0,0); 
+	#color: rgb(165,176,205); 
+}
+h1 a,h2 a,h3 a,h4 a { 
+	color: rgb(128,0,0); 
+	#color: rgb(165,176,205); 
+}
 h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover{ color: #e74c3c; }
+
+li,ul {
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 300;
+}
 
 footer {
 	padding-top: 15px;
-	font-family: 'Ubuntu';
+	font-family: 'Source Sans Pro';
 }
 
 /* nav-vertical-tabs component */
