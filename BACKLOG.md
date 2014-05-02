@@ -140,4 +140,17 @@ Autoren
        Konferenz slides
        Datenformate für Links und Bücher.
            Referenz Seite.
-
+- Erzeugen eines Link Import Format für Browser Bookmarks
+    http://msdn.microsoft.com/en-us/library/aa753582%28v=vs.85%29.aspx
+    https://www.npmjs.org/package/netscape-bookmarks
+    Vielleicht erzeugen wir dann eine Datei mit den Bookmarks.
+    Die Tags können wir dann als Folder Strukturen benutzen.
+    Sollen wir auch Hierachische Tags dort erlauben?
+    Links kommen dann unter unterschiedlichen "SubFoldern" vor.
+    Wir könnten eine Add Date erzeugen und ein Date Pflegen wann wir die Seite für eien Blog Artikel
+    das Letzen mal besucht haben....
+    Wenn der Link vorkommt wird das Datum auf den des letzten Blog Artikel gesetzt.
+- Referenzieren in einem Blog Artikel auf unsere Bookmark Datenbank.
+    Angabe der Links in einem Blog, für zu einem Erzeugen eines Eintrags in der Link Datenbank!
+    Erzeugen einer Liste von Links unterhalb des Artikels. 
+    
