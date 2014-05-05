@@ -29,7 +29,7 @@
   - Serverspec wurde von seinen Erbauern modular in einen Fronten- und Backendbereich
     refactored. 
   - Wir zeigen, welche Aufgaben diese Bereiche haben und wie sie zusammenarbeiten 
-- (S AS) Testgetriebene Infrastruktur - nur etwas für Startups?
+- (Str AS) Testgetriebene Infrastruktur - nur etwas für Startups?
   - Test driven infrastructure operiert mit neuen Werkzeugen aus verschiedenen Bereichen.
   - Startups haben die wenigsten Berührungsängste, neue Technologien auszuprobieren. 
   - Dabei ist testgetriebene Infrastruktur auch für Unternehmen interessant. Erst recht
@@ -62,7 +62,7 @@
     Infrastruktur zu erhöhen.
   - [NSA_RHEL_5_GUIDE](http://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf)  
 - (M AS) Modellgetriebene Verbindungstests spezifizieren und testen
-- (S AS) Serverspec: Blackbox vs. Whitebox Spezifikation und -testing
+- (Str AS) Serverspec: Blackbox vs. Whitebox Spezifikation und -testing
   - Serverspec lääst sich auf vielfältige Arten einsetzen, und relativ schnell kommt man
     in die Situation, einen Blackbox-Test zu bauen, der Abhängigkeiten ausweist, die man
     gar nicht haben wollte. Der Blogartikel zeigt die Unterschiede und Best Practises.
@@ -92,7 +92,7 @@ Artikelkennzeichnung
 |O        | other         |
 |S        | serverspec    |
 |Sec      | security      |
-|Str      |               |
+|Str      | strategie     |
 
 Autoren
 
