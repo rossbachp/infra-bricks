@@ -20,6 +20,9 @@
 {% endif %}
 
 <div id="contact-list-{{ author.id }}" class="text-center">
+		{% if author.sidebarimage %}
+			<img src="{{ site.BASE_PATH }}/assets/media/{{ author.sidebarimage }}" width="64"/>
+		{% endif %}
 	<!--ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline"-->
 	<ul class="list-unstyled list-inline">
 		{% if author.pinterest %}
