@@ -18,7 +18,7 @@ kurze Produktionszyklen bestimmt den Alttag. Qualitätsmängel werden von Kunden
 
 <div class="clearfix"></div>
 ## Peter Roßbach
-<img src="{{ site.url }}/assets/media/peter_rossbach_big.png" class="img-responsive img-rounded pull-left" alt="Peter Rossbach">
+<img src="{{ site.url }}/assets/media/peter_rossbach_small.png" class="img-responsive img-rounded pull-left" alt="Peter Rossbach">
 <div class="center-block">
 Peter Roßbach ist freiberuflicher Systemarchitekt und Coach zahlreicher Java-EE-Anwendungen. Sein besonderes Interesse liegt in der Entwicklung von komplexen Informationssystemen, einschließlich der Gestaltung und Realisierung von testgetriebenen Prozessen. Seit 1997 ist Peter Roßbach im Bereich HTTP-Server und Webcontainer tätig. Er ist Committer im Apache-Tomcat-Projekt und Mitglied der Apache Software Foundation. Sein besonderes Interesse gilt der Gestaltung von Überwachungs- und Analysesystemen für komplexe Infrastrukturen. Mit der bee42 solutions Gmbh realisiert er entsprechende Monitoring-Produkte auf Basis aktueller Webtechnologien, NoSQL-Datenbanken und Cloud-Plattformen.
 
@@ -26,7 +26,7 @@ In den letzen Jahren mehreren sich meine Erfahrungen, das der konsequente Aufbau
 </div>
 <div class="clearfix"></div>
 ## Andreas Schmidt
-<img src="{{ site.url }}/assets/media/andreas_schmidt_big.png" class="img-responsive img-rounded pull-left" alt="Andreas Schmidt">
+<img src="{{ site.url }}/assets/media/andreas_schmidt_small.png" class="img-responsive img-rounded pull-left" alt="Andreas Schmidt">
 <div class="center-block">
 Andreas Schmidt ist als Berater für Cassini Consulting tätig. Er arbeitet seit einigen Jahren in Webprojekten an der Schnittstelle zwischen Entwicklung und Betrieb mit Fokus auf Deployment- und Konfigurationsmanagement. Aufgewachsen mit Sprachen wie C++ und Java entwickelt er den DevOps-Glue  aber auch gerne mit Ruby.
 </div>
