@@ -47,7 +47,7 @@
 		</li>
 		{% endif %}
 	</ul>
-	<ul class="list-unstyled list-inline">
+	<ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline">
 		{% if author.github %}
 		<li>
 			<a class="btn btn-default btn-sm" href="https://github.com/{{ author.github }}">
@@ -72,15 +72,21 @@
 	</ul>
 </div>
 {% endfor %}
+
 <div class="text-center">
+<br/>
+</div>
+
+<div class="text-center">
+
 	<ul class="list-unstyled list-inline">
 		<li>
 			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/{{ site.rss_path }}">
 				<i class="fa fa-rss fa-lg"></i> rss
 			</a>
 		</li>
-	</ul>
-	<ul class="list-unstyled list-inline">
+	<!--</ul>
+	<ul class="list-unstyled list-inline">-->
 		<li>
 			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/about.html">
 			    <i class="fa fa-lg"></i>Wir über uns
@@ -93,6 +99,6 @@
 		</li>
 	</ul>
 </div>
-	
+
 
 <! -- sidebar.html end -->
