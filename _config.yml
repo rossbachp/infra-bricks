@@ -28,10 +28,8 @@ authors:
     short: pr
     email: peter.rossbach@bee42.com
     image: rossbach_peter.jpg
-    sidebarimage: peter_rossbach_small.png
     github: rossbachp
     linkedin: rossbachp
-    twitter: PRossbach
     xing: Peter_Rossbach
     bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
   - schmidta:
@@ -42,9 +40,7 @@ authors:
     github: aschmidt75
     twitter: aschmidt75
     image: schmidt_andreas.jpg
-    linkedin: ../pub/andreas-schmidt/4/b67/24a
     xing: Andreas_Schmidt38
-    sidebarimage: andreas_schmidt_small.png
     bio: Infra-Coder, System Engineer, Softwareentwickler
 
 rss_path: rss.xml
