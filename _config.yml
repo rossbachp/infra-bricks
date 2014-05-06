@@ -3,15 +3,21 @@
 paginate: 10
 paginate_path: "page:num"
 exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
+include: [".htaccess"]
+exclude: ["lib", "config.rb", "Gemfile", "Capfile", "Gemfile.lock", "config", "log",     "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace",     "test", "spec", "Gruntfile.js", "package.json", "node_modules"]
 pygments: true
+search: true
 markdown: redcarpet
 permalink: /:categories/:year/:month/:day/:title 
+url:    http://localhost:4000/
 
 title: Infrastruktur mit Qualität
 description: Infrastruktur mit Qualität gestalten und betreiben
 name: tempomat.org
+logo: logo3.png
 
-author:
+owner:
+  avatar: peter_rossbach_small.png
   name: Peter Rossbach
   email: peter.rossbach@bee42.com
   short: pr
@@ -52,6 +58,38 @@ atom_path: atom.xml
 categories_path: categories.html
 tags_path: tags.html
 links_path: links.html
+
+links:
+  - title: Über uns
+    url: about.html
+  - title: Artikel
+    url: 
+  - title: Kategorien
+    url: categories.html
+  - title: Tags
+    url: tags.html
+  - title: Links
+    url: links.html
+
+permalink:      /:categories/:title/
+future: true
+pygments: true
+
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_level: 1..6
+  use_coderay: false
+
+  coderay:
+    coderay_line_numbers:
+    coderay_line_numbers_start: 1
+    coderay_tab_width: 4
+    coderay_bold_every: 10
+    coderay_css: class
+
+
 
 #BASE_PATH: http://tempomat.org
 

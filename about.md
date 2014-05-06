@@ -5,9 +5,9 @@ title: Über diesen Blog
 tags: [PeterRossbach, AndreasSchmidt, orga]
 modified: 2014-04-23
 image:
-  feature:
-  credit:
-  creditlink:
+  feature: tempomat.jpg
+  credit: Peter Rossbach, Andreas Schmidt
+  creditlink: 
 ---
 Wir müssen das Thema der Qualität in der Infrastrukturentwicklung neu definieren.
 Die Komplexität und Vielfalt nimmt täglich zu. Als Reaktion darauf müssen wir in der Adminstration und der Entwicklung
