@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ServerSpec effektive mit Vagrant verbinden"
+title: "ServerSpec effektiv mit Vagrant verbinden"
 modified: 2014-04-24 09:43:50 +0200
 tags: [draft,serverspec,vagrant,virtualbox,peterrossbach]
 category: test
@@ -11,17 +11,18 @@ links:
   - Virtualbox: http://www.virtualbox.org
 ---
 
-Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Wir müssen es früher schaffen den Kundennutzen sicher herzustellen. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Also prüfen wir unsere Änderungen und versuchen, durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher zustellen. Um so eher uns dies gelingt, um so schneller sind wir in der Lage zu korrigieren. Das Ziel sollte es sein eine Deployment Pipeline zu installieren [Jez Humble, David Farley: "Continuous Delivery", 2011 Pearson Education]. Damit das Feedback schnellst möglich gelingt, ist es ratsam schon früh die Integration in die Produktionumgebung zu realisieren und die Teilinstallation am eigenen Arbeitsplatz zu überprüfen. Dieser Artikel beschreibt die Erstellung einer Apache Httpd -Installation mit [Vagrant](http://vagrantup.com) und [Virtualbox](http://www.virtualbox.org. Die Besonderheit ist der Einsatz von [Serverspec](http://serverspec.org) zur Valdierung der Provisionierung.
+Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Wir müssen es früher schaffen den Kundennutzen sicher herzustellen. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Also prüfen wir unsere Änderungen und versuchen, durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher zustellen. Um so eher uns dies gelingt, um so schneller sind wir in der Lage zu korrigieren. 
 
-Der Plan ist, einen Apache Httpd Service in einer CentOS 6.5 Box aufzusetzen und sicherzustellen, dass der Webserver wirklich läuft. Als ersten Schritt benötigen wir ein entsprechendes Basis CentOS 6.5 Image, das wir mithilfe von Vagrant auf die lokale Virtualbox installieren. Damit also die folgenden Schritte praktisch nachvollzogen werden können, brauchen Sie eine entsprechende Installation von Vagrant und Virtualbox auf Ihrem System. Entsprechende Anleitungen dazu befinden sich auf den Websites der beiden OpenSource Projekte.
+Das Ziel sollte es sein eine Deployment Pipeline zu installieren [Jez Humble, David Farley: "Continuous Delivery", 2011 Pearson Education]. Damit das Feedback schnellst möglich gelingt, ist es ratsam schon früh die Integration in die Produktionumgebung zu realisieren und die Teilinstallation am eigenen Arbeitsplatz zu überprüfen. Dieser Artikel beschreibt die Erstellung einer Apache Httpd -Installation mit [Vagrant](http://vagrantup.com) und [Virtualbox](http://www.virtualbox.org. Die Besonderheit ist der Einsatz von [Serverspec](http://serverspec.org) zur Valdierung der Provisionierung.
+
+Der Plan ist, einen Apache httpd Service in einer CentOS 6.5 Box aufzusetzen und sicherzustellen, dass der Webserver wirklich läuft. Als ersten Schritt benötigen wir ein entsprechendes Basis CentOS 6.5 Image, das wir mithilfe von Vagrant auf die lokale Virtualbox installieren. Damit also die folgenden Schritte praktisch nachvollzogen werden können, brauchen Sie eine entsprechende Installation von Vagrant und Virtualbox auf Ihrem System. Entsprechende Anleitungen dazu befinden sich auf den Websites der beiden OpenSource Projekte.
 
 Ein gesichertes Betriebssystem für die eigene Vagrant Box zu bekommen ist nicht einfach. Zum guten Gelingen und notwendigen Beitrag der Sicherheit, sollten Sie diese Installation lieber selbst in die Hand nehmen. Mit den Projekten [Packer](http://www.packer.io/) oder [Veewee](https://github.com/jedi4ever/veewee) kann dies komfortabel für verschiedene Betriebssysteme, virtuelle Plattformen und Clouds umgesetzt werden. Eine gute Kenntnis der Installation von Betriebssystemen und viel Geduld, führt dann langsam zum Ziel. Natürlich können Sie auch fertige Boxen finden. Für Vagrant gibt es neben dem Cloud Angebot [Vagrant Cloud](https://vagrantcloud.com/) natürlich auch eine freie Sammlung [Vagrantbox](http://www.vagrantbox.es/). Eine sehr einfache und leicht nachzuvollziehende CentOS 6.5 Installation wird von [2Creatives](https://github.com/2creatives/vagrant-centos/) bereitgestellt. Die Box wird regelmässig aktualisiert und steuert sehr direkt die Management Schnittstelle von Virtualbox an. Die Box kann nun mit folgendem Vagrant-Befehl auf der eigenen Maschine bereitgestellt werden:
 
 ```bash
-mkdir apache-specbox
-cd apache-specbox
-vi Vagrantfile
-vagrant up 
+$ mkdir apache-specbox
+$ cd apache-specbox
+$ vi Vagrantfile
 ```
 
 Mit dem folgenden Vagrant Konfiguration wird die CentOS-Box von 2creatives geladen, ein privates Netzwerk zusätzlich geschaffen, der Ressourcenbedarf festgelegt und der Name `apacheSpecbox` der neuen Virtualbox-Node vergeben.
@@ -54,12 +55,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 end
 ```
 
+Dann ein:
+
+```bash
+$ vagrant up 
+```
+
 Die Voraussetzungen für eine Apache httpd Installation sind also nun gegeben. Als nächsten Schritt könnten wir uns nun mit dem Befehl `vagrant ssh` auf der neue `apacheSpecbox` anmelden und den Apache mit dem Package Manager manuell installieren. Allerdings wären das gleich mehrere Verstöße der guten Sitten. Alles und damit ist wirklich ALLES gemeint, muss durch entsprechende Programmierung automatisch nachvollzogen und prüfbar sein. Hmm, welche Anforderungen muss unsere Installation eines Apaches den wirklich erfüllen? Wie können wir durch ein Werkzeug die Überprüfung formulieren und ausführbar machen? Genau an dieser Stelle beginnt dann die Suche im Netz, nach Ideen und Lösungen. Seit nunmehr zwei Jahren gibt es das kleine Projekt [serverspec](http://www.serverspec.org) von Gosuke Miyashita, das sich als Antwort auf unsere Fragen entpuppt.
 
 ![Mit Serverspec eine Provisionierung von Vagrant valideren]({{ site.url }}/assets/images/vagrant-serverspec.png)
 
 Damit die Installation wiederholbar ist und dokumentiert wird, legen wir einen Gemfile an und starten
 die Installation mit dem ruby bundler.
+
+```bash
+$ vi Gemfile
+```
 
 ```ruby
 ## Gemfile
@@ -71,15 +82,15 @@ gem 'serverspec'
 ```
 
 ```bash
-bundle install
-serverspec-init
-rake
+$ bundle install
+$ serverspec-init
+$ rake
 ```
 
 Mit dem Kommando `serverspec-init` erzeugen wir für unseren Node die Testumgebung zur Prüfung der Installation. Das Werkzeug serverspec kann für verschiedene Unix Plattformen und Windows genutzt werden. Es kann remote via ssh oder lokal mit der jeweiligen Shell ausgeführt werden. Schön ist, dass der Generator gleich eine Variante für den ssh-Zugang einer Vagrant Box generieren kann. Wie für uns gemacht, ist das gleich eine Apache httpd-Testspezifikation mitgeneriert wird.
 
 ```bash
-##serverspec-init
+$ serverspec-init
 Select OS type:
 
   1) UN*X
@@ -107,9 +118,7 @@ Auto-configure Vagrant from Vagrantfile? y/n: y
 Eine Überprüfung unserer Node zeigt, dass wir den Apache noch nicht installiert haben. Stimmt!
 
 ```bash
-rake spec
-```
-```bash
+$ rake spec
 /usr/bin/ruby -S rspec spec/apacheSpecbox/httpd_spec.rb
 FFFFFF
 ...viele Fehlermeldungen...
@@ -197,10 +206,8 @@ SCRIPT
 Mit der nächsten Provisionierung gelingt nun die Verifikation. Wir sind __Grün__! 
 
 ```bash
-vagrant provision
-rake spec
-```
-```bash
+$ vagrant provision
+$ rake spec
 /usr/bin/ruby -S rspec spec/apacheSpecbox/httpd_spec.rb
 .......
 
@@ -208,11 +215,13 @@ Finished in 0.99715 seconds
 6 examples, 0 failures
 ```
 
-Die Validierung bringt zu Tage, dass wir unsere ersten Anforderungen erfüllt haben und überprüfen können. Weiterhin sind alle Schritte der Installation und der Testausführung beschrieben. Wir haben eine wiederholbare Testprozedure für unsere Installation implementiert. Als Verfahren haben wir den Test geschrieben, bevor wird die Implementierung umgesetzt haben. Wer eine noch bessere Integration von Serverspec und Vagrant wünscht, der kann das [vagrant-serverspec plugin](https://github.com/jvoorhis/vagrant-serverspec) installieren. 
+Die Validierung bringt zu Tage, dass wir unsere ersten Anforderungen erfüllt haben und überprüfen können. Weiterhin sind alle Schritte der Installation und der Testausführung beschrieben. Wir haben eine wiederholbare Testprozedur für unsere Installation implementiert. Als Verfahren haben wir den Test geschrieben, bevor wird die Implementierung umgesetzt haben. Wer eine noch bessere Integration von Serverspec und Vagrant wünscht, der kann das [vagrant-serverspec plugin](https://github.com/jvoorhis/vagrant-serverspec) installieren. 
 
 Die Installation des Plugin erfolgt mit folgendem Befehl:
 
-`vagrant plugin install vagrant-serverspec`
+```bash
+$ vagrant plugin install vagrant-serverspec
+```
 
 Die Integration als Vagrant Provisioner erfolgt im Konfigurations-Block des Nodes `apacheSpecbox`
 
@@ -223,14 +232,17 @@ Die Integration als Vagrant Provisioner erfolgt im Konfigurations-Block des Node
     end
 {% endhighlight %}
 
-Für die Ausführung dieser Variante bietet sich an,
- die gesamte Provisionierung einfach zu wiederholen.
+Für die Ausführung dieser Variante bietet sich an, die gesamte Provisionierung einfach zu wiederholen.
 Dazu zerstören wir den aktuellen Node und setzen ihn komplette neu auf. Mithilfe des Plugins werden nun unsere Test sofort ausgeführt. Volia!
 
 ```bash
-vagrant destroy apacheSpecbox
-vagrant up apacheSpecbox
+$ vagrant destroy apacheSpecbox
+$ vagrant up apacheSpecbox
 # look at results
 ```
 
-Leider ist die Version von Serverspec dort veraltet. Deshalb raten wir zur direkten Installation. Die Gestaltung von flexiblen Testspecs ist damit zukunfsträchtiger. Ein wichtiger erster Schritt für die Bereitstellung von testgetriebener Infrastruktur ist vollbracht. Ein Testfirst-Ansatz für die Infrastruktur ist also ohne wesentlichen Aufwand möglich. Eine inkrementellere Arbeitsweise für die Erstellung von Systemen leicht umsetzbar. Nun geht es an die Verbesserung des Erreichten. In diesem Blog wird es dazu noch viel zu lesen geben.
+Leider ist die Version von Serverspec dort veraltet. Deshalb raten wir zur direkten Installation. Die Gestaltung von flexiblen Testspecs ist damit zukunfsträchtiger. Ein wichtiger erster Schritt für die Bereitstellung von testgetriebener Infrastruktur ist vollbracht. Ein Testfirst-Ansatz für die Infrastruktur ist also ohne wesentlichen Aufwand möglich. Eine inkrementellere Arbeitsweise für die Erstellung von Systemen leicht umsetzbar. 
+
+Nun geht es an die Verbesserung des Erreichten. In diesem Blog wird es dazu noch viel zu lesen geben.
+
+
