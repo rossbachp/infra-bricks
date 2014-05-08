@@ -2,7 +2,7 @@
 layout: post
 title: "Server spezifizieren und testen - mit serverspec"
 modified: 2014-04-25 14:46:50 +0200
-tags: [serverspec,code]
+tags: [serverspec,code,andreasschmidt]
 category: tech
 image:
   feature:

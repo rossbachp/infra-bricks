@@ -2,7 +2,7 @@
 layout: post
 title: "Erste Schritte mit serverspec"
 modified: 2014-05-07 15:37:46 +0200
-tags: [serverspec,code]
+tags: [serverspec,code,andreasschmidt]
 category: tech
 image:
   feature:
