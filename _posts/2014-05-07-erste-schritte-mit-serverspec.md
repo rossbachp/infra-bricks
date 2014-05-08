@@ -65,7 +65,8 @@ Successfully installed highline-1.6.21
 Successfully installed specinfra-1.11.0
 Successfully installed serverspec-1.6.0
 Successfully installed rake-10.3.1
-10 gems installed```
+10 gems installed
+```
 
 Was machen die Pakete:
 
