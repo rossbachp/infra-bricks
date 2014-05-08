@@ -13,6 +13,20 @@
 	  {{ content }}
 	  </div>
 
+		{% unless page.links == empty %}
+
+		<hr>
+
+        <ul class="project-links">
+          {% for link_hash in page.links %}
+            {% for link in link_hash %}
+              <li><a class="button" href="{{ link[1] }}">{{ link[0] }}</a></li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+        
+	    {% endunless %} 
+		
 		{% unless page.categories == empty %}
 		<ul class="tag_box list-unstyled list-inline">
 		  <li><i class="fa fa-folder-open"></i></li>
@@ -61,6 +75,7 @@
 		  {% assign tags_list = nil %}
 		</ul>
 		{% endunless %}  
+
 
 		<hr>
 
