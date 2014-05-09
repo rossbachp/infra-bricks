@@ -38,7 +38,25 @@ group: navigation
         {% for node in pages_list %}
           {% if node.title != null %}
             {% if group == null or group == node.group %}
-              <li style="line-height: 35px;"><a href="{{ site.BASE_PATH }}{{node.url}}">{{node.title}}</a> <span class="text-muted">- {{ node.date | date: "%d %B %Y" }}</span></li>
+              <li style="line-height: 35px;"><a href="{{ site.BASE_PATH }}{{node.url}}">{{node.title}}</a> <span class="text-muted">-     
+          {% assign m = node.date | date: "%-m" %}
+          {{ node.date | date: "%-d" | plus:'0' }}
+          {% case m %}
+            {% when '1' %}Januar
+            {% when '2' %}Februar
+            {% when '3' %}M&auml;rz
+            {% when '4' %}April
+            {% when '5' %}Mai
+            {% when '6' %}Juni
+            {% when '7' %}Juli
+            {% when '8' %}August
+            {% when '9' %}September
+            {% when '10' %}Oktober
+            {% when '11' %}November
+            {% when '12' %}Dezember
+          {% endcase %}
+          {{ node.date | date: "%Y" }}
+              </span></li>
             {% endif %}
           {% endif %}
         {% endfor %}
