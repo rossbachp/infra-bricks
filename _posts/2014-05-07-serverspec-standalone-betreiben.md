@@ -6,12 +6,10 @@ tags: [serverspec,code,andreasschmidt]
 category: test
 links:
   - serverspec: http://serverspec.org/
-image:
-  feature:
-  credit:
-  creditlink:
-comments:
-share:
+keywords:
+  - serverspec
+  - serverspec tutorial
+  - test
 ---
 
 Nachdem wir im letzten Post allgemein vorgestellt haben, was man mit [serverspec](http://serverspec.org/)

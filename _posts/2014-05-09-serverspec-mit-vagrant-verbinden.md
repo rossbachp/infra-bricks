@@ -13,7 +13,6 @@ links:
 keywords:
   - vagrant
   - serverspec
-  - virtualbox
   - serverspec tutorial
   - test
 ---
