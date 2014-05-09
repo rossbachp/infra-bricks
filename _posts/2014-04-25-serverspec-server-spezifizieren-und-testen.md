@@ -1,18 +1,16 @@
 ---
 layout: post
-title: "Server spezifizieren und testen - mit serverspec"
+title: "serverspec: Server spezifizieren und testen"
 modified: 2014-04-25 14:46:50 +0200
-tags: [serverspec,code]
-category: tech
-image:
-  feature: 
-  credit: 
-  creditlink: 
-comments: 
-share: 
+tags: [serverspec,code,andreasschmidt]
+category: test
+keywords:
+  - serverspec
+  - serverspec tutorial
+  - test
 ---
 
-In der Softwareentwicklung sind Spezifikation und Testen fester Bestandteil des Arbeitsweise. Unit-Testing und 
+In der Softwareentwicklung sind Spezifikation und Testen fester Bestandteil des Arbeitsweise. Unit-Testing und
 Test Driven Development haben in der modernen Entwicklung ihren festen Platz, ob agil oder nicht. Bei der
 Bereitstellung von IT Infrastruktur, also Netzwerk, Storage und Compute sieht es dagegen noch eher klassisch
 aus: Appliances und Server werden aufgebaut und übergeben, und wenn technische Einzelheiten nicht funktionieren,
@@ -24,7 +22,7 @@ Test Driven Infrastruktur Einzug gehalten. VMs entstammen entweder einem Image o
 
 Aber auch diese Werkzeuge benötigen ihre Konfigurationen, die - je nach Werkzeug - eher gecoded als "spezfiziert" aussehen.
 Puppet als Beispiel bietet eine deklarative DSL, aber eine größere Puppetinstallation inkl. PuppetDB und/oder Hiera, Module und
-deren Abhängigkeiten besitzt eine eigene Komplexität. Und die muss durch erfahrene Infra-Coder gemanaged werden. 
+deren Abhängigkeiten besitzt eine eigene Komplexität. Und die muss durch erfahrene Infra-Coder gemanaged werden.
 
 ## Wie soll das Endergebnis aussehen?
 
@@ -38,7 +36,7 @@ nach verwendetem Framework - auch natürlich-sprachlich aus. Dasselbe gibt es nu
 
 [Serverspec](www.serverspec.org) ist ein Werkzeug, um RSpec-Testfälle für Server formulieren und ausführen zu können. Dabei wird
 das Endergebnis spezifiziert und getestet. D.h. es ist egal, mit welchem Konfigurationsmanagementtool ein Server aufgesetzt wurde oder
-ob er sogar manuell installiert wurde, serverspec testet allein den aktuellen Zustand. 
+ob er sogar manuell installiert wurde, serverspec testet allein den aktuellen Zustand.
 
 Wie sieht so etwas aus? Ein paar Beispiele:
 
@@ -75,10 +73,10 @@ end
 ```
 
 An den einfachen Beispielen lässt sich die Funktionsweise von serverspec gut zeigen. Eine Spezifikation besteht aus mehrere Blöcken, worin ein
-bestimmter Aspekt (User, File, Process, Port, ...) beschrieben ist. Die Ausdrücke im Block selber findet sich sog. RSpec Expectations und 
+bestimmter Aspekt (User, File, Process, Port, ...) beschrieben ist. Die Ausdrücke im Block selber findet sich sog. RSpec Expectations und
 Matchers, d.h. Ausdrücke die für den jeweiligen Aspekt erfüllt sein sollen. Wie funktioniert nun das Testen selber?
 
-## Wie funktioniert das?
+## Wie arbeitet serverspec?
 
 Serverspec kann je nach Modus unterschiedlich arbeiten: Lokal, per SSH auf einen entfernten Host oder z.B. mit Vagrant Plugins in eine virtuelle Maschine.
 Dabei werden Kommandos zusammengebaut, um die "Rohdaten" einer Expectation abzufragen und gegen den Matcher zu prüfen. Das klingt eher abstrakt, von
@@ -112,19 +110,16 @@ User und Gruppen bis zu Mounts und Filesystemen.
 
 ## Wofür ist das gut?
 
-Die Frage ist gar nicht so leicht zu beantworten, es hängt nämlich davon ab, was für ein Unternehmen man ist, und welcher Art von Einschränkungen man ggf. unterliegt. 
+Die Frage ist gar nicht so leicht zu beantworten, es hängt nämlich davon ab, was für ein Unternehmen man ist, und welcher Art von Einschränkungen man ggf. unterliegt.
 Aber es gibt Mehrwert für fast alle Vorhaben. Die drei wichtigsten Gründe für die Verwendung von Tests in der Infrastruktur-Entwicklung sind:
 
 1. **Qualität**: Die Deployment Pipeline kann um eine zusätzliche Qualitätsstufe erweitert werden, die nicht nur die Artefakte auf dem Weg durch die Pipeline testet, sondern auch das Endergebnis.
 2. **Auditierbarkeit**: Zur Unterstützung eines IT-Audits lässt sich eine natürlichsprachliche Spezfikation der Serverlandschaft verfassen und automatisiert testen.
 3. **Regressionstest**: Auch Server lassen sich nun nach Veränderungen (z.B. Deployments oder anderen Changes) regressionstesten.
 
-## What's next?
+## Wie geht's weiter?
 
 Jetzt haben wir nur an der Oberfläche gekratzt, aber hoffentlich Interesse geweckt. Weitere Blogposts werden sich detailliert mit Serverspec befassen.
 
-
-
-
-
- 
+--
+Andreas

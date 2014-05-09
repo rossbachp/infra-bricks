@@ -5,11 +5,23 @@ paginate_path: "page:num"
 exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
 pygments: true
 markdown: redcarpet
-permalink: /:categories/:year/:month/:day/:title 
+permalink: /:year/:month/:day/:title
+timezone: Europe/Berlin
+encoding: UTF-8
+destination: ./_site/blog
+baseurl:     /blog
+url:         http://localhost:4000
+BASE_PATH: /blog
 
 title: Infrastruktur mit Qualität
 description: Infrastruktur mit Qualität gestalten und betreiben
-name: tempomat.org
+name: www.infrabricks.de
+
+keywords:
+    - serverspec
+    - infrastructur as code
+    - test
+    - serverspec tutorial
 
 author:
   name: Peter Rossbach
@@ -17,22 +29,23 @@ author:
   short: pr
   image: rossbach_peter.jpg
   github: rossbachp
-  linkedin: rossbachp
+  linkedin: ../pub/peter-rossbach/0/a48/838
   xing: Peter_Rossbach
-  bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
+  bio: Systemarchitekt, Infra-Coder, Trainer, Apache Tomcat Committer, Softwareentwickler
 
 authors:
   - rossbachp:
     id: 1
-    name: Peter Rossbach
+    name: Peter Roßbach
     short: pr
     email: peter.rossbach@bee42.com
     image: rossbach_peter.jpg
+    sidebarimage: peter_rossbach_small.png
     github: rossbachp
-    linkedin: rossbachp
-    xing: Peter_Rossbach
+    linkedin: ../pub/peter-rossbach/0/a48/838
     twitter: PRossbach
-    bio: Systemarchitekt, Infra-Coder, Softwareentwickler, Apache Tomcat Entwickler, Berater
+    xing: Peter_Rossbach
+    bio: Systemarchitekt, Infra-Coder, Trainer, Softwareentwickler, Apache Tomcat Committer
   - schmidta:
     id: 2
     name: Andreas Schmidt
@@ -41,7 +54,9 @@ authors:
     github: aschmidt75
     twitter: aschmidt75
     image: schmidt_andreas.jpg
+    linkedin: ../pub/andreas-schmidt/4/b67/24a
     xing: Andreas_Schmidt38
+    sidebarimage: andreas_schmidt_small.png
     bio: Infra-Coder, System Engineer, Softwareentwickler
 
 rss_path: rss.xml
@@ -50,24 +65,7 @@ categories_path: categories.html
 tags_path: tags.html
 links_path: links.html
 
-#BASE_PATH: http://tempomat.org
-
-# All links will be namespaced by BASE_PATH if defined.
-# Links in your website should always be prefixed with {{ site.BASE_PATH }}
-# Do not put a "/" at the end of the url.
-#
-# CNAME (http://yourcustomdomain.com)
-#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
-#   (urls will be prefixed with "/" and work relatively)
-#
-# GitHub Pages (http://username.github.io)
-#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
-#   (urls will be prefixed with "/" and work relatively)
-#
-# GitHub Project Pages (http://username.github.io/project-name)
-#  A GitHub Project site exists in the `gh-pages` branch of one of your repositories.
-#  REQUIRED! Set BASE_PATH to "http://username.github.io/project-name"
-
 analytics:
-   google: 
-       tracking_id: 'UA-48463790-2'
+   google:
+     tracking_id: 'UA-48463790-3'
+     name: 'infrabricks.de'

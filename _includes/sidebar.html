@@ -20,30 +20,11 @@
 {% endif %}
 
 <div id="contact-list-{{ author.id }}" class="text-center">
+		{% if author.sidebarimage %}
+			<img src="{{ site.BASE_PATH }}/assets/media/{{ author.sidebarimage }}" width="64"/>
+		{% endif %}
+	<!--ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline"-->
 	<ul class="list-unstyled list-inline">
-		{% if author.github %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://github.com/{{ author.github }}">
-				<i class="fa fa-github-alt fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if author.twitter %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://twitter.com/{{ author.twitter }}">
-				<i class="fa fa-twitter fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if author.email %}
-		<li>
-			<a class="btn btn-default btn-sm" href="mailto:{{ author.email }}">
-				<i class="fa fa-envelope fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-	</ul>
-	<ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline">
 		{% if author.pinterest %}
 		<li>
 			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ author.pinterest }}">
@@ -66,17 +47,46 @@
 		</li>
 		{% endif %}
 	</ul>
+	<ul id="contact-list-secondary-{{ author.id }}" class="list-unstyled list-inline">
+		{% if author.github %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/{{ author.github }}">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.twitter %}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://twitter.com/{{ author.twitter }}">
+				<i class="fa fa-twitter fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+		{% if author.email %}
+		<li>
+			<a class="btn btn-default btn-sm" href="mailto:{{ author.email }}">
+				<i class="fa fa-envelope fa-lg"></i>
+			</a>
+		</li>
+		{% endif %}
+	</ul>
 </div>
 {% endfor %}
+
 <div class="text-center">
+<br/>
+</div>
+
+<div class="text-center">
+
 	<ul class="list-unstyled list-inline">
 		<li>
 			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/{{ site.rss_path }}">
 				<i class="fa fa-rss fa-lg"></i> rss
 			</a>
 		</li>
-	</ul>
-	<ul class="list-unstyled list-inline">
+	<!--</ul>
+	<ul class="list-unstyled list-inline">-->
 		<li>
 			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/about.html">
 			    <i class="fa fa-lg"></i>Wir über uns
@@ -89,6 +99,6 @@
 		</li>
 	</ul>
 </div>
-	
+
 
 <! -- sidebar.html end -->

@@ -12,14 +12,14 @@ Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
     D-44879 Bochum
     Telefon: +49 - 157 - 72 54 92 63
     E-Mail: peter.rossbach@bee42.com
-    Internet: blog.tempomat.org
+    Internet: http://{{ site.name }}/blog
 
 ##   Andreas Schmidt
 
     Otenbergweg 6
     D-53639 Königswinter
     E-Mail: andreas.schmidt@dp-mail.de
-    Internet: blog.tempomat.org
+    Internet: http://{{ site.name }}/blog
 
 ### Haftung für Inhalte
 Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.

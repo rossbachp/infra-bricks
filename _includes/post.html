@@ -5,14 +5,42 @@
 
 	<div class="col-sm-10">
 	 <span class="post-date">
-           {{ page.date | date: "%d" | plus:'0' }}.
-           {{ page.date | date: "%B" }}
-           {{ page.date | date: "%Y" }}
+          {% assign m = page.date | date: "%-m" %}
+          {{ page.date | date: "%-d" | plus:'0' }}
+          {% case m %}
+            {% when '1' %}Januar
+            {% when '2' %}Februar
+            {% when '3' %}M&auml;rz
+            {% when '4' %}April
+            {% when '5' %}Mai
+            {% when '6' %}Juni
+            {% when '7' %}Juli
+            {% when '8' %}August
+            {% when '9' %}September
+            {% when '10' %}Oktober
+            {% when '11' %}November
+            {% when '12' %}Dezember
+          {% endcase %}
+          {{ page.date | date: "%Y" }}
 	 </span>
 	  <div class="article_body">
 	  {{ content }}
 	  </div>
 
+		{% unless page.links == empty %}
+
+		<hr>
+
+        <ul class="project-links">
+          {% for link_hash in page.links %}
+            {% for link in link_hash %}
+              <li><a class="button" href="{{ link[1] }}">{{ link[0] }}</a></li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+        
+	    {% endunless %} 
+		
 		{% unless page.categories == empty %}
 		<ul class="tag_box list-unstyled list-inline">
 		  <li><i class="fa fa-folder-open"></i></li>
@@ -61,6 +89,7 @@
 		  {% assign tags_list = nil %}
 		</ul>
 		{% endunless %}  
+
 
 		<hr>
 
