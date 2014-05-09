@@ -1,14 +1,15 @@
 ---
 layout: post
-title: "serverspec mit Vagrant verbinden"
+title: serverspec mit Vagrant verbinden
 modified: 2014-04-24 09:43:50 +0200
-tags: [draft,serverspec,vagrant,virtualbox,peterrossbach]
+tags: [serverspec,vagrant,virtualbox,peterrossbach]
 category: test
 links:
   - 2Creatives: https://github.com/2creatives/vagrant-centos/
   - serverspec: http://www.serverspec.org
-  - Vagrant: http://vagrantup.com
-  - Virtualbox: http://www.virtualbox.org
+  - serverspec vagrant plugin: https://github.com/jvoorhis/vagrant-serverspec
+  - vagrant: http://vagrantup.com
+  - virtualbox: http://www.virtualbox.org
 keywords:
   - vagrant
   - serverspec
@@ -253,4 +254,5 @@ Leider ist die Version von Serverspec im Plugin veraltet. Deshalb raten ist zur 
 
 Nun geht es an die Verbesserung des Erreichten. In diesem Blog wird es dazu noch viel zu lesen geben.
 
+--
 Peter

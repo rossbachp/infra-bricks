@@ -3,7 +3,7 @@ layout: post
 title: "serverspec standalone betreiben"
 modified: 2014-05-07 15:37:46 +0200
 tags: [serverspec,code,andreasschmidt]
-category: tech
+category: test
 links:
   - serverspec: http://serverspec.org/
 image:

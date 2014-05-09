@@ -1,5 +1,10 @@
 ## Changelog
 
+- **0.0.3 : 2014.05.09**
+  wrote some posts
+  change css
+  setup to www.infrabricks.de
+  
 - **0.0.2 : 2014.04.23**
   Add about
   Add impressum
@@ -11,4 +16,4 @@
   multiple author support
   remove unused sample
   reorganize project  
-  setup blog.tempomat.org
+  setup blog

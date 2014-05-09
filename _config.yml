@@ -5,11 +5,17 @@ paginate_path: "page:num"
 exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
 pygments: true
 markdown: redcarpet
-permalink: /:categories/:year/:month/:day/:title 
+permalink: /:year/:month/:day/:title 
+timezone: Europe/Berlin
+encoding: UTF-8
+destination: ./_site/blog
+baseurl:     /blog
+url:         http://localhost:4000
+BASE_PATH: /blog
 
 title: Infrastruktur mit Qualität
 description: Infrastruktur mit Qualität gestalten und betreiben
-name: blog.tempomat.org
+name: www.infrabricks.de
 
 keywords:
     - serverspec
@@ -30,7 +36,7 @@ author:
 authors:
   - rossbachp:
     id: 1
-    name: Peter Rossbach
+    name: Peter Roßbach
     short: pr
     email: peter.rossbach@bee42.com
     image: rossbach_peter.jpg
@@ -39,7 +45,7 @@ authors:
     linkedin: ../pub/peter-rossbach/0/a48/838
     twitter: PRossbach
     xing: Peter_Rossbach
-    bio: Systemarchitekt, Infra-Coder, Trainer, Apache Tomcat Committer, Softwareentwickler
+    bio: Systemarchitekt, Infra-Coder, Trainer, Softwareentwickler, Apache Tomcat Committer
   - schmidta:
     id: 2
     name: Andreas Schmidt
@@ -59,24 +65,7 @@ categories_path: categories.html
 tags_path: tags.html
 links_path: links.html
 
-#BASE_PATH: http://tempomat.org
-
-# All links will be namespaced by BASE_PATH if defined.
-# Links in your website should always be prefixed with {{ site.BASE_PATH }}
-# Do not put a "/" at the end of the url.
-#
-# CNAME (http://yourcustomdomain.com)
-#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
-#   (urls will be prefixed with "/" and work relatively)
-#
-# GitHub Pages (http://username.github.io)
-#   DO NOT SET BASE_PATH JUST LEAVE IT BLANK 
-#   (urls will be prefixed with "/" and work relatively)
-#
-# GitHub Project Pages (http://username.github.io/project-name)
-#  A GitHub Project site exists in the `gh-pages` branch of one of your repositories.
-#  REQUIRED! Set BASE_PATH to "http://username.github.io/project-name"
-
 analytics:
    google: 
-       tracking_id: 'UA-48463790-1'
+       tracking_id: 'UA-48463790-3'
+       name: 'infrabricks.de'
