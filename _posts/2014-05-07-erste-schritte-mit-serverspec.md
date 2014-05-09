@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Erste Schritte mit serverspec - standalone"
+title: "serverspec standalone betreiben"
 modified: 2014-05-07 15:37:46 +0200
 tags: [serverspec,code,andreasschmidt]
 category: tech

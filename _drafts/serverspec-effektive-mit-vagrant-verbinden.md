@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ServerSpec effektiv mit Vagrant verbinden"
+title: "serverspec mit Vagrant verbinden"
 modified: 2014-04-24 09:43:50 +0200
 tags: [draft,serverspec,vagrant,virtualbox,peterrossbach]
 category: test
@@ -19,7 +19,7 @@ keywords:
 
 Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Der Kundennutzen muss immer früher sicher hergestellet werden. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Die Änderungen müssen überprüft werden und durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher gestellt werden. Um so eher dies gelingt, um so schneller kann eine gezielte Korrektur erfolgen. 
 
-Das Ziel sollte es sein eine Deployment Pipeline zu installieren [Jez Humble, David Farley: "Continuous Delivery", 2011 Pearson Education]. Damit das Feedback schnellst möglich gelingt, ist es ratsam schon früh die Integration in die Produktionumgebung zu realisieren und die Teilinstallation am eigenen Arbeitsplatz zu überprüfen. Dieser Artikel beschreibt die Erstellung einer Apache Httpd -Installation mit [Vagrant](http://vagrantup.com) und [Virtualbox](http://www.virtualbox.org. Die Besonderheit ist der Einsatz von [Serverspec](http://serverspec.org) zur Valdierung der Provisionierung.
+Das Ziel sollte es sein eine Deployment Pipeline zu installieren [Jez Humble, David Farley: "Continuous Delivery", 2011 Pearson Education]. Damit das Feedback schnellst möglich gelingt, ist es ratsam schon früh die Integration in die Produktionumgebung zu realisieren und die Teilinstallation am eigenen Arbeitsplatz zu überprüfen. Dieser Artikel beschreibt die Erstellung einer Apache Httpd -Installation mit [Vagrant](http://vagrantup.com) und [Virtualbox](http://www.virtualbox.org. Die Besonderheit ist der Einsatz von [serverspec](http://serverspec.org) zur Valdierung der Provisionierung.
 
 Der Plan ist, einen Apache httpd Service in einer CentOS 6.5 Box aufzusetzen und sicherzustellen, dass der Webserver wirklich läuft. Als ersten Schritt wird ein entsprechendes Basis CentOS 6.5 Image mithilfe von Vagrant auf die lokale Virtualbox installieren. Damit also die folgenden Schritte praktisch nachvollzogen werden können, bedarf es einer entsprechende Installation von Vagrant und Virtualbox auf dem System. Entsprechende Anleitungen dazu befinden sich auf den Websites der beiden OpenSource Projekte.
 
@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.3/centos65-x86_64-20140116.box"
   config.vm.box_download_checksum_type="sha256"
   config.vm.box_download_checksum = "84eda9c4f00c86b62509d1007d4f1cf16b86bccb3795659cb56d1ea0007c3adc"
-  
+
   config.vm.define :apacheSpecbox do |c|
     c.vm.network "private_network", ip: "192.168.33.10"
     c.vm.host_name = "apacheSpecbox.example.com"
@@ -54,8 +54,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
          vb.customize [ "modifyvm", :id, "--memory", "512"]
          vb.customize [ "modifyvm", :id, "--cpus", "1"]
          vb.name = "apacheSpecbox"
-     end
-     
   end
 
 end
@@ -64,7 +62,7 @@ end
 Dann ein:
 
 ```bash
-$ vagrant up 
+$ vagrant up
 ```
 
 Die Voraussetzungen für eine Apache httpd Installation sind also nun gegeben. Als nächsten Schritt könnte man mit dem Befehl `vagrant ssh` sich auf die neue `apacheSpecbox` anmelden und den Apache mit dem Package Manager manuell installieren. Allerdings wären das gleich mehrere Verstöße der guten Sitten. Alles und damit ist wirklich ALLES gemeint, muss durch entsprechende Programmierung automatisch nachvollzogen und prüfbar sein. Hmm, welche Anforderungen muss soll die Installation eines Apaches den wirklich erfüllen? Wie kann man durch ein Werkzeug die Überprüfung formulieren und ausführbar machen? Genau an dieser Stelle beginnt dann die Suche im Netz, nach Ideen und Lösungen. Seit nunmehr zwei Jahren gibt es das kleine Projekt [serverspec](http://www.serverspec.org) von Gosuke Miyashita, das sich als Antwort auf diese Fragen entpuppt.
@@ -171,7 +169,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.3/centos65-x86_64-20140116.box"
   config.vm.box_download_checksum_type="sha256"
   config.vm.box_download_checksum = "84eda9c4f00c86b62509d1007d4f1cf16b86bccb3795659cb56d1ea0007c3adc"
-  
+
   config.vm.define :apacheSpecbox do |c|
     c.vm.network "private_network", ip: "192.168.33.10"
     c.vm.host_name = "apacheSpecbox.example.com"
@@ -181,7 +179,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
          vb.customize [ "modifyvm", :id, "--cpus", "1"]
          vb.name = "apacheSpecbox"
     end
-     
+
     c.vm.provision "shell",
          inline: <<SCRIPT
 echo I am provisioning...
@@ -208,7 +206,12 @@ service httpd restart
 date > /etc/vagrant_provisioned_at
 SCRIPT
 ```
+<<<<<<< HEAD
 Mit der nächsten Provisionierung gelingt nun die Verifikation. Unser Ergebnis ist das erstmal __Grün__! 
+=======
+
+Mit der nächsten Provisionierung gelingt nun die Verifikation. Wir sind __Grün__!
+>>>>>>> updates
 
 ```bash
 $ vagrant provision
