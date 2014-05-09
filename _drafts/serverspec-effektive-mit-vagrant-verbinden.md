@@ -9,6 +9,12 @@ links:
   - serverspec: http://www.serverspec.org
   - Vagrant: http://vagrantup.com
   - Virtualbox: http://www.virtualbox.org
+keywords:
+  - vagrant
+  - serverspec
+  - virtualbox
+  - serverspec tutorial
+  - test
 ---
 
 Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Wir müssen es früher schaffen den Kundennutzen sicher herzustellen. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Also prüfen wir unsere Änderungen und versuchen, durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher zustellen. Um so eher uns dies gelingt, um so schneller sind wir in der Lage zu korrigieren. 

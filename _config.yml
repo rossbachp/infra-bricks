@@ -9,7 +9,13 @@ permalink: /:categories/:year/:month/:day/:title
 
 title: Infrastruktur mit Qualität
 description: Infrastruktur mit Qualität gestalten und betreiben
-name: tempomat.org
+name: blog.tempomat.org
+
+keywords:
+    - serverspec
+    - infrastructur as code
+    - test
+    - serverspec tutorial
 
 author:
   name: Peter Rossbach
@@ -17,9 +23,9 @@ author:
   short: pr
   image: rossbach_peter.jpg
   github: rossbachp
-  linkedin: rossbachp
+  linkedin: ../pub/peter-rossbach/0/a48/838
   xing: Peter_Rossbach
-  bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
+  bio: Systemarchitekt, Infra-Coder, Trainer, Apache Tomcat Committer, Softwareentwickler
 
 authors:
   - rossbachp:
@@ -30,10 +36,10 @@ authors:
     image: rossbach_peter.jpg
     sidebarimage: peter_rossbach_small.png
     github: rossbachp
-    linkedin: rossbachp
+    linkedin: ../pub/peter-rossbach/0/a48/838
     twitter: PRossbach
     xing: Peter_Rossbach
-    bio: Systemarchitekt, Berater, Trainer, Apache Tomcat Entwickler
+    bio: Systemarchitekt, Infra-Coder, Trainer, Apache Tomcat Committer, Softwareentwickler
   - schmidta:
     id: 2
     name: Andreas Schmidt

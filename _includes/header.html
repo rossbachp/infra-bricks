@@ -10,7 +10,12 @@
 <meta property="og:url" content="{{ site.BASE_PATH }}" />
 <meta property="og:image" content="{{ site.BASE_PATH }}/assets/media/logo.png" />
 <meta property="og:description" content="Die deutsche Seite zu testgetriebener Infrastruktur Entwicklung mit Serverspec." />
-<meta name="keywords" content="serverspec, infrastruktur, test, {{ site.name }}, serverspec tutorial">
+
+{% if page.keywords %}
+<meta name="keywords" content="{{page.keywords | join: ','}},{{ site.name }}" />
+{% else %}
+<meta name="keywords" content="{{site.keywords | join: ','}},{{ site.name }}" />
+{% endif %}
 
 <!-- Enable responsive viewport -->
 <meta name="viewport" content="width=device-width, initial-scale=0.5,maximum-scale=1, user-scalable=no>
