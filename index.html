@@ -4,6 +4,7 @@ title: InfraBricks
 tagline:
 ---
 
+
 {% for post in paginator.posts %}
 
         <article class="home">
@@ -50,7 +51,7 @@ tagline:
 {% endfor %}
 <hr/>
 
-<ul class="pager"> 
+<ul class="pager">
 
   {% if paginator.previous_page %}
     <li class="previous">
@@ -65,7 +66,7 @@ tagline:
       <a>&larr; Zurück</a>
     </li>
   {% endif %}
-  
+
   <li>
           <span class="page_number">Seite: {{ paginator.page }} von {{ paginator.total_pages }}</span>
   </li>
@@ -76,7 +77,7 @@ tagline:
     </li>
   {% else %}
     <li class="next disabled">
-            <a>Vor &rarr;</a>        
+            <a>Vor &rarr;</a>
     </li>
   {% endif %}
 
