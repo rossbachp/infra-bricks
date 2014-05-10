@@ -1,4 +1,4 @@
-# Tempomat: Infrastruktur mit Qualität fortentwickeln und betreiben
+# infrabricks: Infrastruktur mit Qualität fortentwickeln und betreiben
 
 Wir müssen das Thema der Qualität in der Infrastrukturentwicklung neu definieren.
 Die Komplexität und Vielfalt nimmt täglich zu. Als Reaktion darauf müssen wir in der Adminstration und der Entwicklung
@@ -20,6 +20,8 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
     rake new_post
 ### Erzeugen einer neuen Seite
     rake new_page
+### Erzeugen einer Drafts
+    rake new_draft
 ### Testumgebung starten
     rake
            
