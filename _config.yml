@@ -5,13 +5,13 @@ paginate_path: "page:num"
 exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
 pygments: true
 markdown: redcarpet
-permalink: /:year/:month/:day/:title
+permalink: /blog/:year/:month/:day/:title
 timezone: Europe/Berlin
 encoding: UTF-8
-destination: ./_site/blog
-baseurl:     /blog
+destination: ./_site/
+#baseurl:     /blog
 url:         http://localhost:4000
-BASE_PATH: /blog
+#BASE_PATH: /blog
 
 title: Infrastruktur mit Qualität
 description: Infrastruktur mit Qualität gestalten und betreiben
