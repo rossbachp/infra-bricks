@@ -17,7 +17,7 @@ keywords:
   - test
 ---
 
-Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Der Kundennutzen muss immer früher sicher hergestellet werden. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Die Änderungen müssen überprüft werden und durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher gestellt werden. Um so eher dies gelingt, um so schneller kann eine gezielte Korrektur erfolgen. 
+Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Der Kundennutzen muss immer früher sicher hergestellet werden. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Die Änderungen müssen überprüft werden und durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher gestellt werden. Um so eher dies gelingt, um so schneller kann eine gezielte Korrektur erfolgen.
 
 Das Ziel sollte es sein eine Deployment Pipeline zu installieren [Jez Humble, David Farley: "Continuous Delivery", 2011 Pearson Education]. Damit das Feedback schnellst möglich gelingt, ist es ratsam schon früh die Integration in die Produktionumgebung zu realisieren und die Teilinstallation am eigenen Arbeitsplatz zu überprüfen. Dieser Artikel beschreibt die Erstellung einer Apache Httpd -Installation mit [Vagrant](http://vagrantup.com) und [Virtualbox](http://www.virtualbox.org. Die Besonderheit ist der Einsatz von [serverspec](http://serverspec.org) zur Valdierung der Provisionierung.
 
@@ -67,7 +67,7 @@ $ vagrant up
 
 Die Voraussetzungen für eine Apache httpd Installation sind also nun gegeben. Als nächsten Schritt könnte man mit dem Befehl `vagrant ssh` sich auf die neue `apacheSpecbox` anmelden und den Apache mit dem Package Manager manuell installieren. Allerdings wären das gleich mehrere Verstöße der guten Sitten. Alles und damit ist wirklich ALLES gemeint, muss durch entsprechende Programmierung automatisch nachvollzogen und prüfbar sein. Hmm, welche Anforderungen muss soll die Installation eines Apaches den wirklich erfüllen? Wie kann man durch ein Werkzeug die Überprüfung formulieren und ausführbar machen? Genau an dieser Stelle beginnt dann die Suche im Netz, nach Ideen und Lösungen. Seit nunmehr zwei Jahren gibt es das kleine Projekt [serverspec](http://www.serverspec.org) von Gosuke Miyashita, das sich als Antwort auf diese Fragen entpuppt.
 
-![Mit Serverspec eine Provisionierung von Vagrant valideren]({{ site.url }}/assets/images/vagrant-serverspec.png)
+![Mit Serverspec eine Provisionierung von Vagrant valideren]({{ site.BASE_PATH }}/assets/images/vagrant-serverspec.png)
 
 Damit die Installation wiederholbar ist und dokumentiert wird, wird ein Gemfile erzeugt und mit dem `ruby bundler`
 die Installation gestartet.
@@ -206,12 +206,7 @@ service httpd restart
 date > /etc/vagrant_provisioned_at
 SCRIPT
 ```
-<<<<<<< HEAD
-Mit der nächsten Provisionierung gelingt nun die Verifikation. Unser Ergebnis ist das erstmal __Grün__! 
-=======
-
-Mit der nächsten Provisionierung gelingt nun die Verifikation. Wir sind __Grün__!
->>>>>>> updates
+Mit der nächsten Provisionierung gelingt nun die Verifikation. Unser Ergebnis ist das erstmal __Grün__!
 
 ```bash
 $ vagrant provision
@@ -223,7 +218,7 @@ Finished in 0.99715 seconds
 6 examples, 0 failures
 ```
 
-Die Validierung bringt zu Tage, dass die Basisanforderungen erfüllt und überprüft werden können. Weiterhin sind alle Schritte der Installation und der Testausführung beschrieben. Eine wiederholbare Testprozedur für die Apache httpd Installation ist implementiert. Als Verfahren sind die Test vor der Implementierung umgesetzt worden. Eine noch bessere Integration von Serverspec und Vagrant existiert im Projekt [vagrant-serverspec plugin](https://github.com/jvoorhis/vagrant-serverspec). 
+Die Validierung bringt zu Tage, dass die Basisanforderungen erfüllt und überprüft werden können. Weiterhin sind alle Schritte der Installation und der Testausführung beschrieben. Eine wiederholbare Testprozedur für die Apache httpd Installation ist implementiert. Als Verfahren sind die Test vor der Implementierung umgesetzt worden. Eine noch bessere Integration von Serverspec und Vagrant existiert im Projekt [vagrant-serverspec plugin](https://github.com/jvoorhis/vagrant-serverspec).
 
 Die Installation des Plugin erfolgt mit folgendem Befehl:
 
@@ -249,7 +244,7 @@ $ vagrant up apacheSpecbox
 # look at results
 ```
 
-Leider ist die Version von Serverspec im Plugin veraltet. Deshalb raten ist zur Zeit die direkten Installation der bessere Weg. Die Gestaltung von flexiblen Testspecs ist damit zukunfsträchtiger. Ein wichtiger erster Schritt für die Bereitstellung von testgetriebener Infrastruktur ist vollbracht. Ein Testfirst-Ansatz für die Infrastruktur ist also ohne wesentlichen Aufwand möglich. Eine inkrementellere Arbeitsweise für die Erstellung von Systemen leicht umsetzbar. 
+Leider ist die Version von Serverspec im Plugin veraltet. Deshalb raten ist zur Zeit die direkten Installation der bessere Weg. Die Gestaltung von flexiblen Testspecs ist damit zukunfsträchtiger. Ein wichtiger erster Schritt für die Bereitstellung von testgetriebener Infrastruktur ist vollbracht. Ein Testfirst-Ansatz für die Infrastruktur ist also ohne wesentlichen Aufwand möglich. Eine inkrementellere Arbeitsweise für die Erstellung von Systemen leicht umsetzbar.
 
 Nun geht es an die Verbesserung des Erreichten. In diesem Blog wird es dazu noch viel zu lesen geben.
 
