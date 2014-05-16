@@ -4,12 +4,18 @@ title: "Blackbox- und Whitebox-Testing"
 modified: 2014-05-15 15:56:44 +0200
 tags: [draft, serverspec,infrataster,andreasschmidt,testing ]
 category: tech
-image:
-  feature:
-  credit:
-  creditlink:
-comments:
-share:
+links:
+  - serverspec: http://www.serverspec.org
+  - infrataster: https://github.com/ryotarai/infrataster
+  - infrataster presentation: https://speakerdeck.com/ryotarai/infrataster-infra-behavior-testing-framework-number-oedo04
+  - curl: http://curl.haxx.se/
+keywords:
+  - infrataster
+  - serverspec
+  - serverspec tutorial
+  - Whitebox test
+    Backbox test
+
 ---
 
 Für Infrastrukturtest bieten sich verschiedene Verfahren an. Aus der Softwareentwicklung
@@ -80,7 +86,7 @@ Das sieht dann beispielsweise so aus:
 
 ```ruby
 describe server(:app) do
-	describe http('http://appserver:8080/') do
+	describe http('http://appserver:8080/test') do
 		it "responds content including 'success'" do
 			expect(response.body).to include('success')
 		end
@@ -88,8 +94,8 @@ describe server(:app) do
 end
 ```
 
-Hier wird im äußeren describe-Blcok der zu testenden Server angegeben (`:app`, s.u.),
-im inneren Block die Ressource (`appserver:8080`), und die Expectations, z.B.
+Hier wird im äußeren describe-Block der zu testenden Server angegeben (`:app`, s.u.),
+im inneren Block die Ressource (`appserver:8080/test`), und die Expectations, z.B.
 bezüglich der Rückgabe.
 
 Infrataster kann dabei die Rückgabe auch detaillierter prüfen, etwa ob
@@ -115,7 +121,7 @@ Außerdem kann man bei Konstruktion des Calls auch Parameter mitgeben, z.B.
 ```
 
 Damit lassen sich Webservices auch von außen gut testen. Weitere Post zeigen,
-wie Infrataster aufgebaut ist, und wie man damit einen Testcase aufsetzt.
+wie Infrataster aufgebaut ist, und wie man damit ein reales Testszenario aufsetzt.
 
 ## Beides zusammen, FTW!  
 
