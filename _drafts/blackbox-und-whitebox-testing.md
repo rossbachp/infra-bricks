@@ -37,11 +37,12 @@ den Detailaufbau eines Servers, und serverspec prüft für uns diese Dinge ab.
 Dazu muss serverspec natürlich in/auf den Server schauen.
 
 Wenn der Server beispielsweise einen Webservice bereitstellt, können wir mit serverspec prüfen,
-- ob die Pakete für Middleware und Applikation installiert sind,
-- ob die Applikation ihre Konfigurationsdateien besitzt,
-- und diese korrekt sind,
-- ob der Service startet und einen Netzwerkport belegt,
-- und vieles mehr.
+
+ - ob die Pakete für Middleware und Applikation installiert sind,
+ - ob die Applikation ihre Konfigurationsdateien besitzt,
+ - und diese korrekt sind,
+ - ob der Service startet und einen Netzwerkport belegt,
+ - und vieles mehr.
 
 Damit ist nur leider nicht gesagt, dass der Webservice auch wie gewünscht
 funktioniert. Mit dem Whitebox-Test haben wir alle Grundlagen abgeprüft, die
@@ -121,6 +122,7 @@ Außerdem kann man bei Konstruktion des Calls auch Parameter mitgeben, z.B.
 ```
 
 Damit lassen sich Webservices auch von außen gut testen. Weitere Post zeigen,
+die Verdrahtung zu den Zielservern (":app"), die Nutzung von Proxies,
 wie Infrataster aufgebaut ist, und wie man damit ein reales Testszenario aufsetzt.
 
 ## Beides zusammen, FTW!  
@@ -135,12 +137,7 @@ lokalisierbar.
 
 Um Infrastrukturkomponenten qualitativ testen zu können, sind sowohl White-
 als auch Blackbox-Tests sehr sinnvoll. Hier ist die Kombination von
-serverspec und Infrataster äußerst wirksam und empfehlenswert! Interessanterweise
-kann man beide Tools für beide Verfahren einsetzen:
-- mit serverspec kann man Blackbox-Tests antriggern
-- Infrataster kann auch per SSH-Kommandos ausführen und damit Whitebox-Tests durchführen.
-Beide Werkzeuge haben aber definitiv ihre Stärken im jeweils eigenen Bereich: Den
-für den sie entwickelt wurden.
+serverspec und Infrataster wirksam und empfehlenswert!
 
 --
 Andreas
