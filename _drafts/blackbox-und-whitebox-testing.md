@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: draft
 title: "Blackbox- und Whitebox-Testing"
 modified: 2014-05-15 15:56:44 +0200
 tags: [draft, serverspec,infrataster,andreasschmidt,testing ]
@@ -56,7 +56,7 @@ Da serverspec erweiterbar ist, lassen sich prinzipiell auch Blackbox-Tests
 durchführen. Ein einfaches - wenn auch unschönes - Beispiel nutzt das Kommandozeilentool
 `curl` um einen HTTP-Call zu platzieren und Daten aus der Ausgabe zu prüfen:
 
-```(ruby)
+```
 describe command 'curl http://appserver:8080/test' do
   it { should return_exit_status 0 }
   its(:content) { should match /^success$/ }
@@ -78,7 +78,7 @@ eingesetzt um trotzdem bei einer lesbaren Testspezifikation bleiben zu können.
 
 Das sieht dann beispielsweise so aus:
 
-```(ruby)
+```
 describe server(:app) do
 	describe http('http://appserver:8080/') do
 		it "responds content including 'success'" do
@@ -95,7 +95,7 @@ bezüglich der Rückgabe.
 Infrataster kann dabei die Rückgabe auch detaillierter prüfen, etwa ob
 bestimmte Response-Header gesetzt sind, hier, ob der `Content-Type` `text/html` entspricht:
 
-```(ruby)
+```
 		it "responds as 'text/html'" do
 			expect(response.headers['content-type']).to match(%r{^text/html})
 		end
@@ -103,7 +103,7 @@ bestimmte Response-Header gesetzt sind, hier, ob der `Content-Type` `text/html` 
 
 Außerdem kann man bei Konstruktion des Calls auch Parameter mitgeben, z.B.
 
-```(ruby)
+```
 	describe http(
     		'http://appserver:8080/foo/app',
     		method:   :get,
