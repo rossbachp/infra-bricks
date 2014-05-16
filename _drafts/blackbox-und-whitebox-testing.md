@@ -1,5 +1,5 @@
 ---
-layout: draft
+layout: post
 title: "Blackbox- und Whitebox-Testing"
 modified: 2014-05-15 15:56:44 +0200
 tags: [draft, serverspec,infrataster,andreasschmidt,testing ]
