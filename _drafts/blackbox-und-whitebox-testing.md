@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Blackbox- und Whitebox-Testing"
+title: "infrataster und serverspec: Blackbox- und Whitebox-Testing"
 modified: 2014-05-15 15:56:44 +0200
 tags: [draft, serverspec,infrataster,andreasschmidt,testing ]
 category: tech
@@ -8,7 +8,6 @@ links:
   - serverspec: http://www.serverspec.org
   - infrataster: https://github.com/ryotarai/infrataster
   - infrataster presentation: https://speakerdeck.com/ryotarai/infrataster-infra-behavior-testing-framework-number-oedo04
-  - curl: http://curl.haxx.se/
 keywords:
   - infrataster
   - serverspec
@@ -45,7 +44,7 @@ Wenn der Server beispielsweise einen Webservice bereitstellt, können wir mit se
  - und vieles mehr.
 
 Damit ist nur leider nicht gesagt, dass der Webservice auch wie gewünscht
-funktioniert. Mit dem Whitebox-Test haben wir alle Grundlagen abgeprüft, die
+funktioniert. Mit dem Whitebox-Test haben wir nur die Grundlagen abgeprüft, die
 überhaupt erst einmal notwendig sind.
 
 Man könnte im nächsten Schritt mit einem Tool wie curl oder wget innerhalb
@@ -66,11 +65,11 @@ durchführen. Ein einfaches - allerdings unschönes - Beispiel nutzt das Kommand
 ```ruby
 describe command 'curl http://appserver:8080/test' do
   it { should return_exit_status 0 }
-  its(:content) { should match /^success$/ }
+  its(:stdout) { should match /^success$/ }
 end
 ```
 
-Das funktioniert, wandelt aber den deklarativen Ansatz von serverspec in einen
+Das sollte funktionieren, wandelt aber den deklarativen Ansatz von serverspec in einen
 imperativen um: Wir beschreiben nicht eine Webresource, sondern konstruieren ein
 `command`, um sie abzufragen. Vor allem wenn beim curl-Aufruf Parameter übergeben werden, vielleicht
 noch über HTTP POST, wird der Einzeiler länger und unschöner.
@@ -81,7 +80,7 @@ Glücklicherweise gibt es ein Projekt, das den Blackbox-Ansatz in rspec-Art und
 Weise umsetzt, [Infrataster](https://github.com/ryotarai/infrataster). Dies ist
 eine Erweiterung auf rspec, die verschiedene Typen einführt um Calls abzusetzen
 und das Ergebnis abzuprüfen. Dabei werden Webcrawler-Frameworks aus der Ruby-Welt
-eingesetzt um trotzdem bei einer lesbaren Testspezifikation bleiben zu können.
+eingesetzt um dennoch bei einer lesbaren Testspezifikation bleiben zu können.
 
 Das sieht dann beispielsweise so aus:
 
@@ -100,7 +99,7 @@ im inneren Block die Ressource (`appserver:8080/test`), und die Expectations, z.
 bezüglich der Rückgabe.
 
 Infrataster kann dabei die Rückgabe auch detaillierter prüfen, etwa ob
-bestimmte Response-Header gesetzt sind, hier, ob der `Content-Type` `text/html` entspricht:
+bestimmte Response-Header gesetzt sind, hier, ob der Content-Type `text/html` entspricht:
 
 ```ruby
 		it "responds as 'text/html'" do
