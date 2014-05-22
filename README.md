@@ -24,7 +24,21 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
     rake new_draft
 ### Testumgebung starten
     rake
-           
+### mv a draft
+    git mv _drafts/blackbox-und-whitebox-testing.md _posts/2014-05-20-blackbox-und-whitebox-testing.md
+    git add .
+    git commit -m "xxx"
+    git push origin master
+### release master to gh-pages
+    git pull
+    # vi changelog and commit
+    git push origin master
+    git tag -a v0.0.4 -m 'blog version 0.0.4'
+    git push origin v0.0.4
+    git checkout gh-pages
+    git merge master
+    git push origin gh-pages
+                 
 ## Links
 - Blog Software Jekyll [Jekyll](http://jekyllrb.com/)
 - Dieser Blog basiert auf dem Theme von [JekyllThemeDbykll](http://dbtek.github.io/dbyll/)
