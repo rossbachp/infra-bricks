@@ -50,17 +50,17 @@ funktioniert. Mit dem Whitebox-Test haben wir alle Grundlagen abgeprüft, die
 
 Man könnte im nächsten Schritt mit einem Tool wie curl oder wget innerhalb
 des Servers einen HTTP-Call absetzen und das Ergebnis prüfen. Die Funktionsfähigkeit
-kann aber immer noch scheitern, etwa weil die Netzwerkkonfiguration nicht stimmt
+kann von außen betrachtet aber immer noch scheitern, etwa weil die Netzwerkkonfiguration nicht stimmt
 oder iptables den Zugriff verhindert.
 
 ## ... und Blackbox
 
 Das wiederum lässt sich mit einem Test von außen abprüfen. Wenn ein anderer
-Server den Service abfragt und ein korrektes Ergebnis erhält, kann man eigentlich
+Server den Service abfragt und ein korrektes Ergebnis erhält, kann man schon eher
 sicher sein, dass alles korrekt ist.
 
 Da serverspec erweiterbar ist, lassen sich prinzipiell auch Blackbox-Tests
-durchführen. Ein einfaches - wenn auch unschönes - Beispiel nutzt das Kommandozeilentool
+durchführen. Ein einfaches - allerdings unschönes - Beispiel nutzt das Kommandozeilentool
 `curl` um einen HTTP-Call zu platzieren und Daten aus der Ausgabe zu prüfen:
 
 ```ruby
@@ -121,7 +121,7 @@ Außerdem kann man bei Konstruktion des Calls auch Parameter mitgeben, z.B.
     ...
 ```
 
-Damit lassen sich Webservices auch von außen gut testen. Weitere Post zeigen,
+Damit lassen sich Webservices auch von außen gut testen. Weitere Post zeigen
 die Verdrahtung zu den Zielservern (":app"), die Nutzung von Proxies,
 wie Infrataster aufgebaut ist, und wie man damit ein reales Testszenario aufsetzt.
 
