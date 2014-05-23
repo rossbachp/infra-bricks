@@ -2,12 +2,12 @@
 layout: post
 title: "serverspec: Server spezifizieren und testen"
 modified: 2014-04-25 14:46:50 +0200
-tags: [serverspec,code,andreasschmidt]
-category: test
+tags: [serverspec,andreasschmidt,testing]
+category: testing
 keywords:
   - serverspec
-  - serverspec tutorial
-  - test
+  - tutorial
+  - testing
 ---
 
 In der Softwareentwicklung sind Spezifikation und Testen fester Bestandteil des Arbeitsweise. Unit-Testing und

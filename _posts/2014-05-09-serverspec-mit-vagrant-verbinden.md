@@ -3,7 +3,7 @@ layout: post
 title: serverspec mit Vagrant verbinden
 modified: 2014-04-24 09:43:50 +0200
 tags: [serverspec,vagrant,virtualbox,peterrossbach]
-category: test
+category: testing
 links:
   - 2Creatives: https://github.com/2creatives/vagrant-centos/
   - serverspec: http://www.serverspec.org
@@ -13,8 +13,9 @@ links:
 keywords:
   - vagrant
   - serverspec
-  - serverspec tutorial
-  - test
+  - tutorial
+  - testing
+  - provisioning
 ---
 
 Eine späte Integration der eigenen Software in die Produktionsumgebung rächt sich meistens. Der Kundennutzen muss immer früher sicher hergestellet werden. Jede Änderung soll geschwindt in die Produktion, um dort zu beweisen, ob diese Eigenschaft den gewünschten Nutzen wirklich bietet. Natürlich soll kein Fehler in die Produktion gelangen. Die Änderungen müssen überprüft werden und durch verschiedene aufeinander aufbauende Umgebungen die Qualität sicher gestellt werden. Um so eher dies gelingt, um so schneller kann eine gezielte Korrektur erfolgen.
