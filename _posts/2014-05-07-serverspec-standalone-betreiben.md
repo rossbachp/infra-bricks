@@ -3,13 +3,13 @@ layout: post
 title: "serverspec standalone betreiben"
 modified: 2014-05-07 15:37:46 +0200
 tags: [serverspec,code,andreasschmidt]
-category: test
+category: testing
 links:
   - serverspec: http://serverspec.org/
 keywords:
   - serverspec
-  - serverspec tutorial
-  - test
+  - tutorial
+  - testing
 ---
 
 Nachdem wir im letzten Post allgemein vorgestellt haben, was man mit [serverspec](http://serverspec.org/)

@@ -2,8 +2,8 @@
 layout: post
 title: "infrataster und serverspec: Blackbox- und Whitebox-Testing"
 modified: 2014-05-15 15:56:44 +0200
-tags: [draft, serverspec,infrataster,andreasschmidt,testing ]
-category: tech
+tags: [serverspec,infrataster,andreasschmidt,testing ]
+category: testing
 links:
   - serverspec: http://www.serverspec.org
   - infrataster: https://github.com/ryotarai/infrataster
@@ -11,9 +11,9 @@ links:
 keywords:
   - infrataster
   - serverspec
-  - serverspec tutorial
-  - Whitebox test
-    Backbox test
+  - tutorial
+  - Whitebox
+  - Backbox
 
 ---
 
