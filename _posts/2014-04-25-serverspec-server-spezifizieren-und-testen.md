@@ -34,7 +34,7 @@ nach verwendetem Framework - auch natürlich-sprachlich aus. Dasselbe gibt es nu
 
 ## serverspec
 
-[Serverspec](www.serverspec.org) ist ein Werkzeug, um RSpec-Testfälle für Server formulieren und ausführen zu können. Dabei wird
+[Serverspec](http://www.serverspec.org/) ist ein Werkzeug, um RSpec-Testfälle für Server formulieren und ausführen zu können. Dabei wird
 das Endergebnis spezifiziert und getestet. D.h. es ist egal, mit welchem Konfigurationsmanagementtool ein Server aufgesetzt wurde oder
 ob er sogar manuell installiert wurde, serverspec testet allein den aktuellen Zustand.
 
@@ -114,7 +114,7 @@ Die Frage ist gar nicht so leicht zu beantworten, es hängt nämlich davon ab, w
 Aber es gibt Mehrwert für fast alle Vorhaben. Die drei wichtigsten Gründe für die Verwendung von Tests in der Infrastruktur-Entwicklung sind:
 
 1. **Qualität**: Die Deployment Pipeline kann um eine zusätzliche Qualitätsstufe erweitert werden, die nicht nur die Artefakte auf dem Weg durch die Pipeline testet, sondern auch das Endergebnis.
-2. **Auditierbarkeit**: Zur Unterstützung eines IT-Audits lässt sich eine natürlichsprachliche Spezfikation der Serverlandschaft verfassen und automatisiert testen.
+2. **Auditierbarkeit**: Zur Unterstützung eines IT-Audits lässt sich eine natürlichsprachliche Spezifikation der Serverlandschaft verfassen und automatisiert testen.
 3. **Regressionstest**: Auch Server lassen sich nun nach Veränderungen (z.B. Deployments oder anderen Changes) regressionstesten.
 
 ## Wie geht's weiter?

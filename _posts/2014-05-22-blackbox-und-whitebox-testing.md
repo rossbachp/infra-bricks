@@ -30,7 +30,7 @@ Bei Whitebox-Tests fließen Detailinformationen der zu testenden
 Komponente ein, d.h. man muss also in die Komponente hereinschauen können, um
 den Test durchzuführen.
 
-In den letzten Posts über [serverspec](www.serverspec.org) haben wir uns
+In den letzten Posts über [serverspec](http://www.serverspec.org/) haben wir uns
 mit Whitebox-Testing beschäftigt. Hier beschreiben wir in einer Spezifikation
 den Detailaufbau eines Servers, und serverspec prüft für uns diese Dinge ab.
 Dazu muss serverspec natürlich in/auf den Server schauen.

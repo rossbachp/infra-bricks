@@ -38,7 +38,7 @@ Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Date
 ### Erhebung von Nutzungsdaten
 
 Sie können die Erfassung durch Google Analytics verhindern, indem Sie auf folgenden Link klicken. Es wird ein Opt-Out-Cookie gesetzt, der die zukünftige Erfassung Ihrer Daten beim Besuch dieser Website verhindert:
-<a href=”javascript:gaOptout()”>Google Analytics deaktivieren</a>
+<a href="javascript:gaOptout()">Google Analytics deaktivieren</a>
 
 Nähere Informationen zu Nutzungsbedingungen und Datenschutz finden Sie unter <http://www.google.com/analytics/terms/de.html> bzw. unter <https://www.google.de/intl/de/policies/>. Wir weisen Sie darauf hin, dass auf dieser Website Google Analytics um den Code „gat._anonymizeIp();“ erweitert wurde, um eine anonymisierte Erfassung von IP-Adressen (sog. IP-Masking) zu gewährleisten.
 
