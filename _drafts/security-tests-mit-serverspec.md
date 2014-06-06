@@ -13,10 +13,10 @@ share:
 ---
 
 Sichere Systeme zu bauen und zu betreiben ist eine kontinuierliche Herausforderung. Ein erster Ansatz ist,
-Sicherheit zu spezifizieren und testbar zu machen. Serverspec besitzt eine Reihe von nützlichen Eigenschaften,
+Sicherheitsaspekte zu spezifizieren und testbar zu machen. Serverspec besitzt eine Reihe von nützlichen Eigenschaften,
 um dem Ziel näher zu kommen.
 
-Durch die deklarative rspec-Syntax ist es möglich, Infrastrukturspezifikationen zu schreiben, die Security-
+Durch die deklarative rspec-Syntax ist es möglich, Infrastrukturspezifikationen zu verfassen, die Security-relevante
 Aspekte wie etwa Berechtigungen beschreiben. Und das ganze wird natürlich auf Knopfdruck testbar.
 
 # You should_not ...
@@ -44,7 +44,7 @@ viel mehr, beispielsweise:
 - Die Zertifikate und Schlüssel müssen die richtigen sein, z.B. auch mit hoher Schlüsselstärke
 - ... und vieles mehr.
 
-Im folgenden einige serverspec-Beispiele zur obigen Aufzählung.
+Das lässt sich ganz gut mit serverspec beschreiben.
 
 # Pakete
 
@@ -61,6 +61,7 @@ end
 ```
 
 Ähnliches mit Services (sowohl Negativ- als auch Positiv-Beispiele):
+
 ```ruby
 %W( sendmail ).each do |s|
   describe service s do
@@ -69,7 +70,7 @@ end
   end
 end
 
-%W( iptables  ).each do |s|
+%W( iptables ).each do |s|
   describe service s do
     it { should be_enabled }
     it { should be_running }
@@ -80,7 +81,8 @@ end
 # Nutzer ohne Shell
 
 Hier lässt Linux mehrere Varianten zu, eine ist /bin/nologin. Puppet erhält
-einen eigenen Laufzeituser, der sollte aber ebenfalls keine Shell besitzen.
+beispielsweise einen eigenen Laufzeituser, der sollte aber ebenfalls keine Shell
+besitzen (wird mit /bin/false eingerichtet).
 
 ```ruby
 describe user 'apache' do
@@ -111,7 +113,7 @@ Zur Absicherung einer Webserver-Konfiguration wie bspw. dem Apache gehören
 mehrere Dinge. Wir möchten z.B. sicherstellen, dass SSL-relevante Parameter
 vorhanden sind, dass die Zertifikats- und Schlüsseldateien existieren und die
 richtigen sind (z.B. anhand des CommonNames).
-Letzteres können wir durch ein Serverspec `Command` erreichen, was openssl
+Letzteres können wir durch ein Serverspec `command` erreichen, was openssl
 ausführt um das Zertifikat auszulesen und anzuzeigen. Im Block selber verwenden
 wir Matcher, um den Inhalt zu prüfen.
 
@@ -141,6 +143,8 @@ describe command "openssl rsa -in /etc/ssl/mykey.key -check" do
   it { should return_exit_status 0 }
 end
 ```
+
+# SSL-Zertifikate als Resourcen beschreiben
 
 Nun ist der Aufruf von openssl und das heraus-greppen der gewünschten Informationen
 zwar möglich, aber immerhin unschön. Hier wünsche ich mir eher so etwas wie

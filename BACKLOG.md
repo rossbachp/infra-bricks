@@ -53,6 +53,7 @@
   - Sie lassen sich gut in serverspec umsetzen, um die Sicherheit der eigenen
     Infrastruktur zu erhöhen.
   - [NSA_RHEL_5_GUIDE](http://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf)  
+  - [http://www.nsa.gov/ia/mitigation_guidance/security_configuration_guides/operating_systems.shtml#linux2]
 
 ### Provisioning
 
@@ -93,6 +94,9 @@
   - CoreOS: https://coreos.com/
   - Pain Point CoreOS: http://michael.stapelberg.de/Artikel/coreos_and_docker_first_steps
      - Haben wir dafür ein Lösung
+- (P/T AS) Images selber bauen - und testen!
+  - packer.io und serverspec kombinieren, in virtualbox
+
       
 ### Legende
 
