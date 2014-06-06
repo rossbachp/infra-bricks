@@ -1,6 +1,6 @@
 # infrabricks: Infrastruktur mit Qualität fortentwickeln und betreiben
 
-- [infrabricks](http://www.infrabricks.de)
+- Link zum Blog [infrabricks](http://www.infrabricks.de)
 
 Wir müssen das Thema der Qualität in der Infrastrukturentwicklung neu definieren.
 Die Komplexität und Vielfalt nimmt täglich zu. Als Reaktion darauf müssen wir in der Adminstration und der Entwicklung
