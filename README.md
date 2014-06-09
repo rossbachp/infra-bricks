@@ -1,9 +1,11 @@
 # infrabricks: Infrastruktur mit Qualität fortentwickeln und betreiben
 
+- Link zum Blog [infrabricks](http://www.infrabricks.de)
+
 Wir müssen das Thema der Qualität in der Infrastrukturentwicklung neu definieren.
 Die Komplexität und Vielfalt nimmt täglich zu. Als Reaktion darauf müssen wir in der Adminstration und der Entwicklung
 konsequenter automatisieren. Immer mehr wird deutlich, dass uns alle das Thema "Infrastruktur als Code" etwas angeht.
-Eine neue komplexe Herausforderungen wird uns da beschert. 
+Eine neue komplexe Herausforderungen wird uns da beschert.
 
 In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die Entwicklung der Infrastruktur zu adaptieren. Hierbei versuchen wir bestehende Techniken, Werkzeuge und Vorgehensweise vorzustellen.
 
@@ -38,7 +40,7 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
     git checkout gh-pages
     git merge master
     git push origin gh-pages
-                 
+
 ## Links
 - Blog Software Jekyll [Jekyll](http://jekyllrb.com/)
 - Dieser Blog basiert auf dem Theme von [JekyllThemeDbykll](http://dbtek.github.io/dbyll/)
@@ -66,4 +68,3 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
 ## License
 
 - [MIT](http://opensource.org/licenses/MIT)
-
