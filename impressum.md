@@ -1,7 +1,7 @@
 ---
 layout: page
 permalink: /impressum.html
-title: "Impressum"
+title: "www.infrabricks.de → Impressum"
 modified: 2014-04-23 10:03
 tags: [orga]
 ---
@@ -12,14 +12,14 @@ Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
     D-44879 Bochum
     Telefon: +49 - 157 - 72 54 92 63
     E-Mail: peter.rossbach@bee42.com
-    Internet: http://{{ site.name }}/blog
+    Internet: http://{{ site.name }}
 
 ##   Andreas Schmidt
 
     Otenbergweg 6
     D-53639 Königswinter
     E-Mail: andreas.schmidt@dp-mail.de
-    Internet: http://{{ site.name }}/blog
+    Internet: http://{{ site.name }}
 
 ### Haftung für Inhalte
 Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
