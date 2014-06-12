@@ -25,8 +25,8 @@ Eine praktische Eigenschaft ist dabei, Eigenschaften ausdrücken, die eben nicht
 bietet rspec das Schlüsselwort `should_not` an, wie z.B. in
 
 ```ruby
-describe file '/etc/...' do
-  its(:content) { should_not contain(/PermitRootLogins.*Yes/) }
+describe file '/etc/ssh/sshd_config' do
+  its(:content) { should_not contain(/PermitRootLogin Yes/) }
 end
 ```
 
@@ -96,13 +96,13 @@ end
 
 ## NFS-Mounts
 
-NFS-Mounts, die nur zur Ablage von Dateien verwendet werden, sollten nicht
-mit dem `executable`-Flag gemountet werden:
+NFS-Mounts, die nur zur Ablage von Dateien verwendet werden, sollten 
+mit dem `no-executable`-Flag gemountet werden:
 
 ```ruby
 describe file('/') do
-  it { should_not be_mounted.with(
-    :options => { :executable => true }
+  it { should be_mounted.with(
+    :options => { :noexec => true }
   ) }
 end
 ```
