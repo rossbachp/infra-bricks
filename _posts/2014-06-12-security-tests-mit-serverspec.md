@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Security-Tests mit serverspec"
-modified: 2014-05-23 14:18:18 +0200
-tags: [draft, serverspec,security,testing,andreasschmidt ]
+modified: 2014-06-12 07:07:00 +0200
+tags: [draft, serverspec, security, testing, andreasschmidt ]
 category: security
 keywords:
   - serverspec
