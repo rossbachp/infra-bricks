@@ -14,43 +14,43 @@ keywords:
   - virtualbox
 ---
 
-`Hier fehlt irgendwie ein Einstieg, sodass man nicht mit der Level1-Überschrift ins
-Haus fällt`
-Das Projekt Docker schlägt seit den ersten Lebenszeichen mitte letzten Jahres zunehmend
-höhere Bekannheits- und auch Begeisterungswellen. Grund genug für uns, das ganze
-unter die Lupe zu nehmen und Euch einfache Anleitungen zum Ausprobieren an die
-Hand zu geben. Wie kann man am einfachsten mit Docker starten?
+Das Projekt Docker schlägt seit den ersten Lebenszeichen Mitte letzten Jahres zunehmend höhere Bekannheits- und auch Begeisterungswellen. Docker verspricht einen schneller Start, flexible Konfiguration und stabile Images. Beides sind für uns sehr wichtige Vorausetzungen um Infrastruktur testbar zu machen. Grund genug für uns, das ganze unter die Lupe zu nehmen und Euch einfache Anleitungen zum Ausprobieren an die Hand zu geben. Wie kann man am einfachsten mit Docker  auf dem eigene Rechner durchstarten?
 
 ## Erste Schritte mit Docker
 
-[Docker](http://docker.io) ermöglicht es die eigenen Prozesse in leichtgewichtige [Linux Container](https://linuxcontainers.org/) einzupacken. Am besten kann man die Wirkung als eine fettreduzierte Virtualisierung beschreiben. Wer Docker direkt probieren möchte, kann das [Online Tutorial](http://www.docker.com/tryit/) nutzen. Eine eigene Installation ist für einen echten Docker-Einsatz allerdings unerlässlich. Damit dies auf dem eigenen Rechner zuverlässig gelingt, empfiehlt sich die lokale Installation mit `boot2docker`.
+[Docker](http://docker.io) ermöglicht es die eigenen Prozesse in leichtgewichtige [Linux Container](https://linuxcontainers.org/) einzupacken. Am besten kann man die Wirkung als eine fettreduzierte Virtualisierung beschreiben. Wer Docker direkt probieren möchte, kann das [Online Tutorial](http://www.docker.com/tryit/) nutzen. Eine eigene Installation ist für einen echten Docker-Einsatz allerdings unerlässlich. Damit dies auf dem eigenen Rechner zuverlässig gelingt, empfiehlt sich die lokale Installation mit dem Projekt [boot2docker](http://boot2docker.io).
 
-**Vergleich Vagrant mit Docker**
+![boot2docker]({{ site.BASE_PATH }}/assets/images/boot2docker.png)
 
-`wie gehen Tabellen?`
-||Vagrant|| Docker||
-|------|-------|--------
-|*Nutzung* | Entwicklung | Entwicklung und Betrieb
-|*Speicherung* | Dauerhaft | Flüchtig und braucht externe Volumes
-|*Anzahl der Services* | viele | meist einer
-|*Programmierung* | Ruby | Bash
-|*Technik* | Virtualisierung | LXC
+Mit der Hilfe von Boot2Docker wird auf dem eigene Windows oder Mac eine virtuelle Maschine mit einer Basis-Docker Linux Installation installiert. Die Voraussetzung ist die Installation eines aktuellen Version von VirtualBox. Weiterhin wird die Docker Client CLI und eine boot2docker Management CLI installiert. So läßt sich anschliessend sehr bequem sämtliche Administration ohne lästiges einloggen via ssh vom eigene Rechner erledigen. Docker selbst benötigt Zugang zu dem [Cloud Images Registry von Docker Inc](https://registry.hub.docker.com/). Von dort werden die Betriebsysteme und Container geladen. Aktuell befinden sich dort schon mehr als 15.000 vorgefertige Container für die unterschiedliches Einsatzzwecke. Die Qualität ist unterschiedlich und vor dem Einsatz lohnt sich ein Blick in die Sourcen des Containers. Die Konfiguration eines Container befindet sich in der Datei `Dockerfile`.
 
-`Ich glaube hier brauchts ein kleines Bild, wie Host, VM und boot2docker zusammenspielen. Aus dem Text selber raff ich das gerade nicht mehr`
+Die grössen Unterschiede zwischen Vagrant und Docker sind die folgenden:
+
+ |Vagrant| Docker
+------|-------|--------
+*Nutzung* | Entwicklung | Entwicklung und Betrieb
+*Speicherung* | Dauerhaft | Flüchtig und braucht externe Volumes
+*Anzahl der Services* | viele | meist einer
+*Programmierung* | Ruby | Bash
+*Technik* | Virtualisierung | LXC
 
 ## Installation von boot2docker
 
-[Boot2docker](http://boot2docker.io/) hilft dabei, ein passendes Linux mit Virtualbox auf Windows oder OS X zu installieren. Mit der Version 1.0 liegt die Installation als fertiges Package vor. Als Voraussetzung muss [VirtualBox](https://www.virtualbox.org/) in der Version `>4.3.12` installiert sein. Eine leistungsfähige Internet-Verbindung, die schnell den Transfer von 1GB Daten erlaubt, ist hier wirklich hilfreich. Denn zum Start muss neben dem Images für die Virtualisierung noch die Basis-Images für Docker geladen werden. Also ist genügend Zeit für ein bisschen Lesen im Netz oder eine Unterhaltung mit den Kollegen.
+[Boot2docker](http://boot2docker.io/) hilft dabei, ein passendes Linux mit Virtualbox auf Windows oder OS X zu installieren. Mit der Version 1.0 liegt die Installation nun als fertiges Package vor. Als Voraussetzung muss [VirtualBox](https://www.virtualbox.org/) in der Version `>4.3.12` installiert sein. Eine leistungsfähige Internet-Verbindung, die schnell den Transfer von 1GB Daten erlaubt, ist hier wirklich hilfreich. Eine Live-Demo mit unbekannten langsamen WiFi-Netzen oder Mobiles hat der Demo-Gott hier nicht vorgesehen. Denn zum Start muss neben dem Images für die Virtualisierung noch die Basis-Images für Docker geladen werden. Also ist genügend Zeit für ein bisschen Lesen im Netz oder eine Unterhaltung mit den Kollegen.
 
-Neben der VM wird auf dem Host ein lokaler Docker-Client installiert, damit ohne Login auf dem Linux alle Docker-Befehle genutzt werden können. Nach der Installation von boot2Docker kann geprüft werden, ob der Docker-Client auf dem Host verfügbar ist.
-`aber dazu sollte man kurz die Installation von boot2docker zeigen. Und wenns nur ein apt-get install ist..`
+  - [Docker User Guide](https://docs.docker.com/userguide/)
+  - [Docker Basics](https://docs.docker.com/articles/basics/)
+
+![boot2docker]({{ site.BASE_PATH }}/assets/images/boot2docker-install.png)
+
+Neben der VM wird auf dem Host ein lokaler Docker-Client installiert, damit ohne  Login auf dem Linux alle Docker-Befehle genutzt werden können. Nach dem Installation von boot2Docker kann geprüft werden, ob der Docker-Client auf dem Host verfügbar ist.
 
 ```bash
 $ docker version
 Docker version 1.0.1, build 990021a
 ```
 
-Die eigene Docker-Testumgebung wird mit dem Befehl `boot2docker init` erzeugt. Dabei wird eine neue virtuelle Maschine in der VirtualBox erstellt. Der Start der Umgebung erfolgt mit `boot2docker up`. Wichtig ist, das man nun den Docker-Client auf der gestartet VM mit ein Export-Anweisung konfiguiert. `bzw man konfiguriert doch quasi die "Fernsteuern"?`
+Die eigene Docker-Testumgebung wird mit dem Befehl `boot2docker init` erzeugt. Dabei wird eine neue virtuelle Maschine in der VirtualBox erstellt. Der Start der Umgebung erfolgt mit `boot2docker up`. Wichtig ist, das man nun den Docker-Client auf der eigene Maschine auf der gestartet VM mit ein Export-Anweisung konfiguiert. Die Anweisung befindet sich am Ende der Ausgabe des Kommandos. Nun kann die Fernsteuerung von Docker in der VM beginnen. Dies ist möglich, da Docker ein HTTP REST API besitzt und alles Steuerung darüber erfolgen. Neben der Shell Client gibt es diverse Docker Integration für Ruby, Go, Php, Java, Scala oder Groovy.
 
 ```bash
 $ boot2docker up
@@ -75,7 +75,7 @@ busybox              buildroot-2014.02     a9eb17255234        2 weeks ago      
 busybox              latest                a9eb17255234        2 weeks ago         2.433 MB
 ```
 
-Folgenden docker Kommandos ausführen:
+Folgenden `docker`-Kommandos können nun ausführen werden:
 
 ```bash
 $ docker
@@ -144,8 +144,7 @@ boot2docker: 1.0.0
 docker@boot2docker:~$
 ```
 
-`d.h. was habe ich jetzt erreicht? Ich kann vom Mac/Windows durch eine Linux-VM direkt
-mit docker interagieren?`
+Nun ist eine direkte Interaktion mit allen Container und Prozessen auf dem Linux VM möglich. Weitere Linux Packages für Monitoring, Logging und andere Services können genutzt werden. Natürlich kann nun das Netzwerk für die Kooperation mit anderne Maschinen und Services erweitert werden.
 
 In der Liste der boot2docker Befehle finden sich die üblichen Verdächtigen zum Management der VM:
 
@@ -174,11 +173,11 @@ Commands:
 ...
 ```
 
-Die Basis von boot2docker ist aktuell ein Kernel 3.14.1 mit AUFS und Docker 1.0.1. Es besteht die Möglichkeit, ein eigenes Images für die VirtualBox zu erstellen.
+Die Basis von *boot2docker* ist aktuell ein Kernel 3.14.1 mit AUFS und Docker 1.0.1. Es besteht die Möglichkeit, ein eigenes Images für die VirtualBox zu erstellen.
 
 ## Start des ersten Docker-Containers
 
-`das wird auf dem Host gemacht, nicht in der boot2docker-VM? Besser erwähnen, wo etwas geschieht`
+In der VM oder auf der eigene Maschine können nun docker Container administriert, erzeugt, gestartet, gestoppt oder wieder gelöscht werden.
 
 ```bash
 $ docker run ubuntu run ubuntu uname -a
