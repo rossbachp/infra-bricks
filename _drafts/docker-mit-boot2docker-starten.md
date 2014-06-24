@@ -24,7 +24,7 @@ Das Projekt Docker schlägt seit den ersten Lebenszeichen Mitte letzten Jahres z
 
 Mit der Hilfe von Boot2Docker wird auf dem eigene Windows oder Mac eine virtuelle Maschine mit einer Basis-Docker Linux Installation installiert. Die Voraussetzung ist die Installation eines aktuellen Version von VirtualBox. Weiterhin wird die Docker Client CLI und eine boot2docker Management CLI installiert. So läßt sich anschliessend sehr bequem sämtliche Administration ohne lästiges einloggen via ssh vom eigene Rechner erledigen. Docker selbst benötigt Zugang zu dem [Cloud Images Registry von Docker Inc](https://registry.hub.docker.com/). Von dort werden die Betriebsysteme und Container geladen. Aktuell befinden sich dort schon mehr als 15.000 vorgefertige Container für die unterschiedliches Einsatzzwecke. Die Qualität ist unterschiedlich und vor dem Einsatz lohnt sich ein Blick in die Sourcen des Containers. Die Konfiguration eines Container befindet sich in der Datei `Dockerfile`.
 
-Die grössen Unterschiede zwischen Vagrant und Docker sind die folgenden:
+Die grössten Unterschiede zwischen Vagrant und Docker sind:
 
  |Vagrant| Docker
 ------|-------|--------
@@ -180,7 +180,7 @@ Die Basis von *boot2docker* ist aktuell ein Kernel 3.14.1 mit AUFS und Docker 1.
 In der VM oder auf der eigene Maschine können nun docker Container administriert, erzeugt, gestartet, gestoppt oder wieder gelöscht werden.
 
 ```bash
-$ docker run ubuntu run ubuntu uname -a
+$ docker run ubuntu uname -a
 Unable to find image 'ubuntu' locally
 Pulling repository ubuntu
 e54ca5efa2e9: Download complete
