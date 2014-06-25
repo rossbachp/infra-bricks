@@ -7,24 +7,26 @@ category: Docker
 links:
   - pipework: https://github.com/jpetazzo/pipework
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
+  - Software Defined Networks: http://www.sflow.org/
+  - openvswitch: http://openvswitch.org/
 keywords:
   - pipework
   - docker
   - network
 ---
 
-Wenn man mit Docker experimentiert, kann man außerordnetlich schnelle Erfolge erzielen. Der Docker-Daemon sorgt im Hintergrund dafür, dass viele notwendige Dinge wie Filesysteme oder Netzwerk einfach geregelt sind. So wundert man sich auch nicht, dass ein neu gebauter Container Netzwerkzugriff ins Internet hat, um z.B. Pakete nach zu installieren.
+Wenn man mit Docker experimentiert, kann man außerordnetlich schnelle Erfolge erzielen. Der Docker-Daemon sorgt im Hintergrund dafür, dass viele notwendige Dinge wie Dateisysteme und Netzwerk einfach geregelt sind. So wundert man sich auch nicht, dass ein neu gebauter Container Netzwerkzugriff ins Internet hat, um z.B. Pakete nach zu installieren.
 
-Aber wie funktioniert das eigentlich genau? In diesem Post möchten wir das Thema Netzwerk ein wenig beleuchten.
+Aber wie funktioniert das eigentlich genau? In diesem Post möchten wir das Thema Netzwerk mit Docker ein wenig beleuchten.
 
 Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus.
 
   - `Hinweis auf den boot2docker post`
-  - `Braucht es nicht einen Hinweis auf SDN und Glossar für den Netzwerker Slang?`
-  - Sollen wir im Titel wirklich einen Umlaut nutzen?
+  - `Braucht es nicht einen Hinweis auf SDN?`
+  - `Glossar für den Netzwerker Slang?`
+  - `Sollen wir im Titel wirklich einen Umlaut nutzen?`
 
-
-# Netzwerk im Container
+## Netzwerk im Docker Container
 
 Wenn man einen einfachen Container mit einer Shell als Prozess startet, kann man im Container und auf dem Host nachschauen, was sich netzwerktechnisch dort abspielt:
 
@@ -62,9 +64,11 @@ PING www.google.de (173.194.70.94) 56(84) bytes of data.
 rtt min/avg/max/mdev = 19.879/20.670/21.461/0.791 ms
 ```
 
-# docker0 ...
+## Was ist eigentlich `docker0`? ...
 
 Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Linux Bridge `docker0` angelegt:
+
+`Was genau ist den ein Bridge?`
 
 ```bash
 ~# sudo ip addr show docker0
@@ -104,7 +108,13 @@ NIC statistics:
 
 ![docker_network_basics1]({{ site.BASE_PATH }}/assets/images/docker_network_basics1.png)
 
-# Kommunikation nach draußen
+  - `Ich schau mal ob wir nicht bessere Symbole für bridge und Kabel hinbekommen`
+  - https://www.graffletopia.com/stencils/1289
+  - https://www.graffletopia.com/stencils/1236
+  - https://www.graffletopia.com/stencils/353
+  - Bei graffletopia  brauchen wir dann ein Account!
+
+## Anschluss in die Welt da draußen
 
 Mit dem Kommando `brctl` kann man sehen, dass nur ein Interface auf der Bridge angeschlossen ist, nämlich das `veth...`-Interface. Allerdings ist das Netzwerk-Interface des Hosts (im Diagramm das obere `eth0`) nicht an der Bridge angeklemmt. Das wäre auch möglich, braucht aber einige weitere Voraussetzungen und Umbauarbeiten, die z.B. [im Blog von @jpetazzo](http://jpetazzo.github.io/2013/10/16/configure-docker-bridge-network/) beschrieben sind.
 
@@ -118,12 +128,15 @@ Chain POSTROUTING (policy ACCEPT)
 target     prot opt source               destination
 MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16
 ```
+  - `Weiteres Bild mit diesem Teil der Anbindung`
 
 In der Postrouting-Chain gibt es einen Masquerade-Eintrag. Dabei setzt der Host Paketen, die für die Außenwelt bestimmt sind, die eigene IP des ausgehenden Interfaces ein, sodass die Antworten später auch zurückgeroutet werden können.
 
-# Kommunikation zwischen Containern
+## Kommunikation zwischen den Docker-Containern auf dem selben Host
 
-Da alle Container auf derselben Bridge lokalisiert sind, können sie darauf auch untereinander kommunizieren. Das Prinzip wurde in der LINK-Funktionalität von Containern weiter ausgebaut.
+Da alle Container auf derselben Bridge lokalisiert sind, können sie darauf auch untereinander kommunizieren. Das Prinzip wurde in der LINK-Funktionalität von Docker Containern weiter ausgebaut.
+
+  - `Link in die Docker Dokumentation`
 
 Ein zweiter Container erhält eine neue IP und ist der in der Lage, den ersten zu erreichen:
 
@@ -149,18 +162,21 @@ rtt min/avg/max/mdev = 0.080/0.090/0.099/0.007 ms
 
 Das funktioniert, weil der Docker-Daemon in Default-Verhalten keine iptables-Sperren auf der Bridge einrichtet, d.h. alle Container können untereinander und mit dem Host auf allen offenen Ports kommunizieren.
 
+  - `Wieder ein bild das diesen Aspekt zeigt`
+
 Falls man das aus Sicherheitsgründen nicht möchte, kann man dieses [Verhalten ändern](https://docs.docker.com/articles/networking/#between-containers). Dabei sorgt eine andere Default-Policy im iptables dafür, das Pakete verworfen werden, außer es wird explizit erlaubt.
 
-# EXPOSE: Port-Weiterleitung
+## Docker Container für die Aussenwelt erreichbar machen
 
 Im Dockerfile hat man mit EXPOSE die Möglichkeit, einen lokalen Port des Containers auf dem Host weiterzuleiten, sodass er auch von außen erreichbar ist. Da die `docker0`-Bridge aber nicht mit dem Host-Interface verbunden ist gibt es auch hierbei einen iptables-Mechanismus.
 
-Alternativ kann man im run-Befehl direkt eine Weiterleitung einrichten. Das Beispiel zeigt, wie ein Container mit einer Weiterleitung gestartet wird, ein Netcat-Listen Prozess hört auf dem (inneren Container-)Port 80.
+Alternativ kann man im `docker run`-Befehl direkt eine Weiterleitung einrichten. Das Beispiel zeigt, wie ein Container mit einer Weiterleitung gestartet wird, ein Netcat-Listen Prozess hört auf dem (inneren Container-)Port 80.
 
 ```bash
 ~# docker run -t -i -p 80:8000 ubuntu /bin/bash
 root@e5d717bdfc32:/# nc -l 0.0.0.0 80
 ```
+  - `ist nc immer installiert?`
 
 Auf dem Host kann man sich die Weiterleitung von Docker anzeigen lassen. Über `netstat` sieht man, dass der Docker-Daemon auf dem weitergeleiteten Port hört:
 
@@ -186,13 +202,13 @@ target     prot opt source               destination
 ACCEPT     tcp  --  0.0.0.0/0            172.17.0.2           tcp dpt:80
 ```
 
-# Im Detail ...
+## Im Detail ...
 
 Der Docker-Daemon sorgt hinter den Kulissen dafür, dass allen drehenden Teile auch richtig zusammenarbeiten. Bei der normalen Arbeit mit Docker muss man sich darum selten kümmern. Mit Docker ist man aber auch in der Lage, komplexere Netzwerk-Setups zu simulieren und damit eine Docker-Umgebung produktionsreif aufzubauen.
 
 Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
 
-Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen.
+Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Das Thema *Software Defined Networks* ist sicherlich komplex, aber nun gibt es endlich eine interessante praktische Verwendung für jeden von uns Docker infizierten.
 
 --
 Andreas
