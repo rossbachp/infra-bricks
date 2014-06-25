@@ -2,7 +2,7 @@
 layout: post
 title: "Docker mit boot2docker starten"
 modified: 2014-06-22 20:00:05 +0200
-tags: [draft, docker]
+tags: [draft, docker, peterrossbach]
 category: docker
 links:
   - Boot2Docker: http://boot2docker.io
