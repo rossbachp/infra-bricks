@@ -39,7 +39,7 @@ Um ein solches Setup schnell aufzusetzen, empfiehlt sich die Kombination aus
 Vagrant und Virtualbox. Dazu das passende Vagrantfile für zwei VMs auf Basis Ubuntu:
 
 ```ruby
-agrant.configure("2") do |config|
+Vagrant.configure("2") do |config|
   config.vm.box = "trusty64"
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
@@ -125,14 +125,14 @@ $ sudo -i
 
 Und instanziieren einen Container, lassen ihn im Vordergrund geöffnet.
 ```bash
-# docker run -d -i ubuntu:latest /bin/bash
+# docker run -t -i ubuntu:latest /bin/bash
 ```
 
 Um das Ziel zu erreichen, benötigt jeder Container ein neues Netzwerkinterface.
 Außerdem soll auf den VMs eine neue Bridge existieren, die an das VM-Interface
 mit dem privaten Netzwerk angeschlossen ist.
 
-Den größten Teil dieser Arbeit kann dabei [Pipework]() übernehmen.
+Den größten Teil dieser Arbeit kann dabei [Pipework](https://github.com/jpetazzo/pipework) übernehmen.
 
 # Pipework
 
@@ -146,17 +146,19 @@ kümmert:
 Dabei versteht es sich mit der Linux Bridge und Open vSwitch und bietet weitreichende
 Möglichkeiten.
 
+Also auf den VMs:
 ````bash
-$ git clone
+# git clone https://github.com/jpetazzo/pipework
+# cd pipework
 
-$ # Wir benötigen die Container-ID
-$ docker ps
-$ CID=
+# # Wir benötigen die Container-ID
+# docker ps
+# CID=<Container-ID einsetzen>
 
-# Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
-$ pipework br0 $CID 192.186.77.10/24
-bzw.
-$ pipework br0 $CID 192.186.77.20/24
+# # Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
+# ./pipework br0 $CID 192.168.77.10/24
+bzw. auf der zweiten VM:
+# ./pipework br0 $CID 192.168.77.20/24
 ```
 
 In der (noch offenen, s.o.) Container-Shell lässt sich das nachprüfen:
@@ -181,9 +183,9 @@ Mit einem Ruby-Skript lässt sich der Zusammenhang zwischen Bridges, Interfaces
 auf dem Host und in den Container anzeigen:
 
 ```bash
-# git clone
-# cd
-# ./docker-network-inspect $CID
+# git clone https://github.com/aschmidt75/docker-network-inspect
+# cd docker-network-inspect/lib/
+# ./docker-network-inspect.rb $CID
 ```
 
 # Container über VM-Grenzen verbinden
@@ -203,20 +205,20 @@ In den VMs verbinden wir das jeweilige `eth1` mit der Bridge `br0`
 Im Container selber lässt sich nun die IP des anderen Containers anpingen (auf
   die richtige IP achten):
 ```bash
-# ping 196.168.77.10
-bzw.
 # ping 196.168.77.20
+bzw.
+# ping 196.168.77.10
 ```
 
 # Fazit
 
 Das automatische Verlinken von Containern ist im Docker-Daemon
 aktuell nur auf demselben Host möglich. Das Verbinden von Containern über Hostgrenzen
-hinweg ist zur Zeit noch  manueller Aufwand. Es bleibt zu hoffen, dass das Docker-Team
-auch hier eine einfache Lösung anbieten.
+hinweg ist zur Zeit noch manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Team
+auch hier eine Lösung anbieten wird.
 
 Wer das obige Setup automatisiert aufsetzen möchte, findet in meinem
-[Network Playgroun](github.com/aschmidt75/docker-network-playground/wiki) mit dem
+[Network Playground](github.com/aschmidt75/docker-network-playground/wiki) mit dem
 "Simple-Setup" eine vorbereitete Lösung zum Ausprobieren.
 
 Im Prinzip ist man mit Pipework in der Lage, komplexere Netzwerkarchitekturen
