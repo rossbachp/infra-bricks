@@ -2,7 +2,7 @@
 layout: post
 title: "Docker mit boot2docker starten"
 modified: 2014-06-22 20:00:05 +0200
-tags: [draft, docker, peterrossbach]
+tags: [draft, docker, linux, peterrossbach]
 category: docker
 links:
   - Boot2Docker: http://boot2docker.io
@@ -16,6 +16,7 @@ keywords:
   - docker
   - boot2Docker
   - virtualbox
+  - LXC
 ---
 
 Das Projekt Docker schlägt seit den ersten Lebenszeichen Mitte letzten Jahres zunehmend höhere Begeisterungswellen. Docker verspricht einen schneller Start in die Welt der DevOps, flexible Konfiguration und stabile Images. All dies sind für uns sehr wichtige Voraussetzungen um Infrastruktur testbar zu machen. Grund genug für uns, das ganze unter die Lupe zu nehmen und Euch einfache Anleitungen zum Ausprobieren an die Hand zu geben. Wie kann man am einfachsten mit Docker  auf dem eigene Rechner durchstarten?
@@ -230,7 +231,10 @@ $ docker run boot/hello
 Hello Docker
 ```
 
-Nun ist die Basis für eigene Docker-Experimente gelegt. Die Integration in die eigenen Projekte, erweiterte Möglichkeiten für Tests oder ein vereinfachter Zugriff auf diverse Backends sind erste Kandidaten. Es gibt enorme Möglichkeiten und eine Suche im öffentlichen [Image-Register](https://registry.hub.docker.com/) lohnt sich. Wir starten nun eine kleine Serie, zur Entschlüsselung von Docker für DevOps. Damit wollen wir die Chance und Risiken dieser wunderbaren neuen Technologie aufzeigen und diskutieren.
+Nun ist die Basis für eigene Docker-Experimente gelegt. Die Integration in die eigenen Projekte, erweiterte Möglichkeiten für Tests oder ein vereinfachter Zugriff auf diverse Backends sind erste Kandidaten. Es gibt enorme Möglichkeiten und eine Suche im öffentlichen [Image-Register](https://registry.hub.docker.com/) lohnt sich.
+
+
+Wir starten nun eine kleine Serie, zur Entschlüsselung von Docker für DevOps. Damit wollen wir die Chance und Risiken dieser wunderbaren neuen Technologie aufzeigen und diskutieren.
 
 --
 Peter
