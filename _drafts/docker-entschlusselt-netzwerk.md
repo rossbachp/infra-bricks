@@ -22,7 +22,7 @@ Container Netzwerkzugriff ins Internet hat, um z.B. Pakete nach zu installieren.
 
 Aber wie funktioniert das eigentlich genau? In diesem Post möchten wir das Thema Netzwerk mit Docker ein wenig beleuchten.
 
-Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der [boot2docker Post]({% post_url 2014-06-25-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker schnell eine Docker-Spielwiese aufbauen kann.
+Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der [boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker schnell eine Docker-Spielwiese aufbauen kann.
 
 ## Das Netzwerk im Docker-Container
 
