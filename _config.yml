@@ -5,6 +5,8 @@ paginate_path: "page:num"
 exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
 pygments: true
 markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 permalink: /blog/:year/:month/:day/:title
 timezone: Europe/Berlin
 encoding: UTF-8

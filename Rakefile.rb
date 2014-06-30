@@ -19,12 +19,12 @@ task :default do
   pids = [
     spawn("bundle exec jekyll server --watch --drafts"),
  ]
- 
+
   trap "INT" do
     Process.kill "INT", *pids
     exit 1
   end
- 
+
   loop do
     sleep 1
   end
@@ -56,12 +56,8 @@ task :new_post, :title do |t, args|
     post.puts "modified: #{Time.now.strftime('%Y-%m-%d %H:%M:%S %z')}"
     post.puts "tags: [#{tags}]"
     post.puts "category: #{category}"
-    post.puts "image:"
-    post.puts "  feature: "
-    post.puts "  credit: "
-    post.puts "  creditlink: "
-    post.puts "comments: "
-    post.puts "share: "
+    post.puts "links:"
+    post.puts "keywords:"
     post.puts "---"
   end
 end
@@ -92,12 +88,8 @@ task :new_draft, :title do |t, args|
     post.puts "modified: #{Time.now.strftime('%Y-%m-%d %H:%M:%S %z')}"
     post.puts "tags: [draft, #{tags} ]"
     post.puts "category: #{category}"
-    post.puts "image:"
-    post.puts "  feature: "
-    post.puts "  credit: "
-    post.puts "  creditlink: "
-    post.puts "comments: "
-    post.puts "share: "
+    post.puts "links:"
+    post.puts "keywords:"
     post.puts "---"
   end
 end
