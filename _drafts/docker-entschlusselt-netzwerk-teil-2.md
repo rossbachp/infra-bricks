@@ -104,8 +104,6 @@ sucht man in der Liste der VMs die beiden von Vagrant gemanagten VMs heraus,
 wählt sie aus -> Klick auf Ändern -> Netzwerk -> Adapter 2.
 Der Promiscous-Mode wird auf "erlauben für alle VMs und Host" gesetzt:
 
-`Geht das nicht mit einem modifyvm Befehl`
-
  `BILD`
 
 Leider muss nach einer Änderung die Vagrant-VM neu gestartet werden:

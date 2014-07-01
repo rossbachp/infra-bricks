@@ -70,7 +70,7 @@ rtt min/avg/max/mdev = 19.879/20.670/21.461/0.791 ms
 
 ## Was ist eigentlich die Bridge `docker0`? ...
 
-Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Network Bridge `docker0` angelegt.
+Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Linux Network Bridge `docker0` angelegt.
 Eine Bridge ist eine Verküpfung von mehreren Netzwerkinterfaces, die darüber miteinander kommunizieren können.
 Die Bridge leitet erst einmal alle Pakete an alle angeschlossenen Interfaces weiter.
 
