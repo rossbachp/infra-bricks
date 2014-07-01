@@ -140,8 +140,8 @@ In der Postrouting-Chain gibt es einen Masquerade-Eintrag. Dabei setzt der Host 
 
 ## Kommunikation zwischen den Docker-Containern auf dem selben Host
 
-Da alle Container auf derselben Bridge lokalisiert sind, können sie darauf auch untereinander kommunizieren.
-Das Prinzip wurde in der LINK-Funktionalität von Docker Containern weiter ausgebaut.
+Da alle Docker-Container auf derselben Bridge `docker0` lokalisiert sind, können sie darauf uneingeschränkt untereinander kommunizieren.
+Das Prinzip wurde in der LINK-Funktionalität von Docker-Containern weiter ausgebaut.
 
 Ein zweiter Container erhält eine neue IP und ist der in der Lage, den ersten zu erreichen:
 
@@ -183,7 +183,7 @@ sehr einfach zugänglich, da man Container anhand ihres Namens und einer Port-Nu
 
 Im Dockerfile hat man mit EXPOSE die Möglichkeit, einen lokalen Port des Containers auf dem Host weiterzuleiten, sodass er auch von außen erreichbar ist. Da die `docker0`-Bridge aber nicht mit dem Host-Interface verbunden ist gibt es auch hierbei einen iptables-Mechanismus.
 
-Alternativ kann man im `docker run`-Befehl direkt eine Weiterleitung einrichten. Das Beispiel zeigt, wie ein Container mit einer Weiterleitung gestartet wird, ein Netcat-Listen Prozess hört auf dem (inneren Container-)Port 80.
+Alternativ kann man im `docker run`-Befehl direkt eine Weiterleitung einrichten. Das Beispiel zeigt, wie ein Container mit einer Weiterleitung gestartet wird, ein Netcat-Listen Prozess hört auf dem *inneren* Container-Port 80.
 
 ```bash
 ~# docker run -t -i -p 80:8000 ubuntu /bin/bash
@@ -218,7 +218,7 @@ ACCEPT     tcp  --  0.0.0.0/0            172.17.0.2           tcp dpt:80
 
 ## Im Detail ...
 
-Der Docker-Daemon sorgt hinter den Kulissen dafür, dass allen drehenden Teile auch richtig zusammenarbeiten. Bei der normalen Arbeit mit Docker muss man sich darum selten kümmern. Mit Docker ist man aber auch in der Lage, komplexere Netzwerk-Setups zu simulieren und damit eine Docker-Umgebung produktionsreif aufzubauen.
+Der Docker-Daemon sorgt hinter den Kulissen dafür, dass allen *drehenden* Teile auch richtig zusammenarbeiten. Bei der normalen Arbeit mit Docker muss man sich darum selten kümmern. Mit Docker ist man aber auch in der Lage, komplexere Netzwerk-Setups zu simulieren und damit eine Docker-Umgebung produktionsreif aufzubauen.
 
 Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
 

@@ -15,12 +15,12 @@ keywords:
   - network
 ---
 
-Im [ersten Teil]() von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
+Im [ersten Teil]({% post_url 2014-06-30-docker-entschluesselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
 wie der Docker-Daemon Netzwerkinterfaces, die `docker0`-Bridge und die
 Kommunikation der Container nach außen und untereinander managed.
 
-In diesem Teil sollen nun die Grundlagen geschaffen werden, damit Container
-auch über Hostgrenzen hinweg kommunizieren können. Dafür gibt es mehrere
+In diesem Teil sollen nun die Grundlagen geschaffen werden, damit Docker-Container
+auch über Host-Grenzen hinweg kommunizieren können. Dafür gibt es mehrere
 Möglichkeiten, wir wählen diejenige, welche mit der Standardkonfiguration
 des Docker-Daemon funktioniert.
 
@@ -65,8 +65,15 @@ Vagrant.configure("2") do |config|
 end
 ```
 
+  - `Wollen wir hier nicht noch einen HashKey für das Virtualbox-Image hinterlegen?`
+  - `Geht das unter boot2Docker tiny Linux auch?`
+
+
 Das besondere liegt in der Definition eines zusätzlichen Netzwerkinterfaces
 `eth1`, dass im weiteren in den Promisc-Mode geschaltet wird:
+
+  - `Erklärung Promisc Mode - Brauchen wir eine Glossar Page?`
+
 
 ```ruby
  s.vm.network "private_network", ip: "192.168.77.5"
@@ -97,6 +104,8 @@ sucht man in der Liste der VMs die beiden von Vagrant gemanagten VMs heraus,
 wählt sie aus -> Klick auf Ändern -> Netzwerk -> Adapter 2.
 Der Promiscous-Mode wird auf "erlauben für alle VMs und Host" gesetzt:
 
+`Geht das nicht mit einem modifyvm Befehl`
+
  `BILD`
 
 Leider muss nach einer Änderung die Vagrant-VM neu gestartet werden:
@@ -108,7 +117,8 @@ bzw.
 $ vagrant ssh docker-test2
 ```
 
-In den VMs werden nun noch Pakete, u.a. docker, nachinstalliert:
+In den VMs werden nun noch Pakete, u.a. docker, nach installiert:
+
 
 ```bash
 $ sudo apt-get -y update
@@ -117,13 +127,21 @@ $ sudo apt-get install -y docker.io
 $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
 ```
 
+..- `Warum nicht als shell Provisioner?`
+
 Um mit Containern zu experimentieren, ziehen wir das Ubuntu-Image:
+
+
 ```bash
 $ sudo -i
 # docker pull ubuntu:latest
 ```
 
+..- `Auch dafür gibt es ein Docker Plugin in Vargant`
+
 Und instanziieren einen Container, lassen ihn im Vordergrund geöffnet.
+
+
 ```bash
 # docker run -t -i ubuntu:latest /bin/bash
 ```
@@ -138,16 +156,18 @@ Den größten Teil dieser Arbeit kann dabei [Pipework](https://github.com/jpetaz
 
 Bei pipework handelt es sich um ein Shell-Skript, das sich um genau diese Aufgaben
 kümmert:
-- Anlegen einer Bridge auf dem Host
-- Anlegen eines Netzwerkinterfaces im Container, zugeordnet zu dessen Namenspace
-- Anlegen eines (Peer-)Netzwerkinterfaces auf dem Host, verknüpft zum Interface im Container
-- Anklemmen des  Host-Interfaces an die Bridge
+  - Anlegen einer Bridge auf dem Host
+  - Anlegen eines Netzwerkinterfaces im Container, zugeordnet zu dessen Namenspace
+  - Anlegen eines (Peer-)Netzwerkinterfaces auf dem Host, verknüpft zum Interface im Container
+  - Anklemmen des  Host-Interfaces an die Bridge
 
-Dabei versteht es sich mit der Linux Bridge und Open vSwitch und bietet weitreichende
-Möglichkeiten.
+
+Dabei versteht es sich mit der Linux Bridge und Open vSwitch und bietet weitreichende Möglichkeiten.
 
 Also auf den VMs:
-````bash
+
+
+```bash
 # git clone https://github.com/jpetazzo/pipework
 # cd pipework
 
@@ -161,15 +181,19 @@ bzw. auf der zweiten VM:
 # ./pipework br0 $CID 192.168.77.20/24
 ```
 
+
 In der (noch offenen, s.o.) Container-Shell lässt sich das nachprüfen:
-````bash
+
+
+```bash
 $ ip addr show eth1
 ```
 
 D.h. pipework hat uns ein passendes Interfaces erzeugt und mit einer IP versorgt.
 Auf dem Host lässt sich der Zustand der Bridge anzeigen:
 
-````bash
+
+```bash
 # brctl show
 ```
 
@@ -181,6 +205,7 @@ das im Container dem neuen eth1 entspricht.
 
 Mit einem Ruby-Skript lässt sich der Zusammenhang zwischen Bridges, Interfaces
 auf dem Host und in den Container anzeigen:
+
 
 ```bash
 # git clone https://github.com/aschmidt75/docker-network-inspect
@@ -197,6 +222,7 @@ Interfaces der Container im selben Subnetz liegen (hier: 192.168.77.0/24)
 
 In den VMs verbinden wir das jeweilige `eth1` mit der Bridge `br0`
 
+
 ```bash
 # brctl addif br0 eth1
 # brctl show
@@ -204,6 +230,8 @@ In den VMs verbinden wir das jeweilige `eth1` mit der Bridge `br0`
 
 Im Container selber lässt sich nun die IP des anderen Containers anpingen (auf
   die richtige IP achten):
+
+
 ```bash
 # ping 196.168.77.20
 bzw.
