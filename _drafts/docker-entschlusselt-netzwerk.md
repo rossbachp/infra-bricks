@@ -2,13 +2,16 @@
 layout: post
 title: "Docker entschlüsselt: Netzwerk"
 modified: 2014-06-24 18:15:33 +0200
-tags: [draft, docker, network, pipework, andreasschmidt ]
+tags: [draft, docker, network, pipework, andreasschmidt, peterrossbach ]
 category: Docker
 links:
-  - pipework: https://github.com/jpetazzo/pipework
+  - 100 VMS mit Docker auf einem Host laufen lassen: https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
+  - Docker  Networking: http://www.jedelman.com/home/docker-networking
   - Software Defined Networks: http://www.sflow.org/
   - openvswitch: http://openvswitch.org/
+  - open-vswitch-201-301: http://www.jedelman.com/home/open-vswitch-201-301
+  - pipework: https://github.com/jpetazzo/pipework
 keywords:
   - pipework
   - docker
@@ -47,7 +50,7 @@ root@4de56414033f:/# ip addr show
 ```
 
 
-D.h. es gibt ein `Loopback`-Interface und ein `eth0`-Netzwerkinterface. Das hat auch bereits eine IP-Adresse aus der Default-Range `172.17.0.0/16`, nämlich die `.2` Auf dem Interface kann der Container in die Welt nach draußen sprechen, da es eine entsprechende Default-Route über eine IP `172.17.42.1` gibt:
+D.h. es gibt ein `Loopback`-Interface und ein `eth0`-Netzwerkinterface im Docker Container. Das `eth0`-Interface hat auch bereits eine IP-Adresse aus der Default-Range `172.17.0.0/16`, nämlich die `.2` Auf dem Interface kann der Container in die Welt nach draußen sprechen, da es eine entsprechende Default-Route mit der IP `172.17.42.1` angelegt ist:
 
 ```bash
 root@4de56414033f:/# ip ro show
@@ -65,11 +68,12 @@ rtt min/avg/max/mdev = 19.879/20.670/21.461/0.791 ms
 ```
 
 
-## Was ist eigentlich `docker0`? ...
+## Was ist eigentlich die Bridge `docker0`? ...
 
-Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Linux Bridge `docker0` angelegt.
+Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Network Bridge `docker0` angelegt.
 Eine Bridge ist eine Verküpfung von mehreren Netzwerkinterfaces, die darüber miteinander kommunizieren können.
 Die Bridge leitet erst einmal alle Pakete an alle angeschlossenen Interfaces weiter.
+
 
 ```bash
 ~# sudo ip addr show docker0
@@ -167,13 +171,15 @@ einrichtet, d.h. alle Container können untereinander und mit dem Host auf allen
 
 Falls man das aus Sicherheitsgründen nicht möchte, kann man dieses [Verhalten ändern](https://docs.docker.com/articles/networking/#between-containers). Dabei sorgt eine andere Default-Policy im iptables dafür, das Pakete verworfen werden, außer es wird explizit erlaubt.
 
+![docker_network_basics_host]({{ site.BASE_PATH }}/assets/images/docker_network_basics_host.png)
+
+
+## Docker-Container für die Aussenwelt erreichbar machen
+
 Die [Link-Funktionalität](https://docs.docker.com/userguide/dockerlinks/) von Docker macht das einfach
 sehr einfach zugänglich, da man Container anhand ihres Namens und einer Port-Nummer untereinander verknüpfen kann:
 
 ![docker_network_basics2_link]({{ site.BASE_PATH }}/assets/images/docker_network_basics2_link.png)
-
-
-## Docker-Container für die Aussenwelt erreichbar machen
 
 Im Dockerfile hat man mit EXPOSE die Möglichkeit, einen lokalen Port des Containers auf dem Host weiterzuleiten, sodass er auch von außen erreichbar ist. Da die `docker0`-Bridge aber nicht mit dem Host-Interface verbunden ist gibt es auch hierbei einen iptables-Mechanismus.
 
@@ -216,7 +222,9 @@ Der Docker-Daemon sorgt hinter den Kulissen dafür, dass allen drehenden Teile a
 
 Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
 
-Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Das Thema *Software Defined Networks* ist sicherlich komplex, aber nun gibt es endlich eine interessante praktische Verwendung für jeden von uns Docker infizierten.
+Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Jede Menge Posts erscheinen nun zum Thema Docker bzw. Linux Networking. Lukas Pustina zeigte in seinem [Post](https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/) wie einfach es ist, hundert Docker Container auf einem Host zu starten. Jason Edelman schreibt regelmässig über das Thema Networking und sein Artikel über Docker mit [Open vSwitch] (http://www.jedelman.com/home/open-vswitch-201-301) zu verbinden, ist sehr anregend.
+
+Das Thema *Software Defined Networks* ist komplex, aber nun gibt es endlich eine interessante praktische Verwendung für jeden von uns Docker infizierten.
 
 --
-Andreas
+Andreas & Peter
