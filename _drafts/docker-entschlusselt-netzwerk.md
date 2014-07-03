@@ -5,6 +5,7 @@ modified: 2014-06-24 18:15:33 +0200
 tags: [draft, docker, network, pipework, andreasschmidt, peterrossbach ]
 category: Docker
 links:
+  - Die Linux Bridge: http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge
   - 100 VMS mit Docker auf einem Host laufen lassen: https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/
   - Docker Networking: http://www.jedelman.com/home/docker-networking
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
