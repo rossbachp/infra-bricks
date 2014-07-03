@@ -15,7 +15,7 @@ keywords:
   - network
 ---
 
-Im [ersten Teil]({% post_url 2014-07-01-docker-entschlusselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
+Im [ersten Teil]({% post_url 2014-07-03-docker-entschlusselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
 wie der Docker-Daemon Netzwerkinterfaces, die `docker0`-Bridge und die
 Kommunikation der Container nach außen und untereinander managed.
 
