@@ -6,11 +6,8 @@ tags: [draft, docker, network, pipework, andreasschmidt, peterrossbach ]
 category: Docker
 links:
   - 100 VMS mit Docker auf einem Host laufen lassen: https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/
+  - Docker Networking: http://www.jedelman.com/home/docker-networking
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
-  - Docker  Networking: http://www.jedelman.com/home/docker-networking
-  - Software Defined Networks: http://www.sflow.org/
-  - openvswitch: http://openvswitch.org/
-  - open-vswitch-201-301: http://www.jedelman.com/home/open-vswitch-201-301
   - pipework: https://github.com/jpetazzo/pipework
 keywords:
   - pipework
@@ -18,14 +15,18 @@ keywords:
   - network
 ---
 
-Wenn man mit Docker experimentiert, kann man außerordnetlich schnelle Erfolge erzielen.
+Wenn man mit Docker experimentiert, kann man außerordentlich schnelle Erfolge erzielen.
 Der Docker-Daemon sorgt im Hintergrund dafür, dass viele notwendige Dinge wie Dateisysteme
 und Netzwerk einfach geregelt sind. So wundert man sich auch nicht, dass ein neu gebauter
-Container Netzwerkzugriff ins Internet hat, um z.B. Pakete nach zu installieren.
+Container Netzwerkzugriff ins Internet hat, um z.B. Pakete zu installieren.
 
 Aber wie funktioniert das eigentlich genau? In diesem Post möchten wir das Thema Netzwerk mit Docker ein wenig beleuchten.
 
-Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der [boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker schnell eine Docker-Spielwiese aufbauen kann. Da im [Tiny Linux](http://distro.ibiblio.org/tinycorelinux/) zur Zeit das Tooling für die Netzwerk fehlt, haben wir uns entschlossen lieber direkt eine eigene Linux Installation mit Vagrant und Virtualbox aufzusetzen. Unser Projekt [dockerbox](https://github.com/rossbachp/dockerbox) erfüllt diesen Zweck.
+Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der
+[boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker
+schnell eine Docker-Spielwiese aufbauen kann. Da im [Tiny Linux](http://distro.ibiblio.org/tinycorelinux/) zur Zeit das
+Tooling für das Netzwerk fehlt, haben wir uns entschlossen lieber direkt eine eigene Linux Installation mit Vagrant und
+Virtualbox aufzusetzen. Unser Projekt [dockerbox](https://github.com/rossbachp/dockerbox) erfüllt diesen Zweck.
 
 ## Das Netzwerk im Docker-Container
 
@@ -50,30 +51,41 @@ root@4de56414033f:/# ip addr show
 ```
 
 
-D.h. es gibt ein `Loopback`-Interface und ein `eth0`-Netzwerkinterface im Docker Container. Das `eth0`-Interface hat auch bereits eine IP-Adresse aus der Default-Range `172.17.0.0/16`, nämlich die `.2` Auf dem Interface kann der Container in die Welt nach draußen sprechen, da es eine entsprechende Default-Route mit der IP `172.17.42.1` angelegt ist:
+D.h. es gibt ein `Loopback`-Interface und ein `eth0`-Netzwerkinterface im Docker Container.
+Das `eth0`-Interface hat auch bereits eine IP-Adresse aus der Default-Range `172.17.0.0/16`,
+nämlich die `.2`. Damit der Container "nach draußen" sprechen kann, benötigt er eine
+Route aus seiner Umgebung heraus über den Host ins Internet. Mit dem Befehl `ip` kann man
+sich Routen auch im Container anzeigen lassen. Man sieht, dass es eine entsprechende
+Default-Route mit der IP `172.17.42.1` angelegt ist:
 
 ```bash
 root@4de56414033f:/# ip ro show
 default via 172.17.42.1 dev eth0
 172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.0.2
 
-root@4de56414033f:/# ping www.google.de
-PING www.google.de (173.194.70.94) 56(84) bytes of data.
-64 bytes from fa-in-f94.1e100.net (173.194.70.94): icmp_seq=1 ttl=61 time=19.8 ms
-64 bytes from fa-in-f94.1e100.net (173.194.70.94): icmp_seq=2 ttl=61 time=21.4 ms
+root@4de56414033f:/# ping www.infrabricks.de
+PING github.map.fastly.net (185.31.17.133) 56(84) bytes of data.
+64 bytes from github.map.fastly.net (185.31.17.133): icmp_seq=1 ttl=61 time=46.2 ms
+64 bytes from github.map.fastly.net (185.31.17.133): icmp_seq=2 ttl=61 time=46.8 ms
+64 bytes from github.map.fastly.net (185.31.17.133): icmp_seq=3 ttl=61 time=44.5 ms
 ^C
---- www.google.de ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1002ms
-rtt min/avg/max/mdev = 19.879/20.670/21.461/0.791 ms
+--- github.map.fastly.net ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 44.555/45.891/46.823/0.968 ms
 ```
 
 
 ## Was ist eigentlich die Bridge `docker0`? ...
 
 Auf dem Host kümmert sich der Docker-Daemon um die Netzwerk-Magic. Bei Installation wird eine Linux Network Bridge `docker0` angelegt.
-Eine Bridge ist eine Verküpfung von mehreren Netzwerkinterfaces, die darüber miteinander kommunizieren können.
-Die Bridge leitet erst einmal alle Pakete an alle angeschlossenen Interfaces weiter.
+Eine Bridge erscheint erstmal wie ein eigenes Netzwerkinterfaces, im Fall von
+`docker0` besitzt diese Bridge sogar eine eigene IP-Adresse. Man kann sich
+eine Bridge vorstellen wie das virtuelle Äquivalent eines Hardware-Switches, aber
+ohne eigene Logik (die ein Switch hätte). Andere Netzwerkinterfaces können an
+eine Bridge angeschlossen werden, und der Kernel (das Modul bridge) leitet
+Pakete, die auf beliebigen Interfaces ankommen an alle angeschlossenen Interfaces weiter.
 
+Mit dem `ip`-Kommando kann man die Bridge als Interface (mit ihrer IP) sehen:
 
 ```bash
 ~# sudo ip addr show docker0
@@ -83,10 +95,8 @@ Die Bridge leitet erst einmal alle Pakete an alle angeschlossenen Interfaces wei
        valid_lft forever preferred_lft forever
 ```
 
-
-Dabei hat der Host eine IP-Adresse auf der Bridge, `default: 172.17.42.1`. Das war auch das Ziel der Default-Route aus dem Container!
-
-Jeder Container wird mit seinem Interface an diese Bridge angebunden:
+Das Tool `brctl` zeigt die Interfaces an, die an die Bridge angeschlossen sind.
+Es stammt aus dem Paket `bridge-utils`.
 
 ```bash
 ~# sudo brctl show
@@ -95,7 +105,8 @@ docker0		8000.1669e4754586	no		vethc3cd
 ```
 
 
-In der rechten Spalte werden die an die Bridge angeschlossenen Interfaces angezeigt. Das sieht zugegebermaßen etwas seltsam aus, ein `veth`-Interface. Man kann sich die Details anzeigen lassen:
+In der letzten, rechten Spalte werden die an die Bridge angeschlossenen Interfaces angezeigt.
+Das sieht zugegebermaßen etwas seltsam aus, ein `veth`-Interface. Man kann sich die Details anzeigen lassen:
 
 ```bash
 ~# sudo ip addr show vethc3cd
@@ -105,8 +116,11 @@ In der rechten Spalte werden die an die Bridge angeschlossenen Interfaces angeze
        valid_lft forever preferred_lft forever
 ```
 
-
-Es handelt sich quasi um ein virtuelles Kabel, dessen Gegenstelle das `eth0`-Interface des Containers darstellt. Das lässt sich auch mit Linux-Bordmitteln herausfinden:
+Es handelt sich quasi um ein virtuelles Kabel, das an der Bridge hängt (in der
+  ersten Ausgabezeile zu sehen, `master docker0`). Dieses Interface ist quasi
+die Gegenstelle des `eth0`-Interface im Containers darstellt.
+Das lässt sich auch mit Linux-Bordmitteln herausfinden, wir bemühen die Statistik-Funktion
+von `ethtool` und finden heraus:
 
 ```bash
 ~# sudo ethtool -S vethc3cd
@@ -114,21 +128,27 @@ NIC statistics:
      peer_ifindex: 37
 ```
 
-
-`ethtool` zeigt an, dass der Index des Peers zu `vethc3cd` den Identifier `37` trägt. Und das ist genau die ID, die im Container selber beim `eth0` angezeigt wird (s.o.). D.h. es ergibt sich folgendes Bild:
+`ethtool` zeigt an, dass der Index des Peers zu `vethc3cd` den Identifier `37` trägt. Und das
+ist genau die ID, die im Container selber beim `eth0` angezeigt wird (s.o.). D.h. es ergibt sich folgendes Bild:
 
 ![docker_network_basics1]({{ site.BASE_PATH }}/assets/images/docker_network_basics1.png)
 
-Das veth-Interface auf dem Host und das eth-Interface im Container sind quasi wie die beiden
+Das veth-Interface auf dem Host und das eth-Interface im Container sind wie die beiden
 Seiten derselben (Netzwerk-)Medaille. Alles was der eine transportiert, sieht der andere
-auch, nur in verschiedenen Container- bzw. Namespace-Ebenen. So trennt Docker bzw. lxc
+auch, nur in verschiedenen Container- bzw. Namespace-Ebenen. So trennt Docker
 das äußere Host-Interface vom inneren Container-Interface.
 
 ## Anschluss in die Welt da draußen
 
-Mit dem Kommando `brctl` kann man sehen, dass nur ein Interface auf der Bridge angeschlossen ist, nämlich das `veth...`-Interface. Allerdings ist das Netzwerk-Interface des Hosts (im Diagramm das obere `eth0`) nicht an der Bridge angeklemmt. Das wäre auch möglich, braucht aber einige weitere Voraussetzungen und Umbauarbeiten, die z.B. [im Blog von @jpetazzo](http://jpetazzo.github.io/2013/10/16/configure-docker-bridge-network/) beschrieben sind.
+Mit dem Kommando `brctl` kann man sehen, dass nur ein Interface auf der Bridge angeschlossen ist,
+nämlich das `veth...`-Interface. Allerdings ist das Netzwerk-Interface des Hosts (im Diagramm das obere `eth0`)
+nicht an der Bridge angeklemmt. Das wäre auch möglich, braucht aber einige weitere Voraussetzungen
+und Umbauarbeiten, die z.B. [im Blog von @jpetazzo](http://jpetazzo.github.io/2013/10/16/configure-docker-bridge-network/)
+beschrieben sind.
 
-Wie also kann der Container Pakete ins Internet schicken und die Antworten erhalten? Der Docker-Daemon baut dafür auf dem Host einen NAT-Automatismus mit Hilfe von `iptables` auf. In der Prerouting- und Routing-Chain wird klar, dass ein Paket nach außen geroutet werden soll.
+Wie also kann der Container Pakete ins Internet schicken und die Antworten erhalten? Der Docker-Daemon
+baut dafür auf dem Host einen Automatismus mit Hilfe von `iptables` auf. In der Prerouting- und
+Routing-Chain wird klar, dass ein Paket nach außen geroutet werden soll.
 
 ```bash
 ~# sudo /sbin/iptables -L -n -t nat
@@ -139,26 +159,35 @@ target     prot opt source               destination
 MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16
 ```
 
-
 In der Postrouting-Chain gibt es einen Masquerade-Eintrag. Dabei setzt der Host Paketen, die für die Außenwelt bestimmt sind, die eigene IP des ausgehenden Interfaces ein, sodass die Antworten später auch zurückgeroutet werden können.
 
-Mit dem Aufruf von *traceroute* im Docker-Container sieht man, dass alle Netzpackete automatisch über die `docker0`-Bridge geroutet werden.
+Mit dem Aufruf von `traceroute` im Docker-Container sieht man, dass alle Netzpakete automatisch über die IP des
+Hosts geroutet werden, die an der `docker0`-Bridge hängt (172.17.42.1). Da die Bridge nicht am `eth0` des Host hängt,
+gibt es keine direkten Weg nach draußen. Aber das IP-Masquerade und das Routing auf dem Host sorgen dafür, dass der
+nächste (2.) Hop die `eth0` auf dem Host ist (10.0.2.2). Danach geht es weiter über die Netzinfrastruktur, an der
+der Host hängt.
 
 ```bash
-root@4de56414033f:/# apt-get -y install traceroute
-root@4de56414033f:/# traceroute www.google.de
-traceroute to www.google.de (173.194.112.79), 30 hops max, 60 byte packets
- 1  172.17.42.1 (172.17.42.1)  0.051 ms  0.050 ms  0.029 ms
- 2  10.0.2.2 (10.0.2.2)  0.172 ms  0.143 ms  0.120 ms
- 3  * * *
- 4  * * *
+root@4de56414033f:/# apt-get install mtr-tiny
+root@4de56414033f:/# mtr www.infrabricks.de
+                                     My traceroute  [v0.85]
+2ad667affd45 (0.0.0.0)                                                 Thu Jul  3 16:37:37 2014
+Keys:  Help   Display mode   Restart statistics   Order of fields   quit
+                                                       Packets               Pings
+ Host                                                Loss%   Snt   Last   Avg  Best  Wrst StDev
+ 1. 172.17.42.1                                       0.0%     6    0.1   0.1   0.1   0.3   0.0
+ 2. 10.0.2.2                                          0.0%     6    0.4   0.5   0.4   0.9   0.0
+ 3. ???
  ...
+11. ???
+12. github.map.fastly.net                             0.0%     5   44.1  44.1  43.9  44.4   0.0
+
 ```
 
 ## Kommunikation zwischen den Docker-Containern auf dem selben Host
 
 Da alle Docker-Container auf derselben Bridge `docker0` lokalisiert sind, können sie darauf uneingeschränkt untereinander kommunizieren.
-Das Prinzip wurde in der LINK-Funktionalität von Docker-Containern weiter ausgebaut.
+Das Prinzip wurde in der LINK-Funktionalität vom Docker-Daemon weiter ausgebaut.
 
 Ein zweiter Container erhält eine neue IP und ist der in der Lage, den ersten zu erreichen:
 
@@ -209,7 +238,8 @@ root@e5d717bdfc32:/# nc -l 0.0.0.0 80
 
 Falls `nc` nicht installiert ist, hilft ein `apt-get install netcat`.
 
-Auf dem Host kann man sich die Weiterleitung von Docker anzeigen lassen. Über `netstat` sieht man, dass der Docker-Daemon auf dem weitergeleiteten Port hört:
+Auf dem Host kann man sich die Weiterleitung von Docker anzeigen lassen (`docker port`).
+Über `netstat` sieht man, dass der Docker-Daemon auf dem weitergeleiteten Port hört:
 
 ```bash
 ~# docker port 28096eac487b 80
@@ -221,7 +251,8 @@ Proto Recv-Q Send-Q Local Address           Foreign Address         State       
 tcp6       0      0 :::8000                 :::*                    LISTEN      6062/docker.io
 ```
 
-Und auf dem Host wird eine iptables Forward-Regel eingerichtet, damit der Traffic, der vom Host-Interface ankommt, über die Bridge an den Container gerichtet werden kann:
+Und auf dem Host wurde eine iptables Forward-Regel eingerichtet, damit der Traffic, der vom Host-Interface ankommt,
+über die Bridge an den Container gerichtet werden kann:
 
 ```bash
 ~# sudo /sbin/iptables -L -n
@@ -243,16 +274,18 @@ und damit eine Docker-Umgebung produktionsreif aufzubauen.
 Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite
 zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
 
-<<<<<<< HEAD
-Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Jede Menge Posts erscheinen nun zum Thema Docker bzw. Linux Networking. Lukas Pustina zeigte in seinem [Post](https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/) wie einfach es ist, hundert Docker Container auf einem Host zu starten. Jason Edelman schreibt regelmässig über das Thema Networking und sein Artikel über Docker mit [Open vSwitch] (http://www.jedelman.com/home/open-vswitch-201-301) zu verbinden, ist sehr anregend.
+Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage
+für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Jede Menge Posts erscheinen nun
+zum Thema Docker bzw. Linux Networking. Lukas Pustina zeigte in seinem
+[Post](https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/) wie
+einfach es ist, hundert Docker Container auf einem Host zu starten. Jason Edelman schreibt
+regelmässig über das Thema Networking und sein Artikel über Docker
+mit [Open vSwitch] (http://www.jedelman.com/home/open-vswitch-201-301) zu verbinden, gibt viele Anregungen.
 
-Das Thema *Software Defined Networks* ist komplex, aber nun gibt es endlich eine interessante praktische Verwendung für jeden von uns Docker infizierten.
-=======
-Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit
-die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Das
-Thema *Software Defined Networks* ist sicherlich komplex, aber nun gibt es endlich
-eine interessante praktische Verwendung für jeden von uns Docker-Infizierten.
->>>>>>> updated
+Das Thema *Software Defined Networks* ist komplex, aber nun gibt es endlich eine interessante
+praktische Verwendung für jeden von uns Docker-Interessierten.
+
+
 
 --
 Andreas & Peter

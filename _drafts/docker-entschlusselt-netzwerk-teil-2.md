@@ -8,7 +8,9 @@ links:
   - pipework: https://github.com/jpetazzo/pipework
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
   - Software Defined Networks: http://www.sflow.org/
-    Network-Playground: github.com/aschmidt75/docker-network-playground/wiki
+  - Network-Playground: github.com/aschmidt75/docker-network-playground/wiki
+  - openvswitch: http://openvswitch.org/
+  - open-vswitch-201-301: http://www.jedelman.com/home/open-vswitch-201-301
 keywords:
   - pipework
   - docker
