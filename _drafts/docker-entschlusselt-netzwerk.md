@@ -25,7 +25,7 @@ Container Netzwerkzugriff ins Internet hat, um z.B. Pakete nach zu installieren.
 
 Aber wie funktioniert das eigentlich genau? In diesem Post möchten wir das Thema Netzwerk mit Docker ein wenig beleuchten.
 
-Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der [boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker schnell eine Docker-Spielwiese aufbauen kann.
+Die Beispiele gehen von einem Ubuntu 14.04 LTS mit installiertem und lauffähigem Docker aus. Der [boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) erklärt, wie man mit Hilfe von boot2docker schnell eine Docker-Spielwiese aufbauen kann. Da im [Tiny Linux](http://distro.ibiblio.org/tinycorelinux/) zur Zeit das Tooling für die Netzwerk fehlt, haben wir uns entschlossen lieber direkt eine eigene Linux Installation mit Vagrant und Virtualbox aufzusetzen. Unser Projekt [dockerbox](https://github.com/rossbachp/dockerbox) erfüllt diesen Zweck.
 
 ## Das Netzwerk im Docker-Container
 
@@ -137,6 +137,19 @@ MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16
 
 
 In der Postrouting-Chain gibt es einen Masquerade-Eintrag. Dabei setzt der Host Paketen, die für die Außenwelt bestimmt sind, die eigene IP des ausgehenden Interfaces ein, sodass die Antworten später auch zurückgeroutet werden können.
+
+Mit *traceroute* kann sieht man, dass alle Netzpackete automatisch über die `docker0`-Bridge geroutet werden.
+
+```bash
+root@4de56414033f:/# apt-get -y install traceroute
+root@4de56414033f:/# traceroute www.google.de
+traceroute to www.google.de (173.194.112.79), 30 hops max, 60 byte packets
+ 1  172.17.42.1 (172.17.42.1)  0.051 ms  0.050 ms  0.029 ms
+ 2  10.0.2.2 (10.0.2.2)  0.172 ms  0.143 ms  0.120 ms
+ 3  * * *
+ 4  * * *
+ ...
+```
 
 ## Kommunikation zwischen den Docker-Containern auf dem selben Host
 
