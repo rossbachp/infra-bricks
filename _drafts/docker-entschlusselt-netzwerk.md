@@ -119,6 +119,10 @@ NIC statistics:
 
 ![docker_network_basics1]({{ site.BASE_PATH }}/assets/images/docker_network_basics1.png)
 
+Das veth-Interface auf dem Host und das eth-Interface im Container sind quasi wie die beiden
+Seiten derselben (Netzwerk-)Medaille. Alles was der eine transportiert, sieht der andere
+auch, nur in verschiedenen Container- bzw. Namespace-Ebenen. So trennt Docker bzw. lxc
+das äußere Host-Interface vom inneren Container-Interface.
 
 ## Anschluss in die Welt da draußen
 
@@ -231,13 +235,24 @@ ACCEPT     tcp  --  0.0.0.0/0            172.17.0.2           tcp dpt:80
 
 ## Im Detail ...
 
-Der Docker-Daemon sorgt hinter den Kulissen dafür, dass allen *drehenden* Teile auch richtig zusammenarbeiten. Bei der normalen Arbeit mit Docker muss man sich darum selten kümmern. Mit Docker ist man aber auch in der Lage, komplexere Netzwerk-Setups zu simulieren und damit eine Docker-Umgebung produktionsreif aufzubauen.
+Der Docker-Daemon sorgt hinter den Kulissen dafür, dass alle *drehenden* Teile auch
+richtig zusammenarbeiten. Bei der normalen Arbeit mit Docker muss man sich darum selten
+kümmern. Mit Docker ist man aber auch in der Lage, komplexere Netzwerk-Setups zu simulieren
+und damit eine Docker-Umgebung produktionsreif aufzubauen.
 
-Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
+Wer das ganze im Detail nachlesen möchte, ist auf der Docker.io Dokumentation-Seite
+zu [Advanced Networking](https://docs.docker.com/articles/networking/) gut aufgehoben.
 
+<<<<<<< HEAD
 Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Jede Menge Posts erscheinen nun zum Thema Docker bzw. Linux Networking. Lukas Pustina zeigte in seinem [Post](https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/) wie einfach es ist, hundert Docker Container auf einem Host zu starten. Jason Edelman schreibt regelmässig über das Thema Networking und sein Artikel über Docker mit [Open vSwitch] (http://www.jedelman.com/home/open-vswitch-201-301) zu verbinden, ist sehr anregend.
 
 Das Thema *Software Defined Networks* ist komplex, aber nun gibt es endlich eine interessante praktische Verwendung für jeden von uns Docker infizierten.
+=======
+Im nächsten Schritt werden wir Container über Hostgrenzen hinweg verbinden und damit
+die Grundlage für ein skalierfähige und ausfallsichere Umgebungen zu schaffen. Das
+Thema *Software Defined Networks* ist sicherlich komplex, aber nun gibt es endlich
+eine interessante praktische Verwendung für jeden von uns Docker-Infizierten.
+>>>>>>> updated
 
 --
 Andreas & Peter
