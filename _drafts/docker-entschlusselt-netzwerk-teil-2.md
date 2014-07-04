@@ -5,40 +5,43 @@ modified: 2014-06-26 15:33:08 +0200
 tags: [draft, docker, network, pipework, andreasschmidt ]
 category: docker
 links:
-  - pipework: https://github.com/jpetazzo/pipework
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
-  - Software Defined Networks: http://www.sflow.org/
   - Network-Playground: github.com/aschmidt75/docker-network-playground/wiki
   - openvswitch: http://openvswitch.org/
   - open-vswitch-201-301: http://www.jedelman.com/home/open-vswitch-201-301
+  - pipework: https://github.com/jpetazzo/pipework
+  - Software Defined Networks: http://www.sflow.org/
 keywords:
-  - pipework
   - docker
   - network
+  - pipework
 ---
 
-Im [ersten Teil]({% post_url 2014-07-03-docker-entschlusselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
+Im [ersten Teil]({% post_url 2014-07-04-docker-entschlusselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
 wie der Docker-Daemon Netzwerkinterfaces, die `docker0`-Bridge und die
 Kommunikation der Container nach außen und untereinander managed.
 
-In diesem Teil sollen nun die Grundlagen geschaffen werden, damit Docker-Container
+Im zweiten Teil sollen nun die Grundlagen geschaffen werden, damit Docker-Container
 auch über Host-Grenzen hinweg kommunizieren können. Dafür gibt es mehrere
 Möglichkeiten, wir wählen diejenige, welche mit der Standardkonfiguration
 des Docker-Daemon funktioniert.
 
-# Der Plan: Neue Bridges
+.. - `Welche anderen Möglichkeiten gibt es noch?`
 
-Ziel ist es, auf zwei virtuellen Maschinen je einen Container zu instanziieren.
-Dieser Container wird mit einem neuen Netzwerkinterface versorgt, das über
-eine eigene Bridge mit einem Netzwerkinterface des äußeren Containers
-verbunden ist:
+## Der Plan: Neue Bridges anlegen
 
-![docker_network_2vms.png]({{ site.BASE_PATH }}/assets/images/docker_network_2vms.png))
+Ziel ist es, auf zwei virtuellen Maschinen je einen Docker Container zu instanziieren.
+Dieser Container wird mit einem neuen `eth1` Netzwerkinterface versorgt, das über
+eine eigene `br0` Netzwerk-Bridge mit einem `eth1` Netzwerkinterface des Hosts verbunden ist:
 
-# Voraussetzungen
+![docker_network_2vms.png]({{ site.BASE_PATH }}/assets/images/docker_network_2vms.png)
+
+  - `Ìp Addressen auf die Netzwerke schreiben`
+
+## Voraussetzungen
 
 Um ein solches Setup schnell aufzusetzen, empfiehlt sich die Kombination aus
-Vagrant und Virtualbox. Dazu das passende Vagrantfile für zwei VMs auf Basis Ubuntu:
+Vagrant und Virtualbox. Als Basis kann dafür unser [DockerBox](https://github.com/rossbachp/dockerbox) - Projekt auf github dienen. Dazu das passende Vagrantfile für zwei VMs auf Basis Ubuntu:
 
 ```ruby
 Vagrant.configure("2") do |config|
@@ -47,26 +50,28 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.define "docker-test1", primary: true do |s|
-	  s.vm.network "private_network", ip: "192.168.77.5"
-   	s.vm.provider "virtualbox" do |vb|
- 		      vb.customize [ 'modifyvm', :id, '--nicpromisc2', 'allow-all']
-        	vb.gui = false
-        	vb.customize [ "modifyvm", :id, "--memory", "512"]
-        	vb.customize [ "modifyvm", :id, "--cpus", "1"]
-     	end
+    s.vm.network "private_network", ip: "192.168.77.5"
+    s.vm.provider "virtualbox" do |vb|
+      vb.customize [ 'modifyvm', :id, '--nicpromisc2', 'allow-all']
+      vb.gui = false
+      vb.customize [ "modifyvm", :id, "--memory", "512"]
+      vb.customize [ "modifyvm", :id, "--cpus", "1"]
+    end
   end
 
   config.vm.define "docker-test2", primary: true do |s|
-	  s.vm.network "private_network", ip: "192.168.77.6"
-   	s.vm.provider "virtualbox" do |vb|
-		     vb.customize [ 'modifyvm', :id, '--nicpromisc2', 'allow-all']
-        	vb.gui = false
-        	vb.customize [ "modifyvm", :id, "--memory", "512"]
-        	vb.customize [ "modifyvm", :id, "--cpus", "1"]
+    s.vm.network "private_network", ip: "192.168.77.6"
+    s.vm.provider "virtualbox" do |vb|
+      vb.customize [ 'modifyvm', :id, '--nicpromisc2', 'allow-all']
+        vb.gui = false
+        vb.customize [ "modifyvm", :id, "--memory", "512"]
+        vb.customize [ "modifyvm", :id, "--cpus", "1"]
      	end
   end
 end
 ```
+  - `Wollen wir die Konfiguration ähnlich zu dem dockerbox Projekt machen und dort bereitstellen?`
+  - `Hier fehlt die Installation von Docker usw, bisher`
 
 Das besondere liegt in der Definition eines zusätzlichen Netzwerkinterfaces
 `eth1`, dass im weiteren in den [Promisc-Mode](http://de.wikipedia.org/wiki/Promiscuous_Mode) geschaltet wird:
@@ -105,19 +110,26 @@ $ sudo apt-get install -y docker.io
 $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
 ```
 
-Um mit Containern zu experimentieren, ziehen wir das Ubuntu-Image:
+  - `Sie dockerbox ausser bridge-utils musste ich nix zusätzlich installieren.`
+  - `Das muss auf beiden VM's erfolgen?`
+
+Um mit dem Docker-Containern zu experimentieren, ziehen wir das Ubuntu-Image:
 
 ```bash
 $ sudo -i
 # docker pull ubuntu:latest
 ```
 
-Und instanziieren einen Container, lassen ihn im Vordergrund geöffnet.
+Und instanziieren einen neuen Docker-Container, lassen ihn im Vordergrund geöffnet.
 
 
 ```bash
 # docker run -t -i ubuntu:latest /bin/bash
 ```
+
+  - *besser*: docker run -d ubuntu /bin/sh -c "while true; do echo hello
+ world; sleep 30; done"
+  - *id*: docker ps -l -q
 
 Um das Ziel zu erreichen, benötigt jeder Container ein neues Netzwerkinterface.
 Außerdem soll auf den VMs eine neue Bridge existieren, die an das VM-Interface
@@ -125,20 +137,20 @@ mit dem privaten Netzwerk angeschlossen ist.
 
 Den größten Teil dieser Arbeit kann dabei [Pipework](https://github.com/jpetazzo/pipework) übernehmen.
 
-# Pipework
+## Pipework
 
-Bei pipework handelt es sich um ein Shell-Skript, das sich um genau diese Aufgaben
-kümmert:
+Bei pipework handelt es sich um ein Shell-Skript, das sich um genau diese Aufgaben kümmert:
+
+
   - Anlegen einer Bridge auf dem Host
   - Anlegen eines Netzwerkinterfaces im Container, zugeordnet zu dessen Namenspace
   - Anlegen eines (Peer-)Netzwerkinterfaces auf dem Host, verknüpft zum Interface im Container
-  - Anklemmen des  Host-Interfaces an die Bridge
+  - Anklemmen des Host-Interfaces an die Bridge
 
 
-Dabei versteht es sich mit der Linux Bridge und Open vSwitch und bietet weitreichende Möglichkeiten.
+Dabei versteht es sich mit der Linux Bridge und [Open vSwitch](http://openvswitch.org/) und bietet weitreichende Möglichkeiten.
 
-Also auf den VMs:
-
+Also auf den VMs kann pipework folgendermassen installiert werden:
 
 ```bash
 $ sudo -i
@@ -157,6 +169,8 @@ bzw. auf der zweiten VM:
 ```
 
 
+  - `Warum nicht direkt in vagrant als shell-script provisioner?`
+  - `Die Container ID vielleicht lieber in eine Variable legen. Das Problem ist das die wir in einer zweiten Shell agieren`
 In der (noch offenen, s.o.) Container-Shell lässt sich das nachprüfen:
 
 
@@ -207,7 +221,7 @@ CONTAINER 6437709a4ea2
    + BRIDGE br0
 ```
 
-# Container über VM-Grenzen verbinden
+## Container über VM-Grenzen verbinden
 
 Um die Container auf den beiden VMs miteinander sprechen zu lassen, wird eine
 Verbindung der beiden neuen Bridges notwendig. Dazu liegen auf den VMs die
@@ -225,9 +239,11 @@ br0		8000.0800273bcbbb	no		eth1
 							pl5330eth1
 ```
 
-Im Container selber lässt sich nun die IP des anderen Containers anpingen (auf
-  die richtige IP achten):
+Im Container selber lässt sich nun die IP des jeweils anderen Docker-Containers auf der anderen VM anpingen:
 
+  - **Tipp**: Auf die richtige IP in der jeweiligen VM achten!
+
+Im Docker-Container auf der `docker-test1`-VM hilft folgender Test:
 
 ```bash
 # ping 192.168.77.20
@@ -238,9 +254,11 @@ PING 192.168.77.20 (192.168.77.20) 56(84) bytes of data.
 --- 192.168.77.20 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1000ms
 rtt min/avg/max/mdev = 0.364/0.444/0.524/0.080 ms
+```
 
-bzw.
+Im Docker-Container auf der `docker-test2`-VM hilft folgender Test:
 
+```bash
 # ping 192.168.77.10
 PING 192.168.77.10 (192.168.77.10) 56(84) bytes of data.
 64 bytes from 192.168.77.10: icmp_seq=1 ttl=64 time=0.401 ms
@@ -249,22 +267,29 @@ PING 192.168.77.10 (192.168.77.10) 56(84) bytes of data.
 --- 192.168.77.10 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 999ms
 rtt min/avg/max/mdev = 0.401/0.538/0.675/0.137 ms```
+```
 
-# Fazit
+  - `Warum nicht in einem Dockerfile?`
+  - `Mit diesem Schritt kann man noch keine Services einfach verknüpfen!`
 
-Das automatische Verlinken von Containern ist im Docker-Daemon
+## Fazit
+
+Das automatische Verlinken von Docker-Containern ist im Docker-Daemon
 aktuell nur auf demselben Host möglich. Das Verbinden von Containern über Hostgrenzen
-hinweg ist zur Zeit noch manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Team
+hinweg ist zur Zeit noch etwas manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Community
 auch hier eine Lösung anbieten wird.
 
+  - [libswarm](https://github.com/docker/libswarm)
+  - coreos
+  - kubernetes
+
 Wer das obige Setup automatisiert aufsetzen möchte, findet in meinem
-[Network Playground](github.com/aschmidt75/docker-network-playground/wiki) mit dem
-"Simple-Setup" eine vorbereitete Lösung zum Ausprobieren.
+[Network Playground](http://github.com/aschmidt75/docker-network-playground/wiki) mit dem
+**Simple-Setup** eine vorbereitete Lösung zum Ausprobieren.
 
 Im Prinzip ist man mit Pipework in der Lage, komplexere Netzwerkarchitekturen
-aufzubauen. Einen weiteren Schritt in Richtung Netzwerkvirtualisierung und SDN
-(Software-Defined Network) stellt Open vSwitch dar. Das werden wir im
-nächsten Post weiter beleuchten.
+aufzubauen. Einen weiteren Schritt in Richtung Netzwerkvirtualisierung und
+[Software-Defined Network](http://www.sflow.org/) stellt Open vSwitch dar. Das werden wir im nächsten Post weiter beleuchten.
 
 
 --
