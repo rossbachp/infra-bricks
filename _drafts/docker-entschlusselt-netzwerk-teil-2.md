@@ -70,9 +70,6 @@ Vagrant.configure("2") do |config|
   end
 end
 ```
-  - `Wollen wir die Konfiguration ähnlich zu dem dockerbox Projekt machen und dort bereitstellen?`
-  - `Hier fehlt die Installation von Docker usw, bisher`
-
 Das besondere liegt in der Definition eines zusätzlichen Netzwerkinterfaces
 `eth1`, dass im weiteren in den [Promisc-Mode](http://de.wikipedia.org/wiki/Promiscuous_Mode) geschaltet wird:
 
@@ -100,7 +97,7 @@ $ ip addr show
        valid_lft forever preferred_lft forever
 ```
 
-In den VMs werden nun noch Pakete, u.a. docker, nach installiert:
+In den beiden VMs werden nun noch Pakete, u.a. docker, nach installiert:
 
 
 ```bash
@@ -110,8 +107,8 @@ $ sudo apt-get install -y docker.io
 $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
 ```
 
-  - `Sie dockerbox ausser bridge-utils musste ich nix zusätzlich installieren.`
-  - `Das muss auf beiden VM's erfolgen?`
+Alternativ kann die [DockerBox](https://github.com/rossbachp/dockerbox) eingesetzt werden,
+dort muss nur das Paket bridge-utils nachinstalliert werden.
 
 Um mit dem Docker-Containern zu experimentieren, ziehen wir das Ubuntu-Image:
 
@@ -127,10 +124,6 @@ Und instanziieren einen neuen Docker-Container, lassen ihn im Vordergrund geöff
 # docker run -t -i ubuntu:latest /bin/bash
 ```
 
-  - *besser*: docker run -d ubuntu /bin/sh -c "while true; do echo hello
- world; sleep 30; done"
-  - *id*: docker ps -l -q
-
 Um das Ziel zu erreichen, benötigt jeder Container ein neues Netzwerkinterface.
 Außerdem soll auf den VMs eine neue Bridge existieren, die an das VM-Interface
 mit dem privaten Netzwerk angeschlossen ist.
@@ -140,7 +133,6 @@ Den größten Teil dieser Arbeit kann dabei [Pipework](https://github.com/jpetaz
 ## Pipework
 
 Bei pipework handelt es sich um ein Shell-Skript, das sich um genau diese Aufgaben kümmert:
-
 
   - Anlegen einer Bridge auf dem Host
   - Anlegen eines Netzwerkinterfaces im Container, zugeordnet zu dessen Namenspace
@@ -168,11 +160,7 @@ bzw. auf der zweiten VM:
 # ./pipework br0 $CID 192.168.77.20/24
 ```
 
-
-  - `Warum nicht direkt in vagrant als shell-script provisioner?`
-  - `Die Container ID vielleicht lieber in eine Variable legen. Das Problem ist das die wir in einer zweiten Shell agieren`
 In der (noch offenen, s.o.) Container-Shell lässt sich das nachprüfen:
-
 
 ```bash
 $ ip addr show eth1
@@ -269,9 +257,6 @@ PING 192.168.77.10 (192.168.77.10) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.401/0.538/0.675/0.137 ms```
 ```
 
-  - `Warum nicht in einem Dockerfile?`
-  - `Mit diesem Schritt kann man noch keine Services einfach verknüpfen!`
-
 ## Fazit
 
 Das automatische Verlinken von Docker-Containern ist im Docker-Daemon
@@ -279,9 +264,8 @@ aktuell nur auf demselben Host möglich. Das Verbinden von Containern über Host
 hinweg ist zur Zeit noch etwas manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Community
 auch hier eine Lösung anbieten wird.
 
-  - [libswarm](https://github.com/docker/libswarm)
-  - coreos
-  - kubernetes
+Aktuelle Entwicklungen wie [libswarm](https://github.com/docker/libswarm), CoreOS und Kubernetes
+gehen schon in diese Richtung.
 
 Wer das obige Setup automatisiert aufsetzen möchte, findet in meinem
 [Network Playground](http://github.com/aschmidt75/docker-network-playground/wiki) mit dem
