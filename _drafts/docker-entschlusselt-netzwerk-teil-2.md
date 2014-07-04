@@ -17,26 +17,24 @@ keywords:
   - pipework
 ---
 
-Im [ersten Teil]({% post_url 2014-07-04-docker-entschlusselt-netzwerk %}) von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
+Im ersten Teil
+von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
 wie der Docker-Daemon Netzwerkinterfaces, die `docker0`-Bridge und die
 Kommunikation der Container nach außen und untereinander managed.
 
 Im zweiten Teil sollen nun die Grundlagen geschaffen werden, damit Docker-Container
 auch über Host-Grenzen hinweg kommunizieren können. Dafür gibt es mehrere
-Möglichkeiten, wir wählen diejenige, welche mit der Standardkonfiguration
+Möglichkeiten (z.B. die Default-Bridge `docker0` an ein externes Interface anzuschließen oder
+  das iptables-Regelwerk zu erweitern), wir wählen diejenige, welche mit der Standardkonfiguration
 des Docker-Daemon funktioniert.
 
-.. - `Welche anderen Möglichkeiten gibt es noch?`
-
-## Der Plan: Neue Bridges anlegen
+## Der Plan: Eine neue Bridge anlegen
 
 Ziel ist es, auf zwei virtuellen Maschinen je einen Docker Container zu instanziieren.
 Dieser Container wird mit einem neuen `eth1` Netzwerkinterface versorgt, das über
 eine eigene `br0` Netzwerk-Bridge mit einem `eth1` Netzwerkinterface des Hosts verbunden ist:
 
 ![docker_network_2vms.png]({{ site.BASE_PATH }}/assets/images/docker_network_2vms.png)
-
-  - `Ìp Addressen auf die Netzwerke schreiben`
 
 ## Voraussetzungen
 
@@ -114,14 +112,14 @@ Um mit dem Docker-Containern zu experimentieren, ziehen wir das Ubuntu-Image:
 
 ```bash
 $ sudo -i
-# docker pull ubuntu:latest
+~# docker pull ubuntu:latest
 ```
 
 Und instanziieren einen neuen Docker-Container, lassen ihn im Vordergrund geöffnet.
 
 
 ```bash
-# docker run -t -i ubuntu:latest /bin/bash
+~# docker run -t -i ubuntu:latest /bin/bash
 ```
 
 Um das Ziel zu erreichen, benötigt jeder Container ein neues Netzwerkinterface.
@@ -146,18 +144,18 @@ Also auf den VMs kann pipework folgendermassen installiert werden:
 
 ```bash
 $ sudo -i
-# git clone https://github.com/jpetazzo/pipework
-# cd pipework
+~# git clone https://github.com/jpetazzo/pipework
+~# cd pipework
 
-# # Wir benötigen die Container-ID
-# docker ps
+~# # Wir benötigen die Container-ID des Containers, den wir erweitern wollen
+~# docker ps
 ....
-# CID=<Container-ID einsetzen>
+~# CID=<Container-ID einsetzen>
 
-# # Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
-# ./pipework br0 $CID 192.168.77.10/24
+~# # Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
+~# ./pipework br0 $CID 192.168.77.10/24
 bzw. auf der zweiten VM:
-# ./pipework br0 $CID 192.168.77.20/24
+~# ./pipework br0 $CID 192.168.77.20/24
 ```
 
 In der (noch offenen, s.o.) Container-Shell lässt sich das nachprüfen:
@@ -177,7 +175,7 @@ Auf dem Host lässt sich der Zustand der Bridge anzeigen:
 
 
 ```bash
-# brctl show
+~# brctl show
 bridge name	bridge id		STP enabled	interfaces
 br0		8000.0800273bcbbb	no	  pl5330eth1
 ```
@@ -194,9 +192,9 @@ auf dem Host und in den Container anzeigen:
 
 
 ```bash
-# git clone https://github.com/aschmidt75/docker-network-inspect
-# cd docker-network-inspect/lib/
-# ./docker-network-inspect.rb $CID
+~# git clone https://github.com/aschmidt75/docker-network-inspect
+~# cd docker-network-inspect/lib/
+~# ./docker-network-inspect.rb $CID
 CONTAINER 6437709a4ea2
 + PID 5330
 + INTERFACES
@@ -220,8 +218,8 @@ In den VMs verbinden wir das jeweilige `eth1` mit der Bridge `br0`
 
 
 ```bash
-# brctl addif br0 eth1
-# brctl show br0
+~# brctl addif br0 eth1
+~# brctl show br0
 bridge name	bridge id		STP enabled	interfaces
 br0		8000.0800273bcbbb	no		eth1
 							pl5330eth1
@@ -234,7 +232,7 @@ Im Container selber lässt sich nun die IP des jeweils anderen Docker-Containers
 Im Docker-Container auf der `docker-test1`-VM hilft folgender Test:
 
 ```bash
-# ping 192.168.77.20
+~# ping 192.168.77.20
 PING 192.168.77.20 (192.168.77.20) 56(84) bytes of data.
 64 bytes from 192.168.77.20: icmp_seq=1 ttl=64 time=0.364 ms
 64 bytes from 192.168.77.20: icmp_seq=2 ttl=64 time=0.524 ms
@@ -247,14 +245,14 @@ rtt min/avg/max/mdev = 0.364/0.444/0.524/0.080 ms
 Im Docker-Container auf der `docker-test2`-VM hilft folgender Test:
 
 ```bash
-# ping 192.168.77.10
+~# ping 192.168.77.10
 PING 192.168.77.10 (192.168.77.10) 56(84) bytes of data.
 64 bytes from 192.168.77.10: icmp_seq=1 ttl=64 time=0.401 ms
 64 bytes from 192.168.77.10: icmp_seq=2 ttl=64 time=0.675 ms
 ^C
 --- 192.168.77.10 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 999ms
-rtt min/avg/max/mdev = 0.401/0.538/0.675/0.137 ms```
+rtt min/avg/max/mdev = 0.401/0.538/0.675/0.137 ms
 ```
 
 ## Fazit

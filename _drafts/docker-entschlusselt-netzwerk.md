@@ -162,7 +162,8 @@ MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16
 
 In der Postrouting-Chain gibt es einen Masquerade-Eintrag. Dabei setzt der Host Paketen, die für die Außenwelt bestimmt sind, die eigene IP des ausgehenden Interfaces ein, sodass die Antworten später auch zurückgeroutet werden können.
 
-Mit dem Aufruf von `traceroute` im Docker-Container sieht man, dass alle Netzpakete automatisch über die IP des
+Mit dem Aufruf eines traceroute-Tools (hier `mtr-tiny`, kann auch ein anderes Tool sein) im Docker-Container sieht man,
+dass alle Netzpakete automatisch über die IP des
 Hosts geroutet werden, die an der `docker0`-Bridge hängt (172.17.42.1). Da die Bridge nicht am `eth0` des Host hängt,
 gibt es keine direkten Weg nach draußen. Aber das IP-Masquerade und das Routing auf dem Host sorgen dafür, dass der
 nächste (2.) Hop die `eth0` auf dem Host ist (10.0.2.2). Danach geht es weiter über die Netzinfrastruktur, an der
