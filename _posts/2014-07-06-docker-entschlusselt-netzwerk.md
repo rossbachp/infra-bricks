@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Docker entschlüsselt: Netzwerk"
-modified: 2014-06-24 18:15:33 +0200
-tags: [draft, docker, network, pipework, andreasschmidt, peterrossbach ]
+modified: 2014-07-06 20:17:00 +0200
+tags: [docker, network, pipework, andreasschmidt, peterrossbach ]
 category: Docker
 links:
   - Die Linux Bridge: http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge
