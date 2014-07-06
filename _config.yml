@@ -2,7 +2,7 @@
 
 paginate: 10
 paginate_path: "page:num"
-exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock"]
+exclude: [".gitignore", "README.md", "BACKLOG.md", "SETUP.md", "CHANGELOG.md", "Rakefile.rb", "Gemfile", "Gemfile.lock", "_images" ]
 pygments: true
 markdown: redcarpet
 redcarpet:
