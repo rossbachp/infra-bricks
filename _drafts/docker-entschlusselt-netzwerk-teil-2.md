@@ -32,7 +32,7 @@ des Docker-Daemon funktioniert.
 
 Ziel ist es, auf zwei virtuellen Maschinen je einen Docker Container zu instanziieren.
 Dieser Container wird mit einem neuen `eth1` Netzwerkinterface versorgt, das über
-eine eigene `br0` Netzwerk-Bridge mit einem `eth1` Netzwerkinterface des Hosts verbunden ist:
+eine eigene `br1` Netzwerk-Bridge mit einem `eth1` Netzwerkinterface des Hosts verbunden ist:
 
 ![docker_network_2vms.png]({{ site.BASE_PATH }}/assets/images/docker_network_2vms.png)
 
@@ -140,17 +140,21 @@ Bei pipework handelt es sich um ein Shell-Skript, das sich um genau diese Aufgab
 
 Dabei versteht es sich mit der Linux Bridge und [Open vSwitch](http://openvswitch.org/) und bietet weitreichende Möglichkeiten.
 
-Also auf den VMs kann pipework folgendermassen installiert werden:
+Auf den VMs kann pipework folgendermassen installiert werden:
 
 ```bash
 $ sudo -i
 ~# git clone https://github.com/jpetazzo/pipework
 ~# cd pipework
+```
 
-~# # Wir benötigen die Container-ID des Containers, den wir erweitern wollen
+Um einen Container mit einem neuen Netzwerkinterface zu versorgen, brauchen wir jeweils seine Container ID.
+
+```bash
 ~# docker ps
 ....
 ~# CID=<Container-ID einsetzen>
+```
 
 ~# # Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
 ~# ./pipework br0 $CID 192.168.77.10/24
@@ -261,9 +265,6 @@ Das automatische Verlinken von Docker-Containern ist im Docker-Daemon
 aktuell nur auf demselben Host möglich. Das Verbinden von Containern über Hostgrenzen
 hinweg ist zur Zeit noch etwas manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Community
 auch hier eine Lösung anbieten wird.
-
-Aktuelle Entwicklungen wie [libswarm](https://github.com/docker/libswarm), CoreOS und Kubernetes
-gehen schon in diese Richtung.
 
 Wer das obige Setup automatisiert aufsetzen möchte, findet in meinem
 [Network Playground](http://github.com/aschmidt75/docker-network-playground/wiki) mit dem
