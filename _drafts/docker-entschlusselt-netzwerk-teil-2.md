@@ -17,7 +17,7 @@ keywords:
   - pipework
 ---
 
-Im ersten Teil
+Im [ersten Teil](http://www.infrabricks.de/blog/2014/07/06/docker-entschlusselt-netzwerk/)
 von "Docker entschlüsselt: Netzwerk" haben wir gesehen,
 wie der Docker-Daemon Netzwerkinterfaces, die `docker0`-Bridge und die
 Kommunikation der Container nach außen und untereinander managed.
