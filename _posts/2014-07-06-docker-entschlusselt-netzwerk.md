@@ -118,8 +118,8 @@ Das sieht zugegebermaßen etwas seltsam aus, ein `veth`-Interface. Man kann sich
 ```
 
 Es handelt sich quasi um ein virtuelles Kabel, das an der Bridge hängt (in der
-  ersten Ausgabezeile zu sehen, `master docker0`). Dieses Interface ist quasi
-die Gegenstelle des `eth0`-Interface im Containers darstellt.
+  ersten Ausgabezeile zu sehen, `master docker0`). Dieses Interface ist
+die Gegenstelle des `eth0`-Interface im Containers.
 Das lässt sich auch mit Linux-Bordmitteln herausfinden, wir bemühen die Statistik-Funktion
 von `ethtool` und finden heraus:
 
