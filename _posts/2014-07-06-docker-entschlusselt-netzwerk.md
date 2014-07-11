@@ -5,7 +5,7 @@ modified: 2014-07-06 20:17:00 +0200
 tags: [docker, network, pipework, andreasschmidt, peterrossbach ]
 category: Docker
 links:
-  - Die Linux Bridge: http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge
+  - Die Linux Bridge: http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#What_does_a_bridge_do.3F
   - 100 VMS mit Docker auf einem Host laufen lassen: https://blog.codecentric.de/2014/01/leichtgewichtige-virtuelle-maschinen-mit-docker-oder-wie-man-100-vms-laufen/
   - Docker Networking: http://www.jedelman.com/home/docker-networking
   - Docker Advanced Networking: https://docs.docker.com/articles/networking/
@@ -118,7 +118,7 @@ Das sieht zugegebermaßen etwas seltsam aus, ein `veth`-Interface. Man kann sich
 ```
 
 Es handelt sich quasi um ein virtuelles Kabel, das an der Bridge hängt (in der
-  ersten Ausgabezeile zu sehen, `master docker0`). Dieses Interface ist
+ersten Ausgabezeile zu sehen, `master docker0`). Dieses Interface ist damit 
 die Gegenstelle des `eth0`-Interface im Containers.
 Das lässt sich auch mit Linux-Bordmitteln herausfinden, wir bemühen die Statistik-Funktion
 von `ethtool` und finden heraus:

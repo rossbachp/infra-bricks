@@ -41,6 +41,10 @@
     abzufragen und auszuwerten.
   - Ein Resourcetype für serverspec ist ebenfalls leicht umzusetzen.
 
+### Docker sonstiges
+  - Registry
+    https://github.com/atc-/docker-registry-web
+
 #### Security
 - (Sec PR) Erzeuge ein Beispiel mit server_spec um die Anforderung an die Sicherheit eines Tomcats prüfbar zu machen
    [Tomcat 8 Security](http://tomcat.apache.org/tomcat-8.0-doc/security-howto.html)
