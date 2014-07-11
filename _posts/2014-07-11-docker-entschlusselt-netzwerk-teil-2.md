@@ -156,9 +156,11 @@ Um einen Container mit einem neuen Netzwerkinterface zu versorgen, brauchen wir 
 ~# CID=<Container-ID einsetzen>
 ```
 
-~# # Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
+Jetzt geben wir dem Container ein neues Interface, mit einer IP-Adresse
+
+```
 ~# ./pipework br0 $CID 192.168.77.10/24
-bzw. auf der zweiten VM:
+# bzw. auf der zweiten VM:
 ~# ./pipework br0 $CID 192.168.77.20/24
 ```
 
@@ -263,8 +265,8 @@ rtt min/avg/max/mdev = 0.401/0.538/0.675/0.137 ms
 
 Das automatische Verlinken von Docker-Containern ist im Docker-Daemon
 aktuell nur auf demselben Host möglich. Das Verbinden von Containern über Hostgrenzen
-hinweg ist zur Zeit noch etwas manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Community
-auch hier eine Lösung anbieten wird.
+hinweg ist zur Zeit noch etwas manueller Aufwand. Wir dürfen gespannt sein, wann das Docker-Team bzw. 
+die Community auch hier eine Lösung anbieten werden.
 
 Wer das obige Setup automatisiert aufsetzen möchte, findet in meinem
 [Network Playground](http://github.com/aschmidt75/docker-network-playground/wiki) mit dem
