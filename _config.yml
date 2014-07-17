@@ -12,7 +12,7 @@ timezone: Europe/Berlin
 encoding: UTF-8
 destination: ./_site/
 #baseurl:     /blog
-url:         http://www.infrabricks.de
+url:         http://localhost
 #BASE_PATH: /blog
 
 title: Infrastruktur mit Qualität
