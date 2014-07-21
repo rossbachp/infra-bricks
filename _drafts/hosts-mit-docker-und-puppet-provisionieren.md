@@ -1,12 +1,13 @@
 ---
 layout: post
-title: "Hosts mit Docker und Puppet provisionieren"
+title: "Docker-Hosts mit Puppet provisionieren und testen"
 modified: 2014-07-03 20:33:04 +0200
 tags: [draft, tech,docker,andreasschmidt ]
 category: docker
 links:
   - Backends für die Entwicklung mit Vagrant und Docker starten: http://maori.geek.nz/post/vagrant_with_docker_how_to_set_up_postgres_elasticsearch_and_redis_on_mac_os_x
   - Vagrant Docker Provisioner: http://docs.vagrantup.com/v2/provisioning/docker.html
+  - PuppetForge Docker Modul: https://forge.puppetlabs.com/garethr/docker
 keywords:
   - docker
   - serverspec
@@ -18,30 +19,39 @@ Die ersten Schritte mit Docker gestalten sich durch [boot2docker](2014-06-30-doc
 recht einfach, so hat man schnell eine Spielwiese erstellt, um die Funktionalität
 ausprobieren zu können. Aber spätestens wenn Docker-Container im Test- oder Produktionssystem live gestellt werden sollen,
 stellt sich die Frage nach dem reproduzierbaren Aufsetzen eines Docker-Hosts.
-Das kann unter anderem mit Puppet gemacht werden. Um das ganze testbar zu haben, empfiehlt
+
+Da wir für dieses Beispiel gar nicht so viele Dinge zu installieren bzw. konfigurieren zu
+haben, empfiehlt sich ein leichtgewichtiges Tool wie z.B. Ansible oder Salt. Viele Unternehmen
+setzen allerdings seit einiger Zeit auf Puppet, das allgemein bekannt sein dürfte.
+
+Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir das Blogbeispiel
+ebenfalls auf Puppet auf. Um das ganze testbar zu haben, empfiehlt
 sich die Kombination mit [serverspec](http://www.serverspec.org).
 
-## Vagrant/Docker-Provisioning
+
+## Vagrant/Docker-Provisioner
 
 Vagrant bietet selber einen [Docker-Provisioner](http://docs.vagrantup.com/v2/provisioning/docker.html) an.
-(Nicht zu verwechseln mit dem Docker-Provider, der Docker als Backend verwendet, damit Vagrant
-Container anstelle von VMs startet...). Der Provisioner ist in der Lage, Docker
+Dieser ist nicht zu verwechseln mit dem Docker-**Provider**, der Docker als Backend verwendet, damit Vagrant
+Container anstelle von VMs startet. Der **Provisioner** ist in der Lage, Docker
 auf der gestartetem VM zu installieren, mit Images zu bestücken und
-daraus Container zu starten. Die Konfiguration des Docker-Daemons ist davon noch ausgenommen.
+daraus Container zu starten. Die Konfiguration des Docker-Servers ist davon noch ausgenommen.
 
 Das ist schon eine gute Abkürzung auf dem Weg in Richtung Reproduzierbarkeit, sie hängt
-allerdings auch davon ab, wie weit in der Delivery Chain Vagrant zum Einsatz kommt. Wenn z.B.
+allerdings auch davon ab, wie weit Vagrant in der Continuous Delivery Kette zum Einsatz kommt. Wenn z.B.
 das Livesystem auf einer Virtualisierung beruht, die nicht durch ein Vagrant-Backend
 unterstützt wird, kommt man mit dem Docker-Provisioner an der Stelle nicht weiter.
+Dann werden Entwicklungs- und vielleicht auch Testsystem nachvollziehbar bestückt, beim Sprung
+auf das Livesystem ergibt sich ein Bruch.
 
 ## Puppet-Modul für Docker
 
-Eine mögliche Lösung ist, Puppet für die Installation und Konfiguration des Docker-Daemons
+Eine mögliche Lösung ist, Puppet für die Installation und Konfiguration des Docker-Servers
 zu verwenden. Ein Puppet-Modul kann getestet werden, lässt sich in Vagrant über den
 Puppet-Provisioner integrieren und auf allen Stages der Delivery-Chain nutzen.
 
-Wenn man in der PuppetForge nach Docker sucht, wird man schnell bei dem [Modul](https://forge.puppetlabs.com/garethr/docker) von
-Gareth Rushgrove fündig. Damit lässt sich Docker installieren, in Teilen konfigurieren,
+Wenn man in der PuppetForge nach Docker sucht, wird man schnell bei dem [Modul von Gareth Rushgrove](https://forge.puppetlabs.com/garethr/docker)  fündig.
+Damit lässt sich Docker installieren, in Teilen konfigurieren,
 Images lassen sich herunterladen und Container können gestartet werden.
 
 Und wir möchten das ganze natürlich mit Serverspec's hinterlegt haben, um zu testen,
@@ -53,10 +63,13 @@ auf Tags im Repository verweisen. So lassen sich einzelne Stände nachvollziehen
 
 Los geht's!
 
-### Leere VM ...
+### Mit der leere VM beginnen ...
 
 Wir starten mit einem einfach Vagrant-File, das eine einzelne VM auf Basis
-Ubuntu 14.04 aufbaut, und zum Start ein Update der installierten Pakete ausführt:
+Ubuntu 14.04 aufbaut. Da wir auf einen fest benannten Paketstand aufsetzen
+möchten, führen wir kein Update durch. Sinnvoll ist es, hier genau das Image
+mit Werkzeugen wir z.B. Packer selber zu bauen und vorzuhalten, das man für den Betrieb
+der eigenen Plattform haben möchte.
 
 ```ruby
 # -*- mode: ruby -*-
@@ -67,15 +80,6 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.define "docker-test1", primary: true do |s|
-
-    # update system
-    s.vm.provision "shell", inline: <<EOS
-test -f /var/tmp/provisioned || {
-	sudo apt-get -y update
-	sudo date >> /var/tmp/provisioned
-}
-EOS
-
   end
 
 end
@@ -83,15 +87,16 @@ end
 (Git-Tag v1)
 
 
-### Serverspec-Basis dazu
+### ... Serverspec-Basis dazugeben ...
 
-Die VM können wir mit `vagrant up` starten, sind aber noch nicht so weit gekommen. Um unsere
-Installation testbar zu machen, brauche wir serverspec. Es gibt ein Vagrant-Plugin für
+Die VM können wir mit `vagrant up` starten, wir sind aber noch nicht so richtig weit gekommen. Um unsere
+Installation testbar zu machen, benötigen wir serverspec. Es gibt ein Vagrant-Plugin für
 Serverspec, allerdings ist das Zusammenspiel mit verschiedenen Versionen von serverspec,
 Vagrant und dem Plugin noch nicht ideal. Außerdem möchten wir Serverspec-Spezifikation
 auch später ohne Vagrant weiterverwenden können. Von daher installieren wir mit einem
 Shell Provisioner Serverspec plus Abhängigkeiten und gehen davon aus, dass wir unsere Specs
-über eine Synced-Folder in die VM reinreichen.
+über eine Synced-Folder in die VM reinreichen. Bei den gems geben wir zumindest
+für serverspec, specinfra, rspec und rake feste Versionen an.
 
 ```bash
 $ mkdir spec.d
@@ -103,7 +108,12 @@ $ vi Vagrantfile
 (...)
     # install & run serverspec
     s.vm.provision 'shell', inline: <<EOS
-( sudo gem list --local | grep -q serverspec ) || sudo gem install specinfra serverspec rake
+( sudo gem list --local | grep -q serverspec ) || {
+	sudo gem install rake -v '10.3.2'
+	sudo gem install rspec -v '2.99.0'
+	sudo gem install specinfra -v '1.21.0'
+	sudo gem install serverspec -v '1.10.0'
+}
 cd /mnt/spec.d
 rake spec
 
@@ -129,10 +139,10 @@ $ vagrant provision
 ==> docker-test1: (See full trace by running task with --trace)
 ```
 
-### Spezifikation formulieren
+### ... Spezifikation formulieren ...
 
 D.h. serverspec wurde installiert, aber da keine Specs vorhanden sind, kann der `rake spec`-Aufruf
-natürlich noch nichts tun. Wir legen uns (auf dem Host) über `serverspec-init` eine leere Spezifikations-Hülle hin,
+natürlich noch nichts tun. Wir legen uns auf dem Host über `serverspec-init` eine leere Spezifikations-Hülle hin,
 das HTTP-Beispiel wird durch das ersetzt, was wir testen wollen:
 
 ```
@@ -194,7 +204,7 @@ und den leeren describe-Block ersetzen durch:
 
 ```ruby
 describe 'It should have docker installed' do
-	describe package 'lxc-docker' do
+	describe package 'lxc-docker-1.1.1' do
 		it { should be_installed }
 	end
 
@@ -208,10 +218,14 @@ describe 'It should have docker installed' do
 		it { should be_grouped_into 'docker' }
 	end
 
+	describe command 'docker -v' do
+		its(:stdout) { should match '^Docker version 1\.1\.1.*' }
+ 	end
 end
 ```
 
-Das entspricht der Standardinstallation über das Repository von Docker. Ein `vagrant provision` zeigt nun
+Das entspricht der Standardinstallation über das Repository von Docker, zumindest für die
+Version 1.1.1, die wir haben möchten. Ein `vagrant provision` zeigt nun
 eine Menge Fehler, da ja noch nichts installiert ist.
 
 ```bash
@@ -222,7 +236,7 @@ Finished in 0.10243 seconds
 
 Failed examples:
 
-rspec ./spec/localhost/docker_spec.rb:5 # It should have docker installed Package "lxc-docker" should be installed
+rspec ./spec/localhost/docker_spec.rb:5 # It should have docker installed Package "lxc-docker-1.1.1" should be installed
 rspec ./spec/localhost/docker_spec.rb:9 # It should have docker installed Group "docker" should exist []
 rspec ./spec/localhost/docker_spec.rb:13 # It should have docker installed File "/var/run/docker.sock" should be socket
 rspec ./spec/localhost/docker_spec.rb:14 # It should have docker installed File "/var/run/docker.sock" should be owned by "root"
@@ -232,10 +246,10 @@ rspec ./spec/localhost/docker_spec.rb:15 # It should have docker installed File 
 ```
 (Git-Tag v4)
 
-### Das Puppet-Modul hinzufügen ...
+### ... Das Puppet-Modul hinzufügen ...
 
-Wir möchte Docker über Puppet und das Puppetmodul aus der Forge installieren. D.h. es lohnt sich
-auch, das als Serverspec auszudrücken, und dann umzusetzen:
+Wir möchte Docker über Puppet und das Puppetmodul aus der Forge installieren, d.h. es lohnt sich
+auch, das als Serverspec auszudrücken, um es dann umzusetzen. Die aktuelle Version ist 1.1.3:
 
 ```
 $ vim spec.d/spec/localhost/puppet_spec.rb
@@ -253,27 +267,21 @@ describe 'It should have the garethr-docker module' do
 	end
 
 	describe command 'puppet module list' do
-		its(:stdout) { should match 'garethr-docker' }
+		its(:stdout) { should match 'garethr-docker.*1\.1\.3' }
 	end
 end
 ```
 
 Ein `vagrant provision` zeigt nun natürlich noch mehr Fehler an. Wir beheben das ganze,
 indem das Vagrantfile um einen Shell-Provisioner-Abschnitt ergänzt wird, der über puppet
-das Modul nachinstalliert, solange es noch nicht vorhanden ist:
+das Modul nachinstalliert, solange es noch nicht vorhanden ist. Wir wählen auch
+hier gezielt eine feste Version aus:
 
 ```ruby
 $ vi Vagrantfile
-
-(...)
-    sudo date >> /var/tmp/provisioned
-}
-
-EOS
-
     # install puppet module for docker
     s.vm.provision "shell", inline:
-		  'sudo su - -c "( puppet module list | grep -q garethr-docker ) || puppet module install garethr-docker"'
+	    'sudo su - -c "( puppet module list | grep -q garethr-docker ) || puppet module install -v 1.1.3 garethr-docker"'
 
     # install & run serverspec
 (...)
@@ -303,7 +311,7 @@ Failed examples:
 ```
 (Git-Tag v5)
 
-### Docker über Puppet installieren
+### ... und Docker über Puppet installieren lassen
 
 Im Serverspec-Teil sind allerdings die 4 Examples für Puppet grün, nur die Docker-Examples
 sind rot. Also müssen wir jetzt Docker installieren. Dazu bauen wir ein Puppet-Modul,
@@ -332,7 +340,7 @@ $ vi Vagrantfile
 (...)
 ```
 
-Da der Puppet-Provisioner intern einen Synced-Folder erzeugt, müssen wir die
+Da der Puppet-Provisioner intern über Vagrant einen Synced-Folder erzeugt, müssen wir die
 VM reloaden, danach kann provisioniert werden:
 
 ```bash
@@ -344,7 +352,7 @@ $ vagrant provision
 ==> docker-test1: Running Puppet with default.pp...
 ==> docker-test1: stdin: is not a tty
 (...)
-==> docker-test1: Notice: Compiled catalog for vagrant-ubuntu-trusty-64.epost.de in environment production in 0.03 seconds
+==> docker-test1: Notice: Compiled catalog for vagrant-ubuntu-trusty-64 in environment production in 0.03 seconds
 (...)
 ==> docker-test1: Info: Applying configuration version '1405518114'
 ==> docker-test1: Notice: Running puppet apply on vagrant-ubuntu-trusty-64
@@ -363,7 +371,7 @@ Damit fehlt jetzt "nur" noch das was eigentlich wollten, nämlich Docker zu inst
 Das geht mit dem Modul aus der Puppetforge sehr einfach. Wir implementieren ein Modul,
 bestehend aus Subklassen install, run in eigenen .pp-Dateien
 und der Abhängigkeit. Im install-Bereich kommt die Docker-Klasse ins Spiel, wo
-die Konfiguration des Daemons gesetzt werden kann.
+die Konfiguration des Servers gesetzt werden kann.
 
 
 ```bash
@@ -383,8 +391,9 @@ include 'docker'
 
 class docker_host::install {
   class { 'docker':
+    version       => '1.1.1',
     manage_kernel => false,
-    tcp_bind      => 'tcp://127.0.0.1:4243',
+    tcp_bind      => 'tcp://127.0.0.1:2375',
     socket_bind   => 'unix:///var/run/docker.sock',
   }
 }
@@ -422,18 +431,22 @@ installiert wird:
 ==> docker-test1: Info: /Stage[main]/Docker::Service/File[/etc/init.d/docker]: Scheduling refresh of Service[docker]
 ==> docker-test1: Notice: /Stage[main]/Docker::Service/Service[docker]: Triggered 'refresh' from 2 events
 ==> docker-test1: Notice: Finished catalog run in 148.66 seconds
+```
+... und die Specs ...
 
-(... und die Specs ...)
+```
 ==> docker-test1: /usr/bin/ruby1.9.1 -S rspec spec/localhost/docker_spec.rb spec/localhost/puppet_spec.rb
 (...)
 ==> docker-test1: Finished in 0.9264 seconds
 ==> docker-test1: 9 examples, 0 failures
 ```
 
-### Fertig
+### Fertig!
 
-Geschafft! Wir haben eine virtuelle Maschine, die über Puppet Docker installiert und konfiguriert,
-und das ganze mit Hilfe von Serverspec testet.
+9 Examples, 0 Failures: geschafft. Wir haben jetzt eine virtuelle Maschine, die
+* Puppet und das Docker-Modul beinhaltet,
+* ein lauffähigen Docker Server über Puppet installiert hat und
+* das ganze mit Hilfe von Serverspec testbar macht.
 
 Wenn man die Serverspec-Ausgabe detailliert mitverfolgen möchte, hilft ein --format-Eintrag im
 Rakefile:
@@ -447,7 +460,12 @@ end
 ````
 
 Damit kann man serverspec bei der Arbeit zusehen, allerdings kann die Ausgabe mit steigendem Umfang
-der Spec auch recht lang werden.
+der Spec auch recht lang werden. Zu Debugging-Zwecken lohnt es sich allerdings sehr.
+
+Wir können jetzt damit weitermachen, die Spezifikation wasserdicht zu machen, und alle
+Einstellungen, die wir über das Puppet-Modul in die Docker-Konfiguration einbringen können,
+auch abzutesten. Das werden wir nicht im Detail erläutern, wer mag, checkt sich den Master-Branch
+aus und schaut sich die Specs an.
 
 --
 Andreas
