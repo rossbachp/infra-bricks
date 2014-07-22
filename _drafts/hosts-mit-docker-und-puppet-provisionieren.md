@@ -7,6 +7,7 @@ category: docker
 links:
   - Backends für die Entwicklung mit Vagrant und Docker starten: http://maori.geek.nz/post/vagrant_with_docker_how_to_set_up_postgres_elasticsearch_and_redis_on_mac_os_x
   - Vagrant Docker Provisioner: http://docs.vagrantup.com/v2/provisioning/docker.html
+  - Vagrant Docker Provider: https://docs.vagrantup.com/v2/docker/basics.html
 keywords:
   - docker
   - serverspec
