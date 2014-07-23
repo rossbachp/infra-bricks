@@ -21,7 +21,6 @@ keywords:
   - vagrant
 ---
 
-  - `Mehr auf Puppet eingehen`
 Die ersten Schritte mit Docker gestalten sich durch [boot2docker](2014-06-30-docker-mit-boot2docker-starten.md)
 recht einfach, so hat man schnell eine Spielwiese erstellt, um die Funktionalität
 ausprobieren zu können. Aber spätestens wenn Docker-Container im Test- oder Produktionssystem live gestellt werden sollen,
@@ -39,8 +38,8 @@ sich der Einsatz von [serverspec](http://www.serverspec.org).
 ## Vagrant/Docker-Provisioner
 
 Vagrant bietet selber einen [Docker-Provisioner](http://docs.vagrantup.com/v2/provisioning/docker.html) an.
-Dieser ist nicht zu verwechseln mit dem Docker-**Provider**, der Docker als Backend verwendet, damit Vagrant
-Container anstelle von VMs startet. Der **Provisioner** ist in der Lage, Docker
+Dieser ist nicht zu verwechseln mit dem Docker-Provider, der Docker als Backend verwendet, damit Vagrant
+Container anstelle von VMs startet. Der Provisioner hingegen ist in der Lage, Docker
 auf der gestartetem VM zu installieren, mit Images zu bestücken und
 daraus Container zu starten. Die Konfiguration des Docker-Servers ist davon noch ausgenommen.
 
@@ -93,11 +92,13 @@ end
 (Git-Tag v1)
 
 Wer das ganze schnell ausprobieren möchte, kann sich den Code von github auschecken:
+
 ```
 $ git clone https://github.com/aschmidt75/docker-testing-playground
 ```
 
-Die einzelnen Stationen sind getagged, d.h. den obigen Stand erhält man mit:
+Die einzelnen Stationen sind getagged, d.h. den obigen Stand v1 erhält man mit:
+
 ```
 $ git checkout tags/v1
 Note: checking out 'tags/v1'.
@@ -461,9 +462,10 @@ installiert wird:
 ### Fertig!
 
 9 Examples, 0 Failures: geschafft. Wir haben jetzt eine virtuelle Maschine, die
-* Puppet und das Docker-Modul beinhaltet,
-* ein lauffähigen Docker Server über Puppet installiert hat und
-* das ganze mit Hilfe von Serverspec testbar macht.
+
+ * Puppet und das Docker-Modul beinhaltet,
+ * ein lauffähigen Docker-Server über Puppet installiert hat und
+ * das ganze mit Hilfe von Serverspec testbar macht.
 
 Wenn man die Serverspec-Ausgabe detailliert mitverfolgen möchte, hilft ein --format-Eintrag im
 Rakefile:
