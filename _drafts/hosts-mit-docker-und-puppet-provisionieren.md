@@ -9,6 +9,11 @@ links:
   - Vagrant Docker Provisioner: http://docs.vagrantup.com/v2/provisioning/docker.html
   - Vagrant Docker Provider: https://docs.vagrantup.com/v2/docker/basics.html
   - PuppetForge Docker Modul: https://forge.puppetlabs.com/garethr/docker
+  - Puppet: https://www.puppetlabs.com/
+  - Salt: http://www.saltstack.com/
+  - Ansible: http://www.ansible.com/home
+  - Chef: http://www.getchef.com/
+  - Packer: http://www.packer.io/
 keywords:
   - docker
   - serverspec
@@ -22,11 +27,8 @@ recht einfach, so hat man schnell eine Spielwiese erstellt, um die Funktionalit�
 ausprobieren zu können. Aber spätestens wenn Docker-Container im Test- oder Produktionssystem live gestellt werden sollen,
 stellt sich die Frage nach dem reproduzierbaren Aufsetzen eines Docker-Hosts.
 
-
-- `Links zu Puppet, SaltStack und Ansible, Chef einfügen`
-
 Da wir für dieses Beispiel gar nicht so viele Dinge zu installieren bzw. konfigurieren zu
-haben, empfiehlt sich ein leichtgewichtiges Tool wie z.B. Ansible oder Salt. Viele Unternehmen
+haben, ist ein leichtgewichtiges Tool wie z.B. Ansible oder Salt naheliegend. Viele Unternehmen
 setzen allerdings seit einiger Zeit auf Puppet, das allgemein bekannt sein dürfte.
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
@@ -69,18 +71,11 @@ Los geht's!
 
 ### Mit der leere VM beginnen ...
 
-  - `Link auf Packer einfügen`
-  - `Kleiner als Ubuntu z.B Arch Linux?`
-
-
 Wir starten mit einem einfach Vagrant-Konfiguration, das eine einzelne VM auf Basis
 Ubuntu 14.04 aufbaut. Da wir auf einen fest benannten Paketstand aufsetzen
 möchten, führen wir kein Update durch. Sinnvoll ist es, hier genau das Image
-mit Werkzeugen wir z.B. Packer selber zu bauen und vorzuhalten, das man für den Betrieb
+mit Werkzeugen wir z.B. [Packer](http://www.packer.io/) selber zu bauen und vorzuhalten, das man für den Betrieb
 der eigenen Plattform haben möchte.
-
-  - `*current* verweist auf ein aktuelles Build und ist nach einem Monat nicht mehr das selbe!`
-  - `Checksum?`
 
 ```ruby
 # -*- mode: ruby -*-
@@ -95,17 +90,22 @@ Vagrant.configure("2") do |config|
 
 end
 ```
-
-  - `Git befehle clone und checkout`
-
-
 (Git-Tag v1)
 
+Wer das ganze schnell ausprobieren möchte, kann sich den Code von github auschecken:
+```
+$ git clone https://github.com/aschmidt75/docker-testing-playground
+```
+
+Die einzelnen Stationen sind getagged, d.h. den obigen Stand erhält man mit:
+```
+$ git checkout tags/v1
+Note: checking out 'tags/v1'.
+....
+HEAD is now at 456090f... moved to test cmd
+```
 
 ### ... Serverspec-Basis dazugeben ...
-
-  - `Wiederverwendung der Specs bedeutet aber eigentlich das man ein Git Submodule einbinden müsste`
-
 
 Die VM können wir mit `vagrant up` starten, wir sind aber noch nicht so richtig weit gekommen. Um unsere
 Installation testbar zu machen, benötigen wir serverspec. Es gibt ein Vagrant-Plugin für
@@ -138,7 +138,6 @@ rake spec
 EOS
 ```
 (Git-Tag v2)
-
 
 Die Vagrant VM muss wg. des Mounts neu gestartet und provisioniert werden:
 
@@ -480,10 +479,13 @@ end
 Damit kann man serverspec bei der Arbeit zusehen, allerdings kann die Ausgabe mit steigendem Umfang
 der Spec auch recht lang werden. Zu Debugging-Zwecken lohnt es sich allerdings sehr.
 
-Wir können jetzt damit weitermachen, die Spezifikation wasserdicht zu machen, und alle
+Wir können jetzt damit fortfahren, die Spezifikation wasserdicht zu machen, und alle
 Einstellungen, die wir über das Puppet-Modul in die Docker-Konfiguration einbringen können,
 auch abzutesten. Das werden wir nicht im Detail erläutern, wer mag, checkt sich den Master-Branch
 aus und schaut sich die Specs an.
+
+Am Ende haben wir die Basis für eine vollautomatische und nachvollziehbare Installation eines
+Docker-Hosts.
 
 --
 Andreas
