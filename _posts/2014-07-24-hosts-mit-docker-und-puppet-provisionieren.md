@@ -2,7 +2,7 @@
 layout: post
 title: "Docker-Hosts mit Puppet provisionieren und testen"
 modified: 2014-07-24 20:33:04 +0200
-tags: [draft,tech,docker,vagrant,puppet,serverspec,andreasschmidt,peterrossbach ]
+tags: [tech,docker,vagrant,puppet,serverspec,andreasschmidt,peterrossbach ]
 category: docker
 links:
   - Backends für die Entwicklung mit Vagrant und Docker starten: http://maori.geek.nz/post/vagrant_with_docker_how_to_set_up_postgres_elasticsearch_and_redis_on_mac_os_x
@@ -85,7 +85,7 @@ der eigenen Plattform haben möchte.
 
 Vagrant.configure("2") do |config|
   config.vm.box = "trusty64"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/20140723/   /trusty-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/20140723/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.define "docker-test1", primary: true do |s|
   end
