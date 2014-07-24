@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Docker-Hosts mit Puppet provisionieren und testen"
-modified: 2014-07-03 20:33:04 +0200
-tags: [draft, tech,docker,andreasschmidt ]
+modified: 2014-07-24 20:33:04 +0200
+tags: [draft,tech,docker,vagrant,puppet,serverspec,andreasschmidt,peterrossbach ]
 category: docker
 links:
   - Backends für die Entwicklung mit Vagrant und Docker starten: http://maori.geek.nz/post/vagrant_with_docker_how_to_set_up_postgres_elasticsearch_and_redis_on_mac_os_x
@@ -10,8 +10,8 @@ links:
   - Vagrant Docker Provider: https://docs.vagrantup.com/v2/docker/basics.html
   - PuppetForge Docker Modul: https://forge.puppetlabs.com/garethr/docker
   - Puppet: https://www.puppetlabs.com/
-  - Salt: http://www.saltstack.com/
-  - Ansible: http://www.ansible.com/home
+  - SaltStack: http://www.saltstack.com/
+  - Ansible: http://www.ansible.com/
   - Chef: http://www.getchef.com/
   - Packer: http://www.packer.io/
 keywords:
@@ -26,13 +26,12 @@ recht einfach, so hat man schnell eine Spielwiese erstellt, um die Funktionalit�
 ausprobieren zu können. Aber spätestens wenn Docker-Container im Test- oder Produktionssystem live gestellt werden sollen,
 stellt sich die Frage nach dem reproduzierbaren Aufsetzen eines Docker-Hosts.
 
-Da wir für dieses Beispiel gar nicht so viele Dinge zu installieren bzw. konfigurieren zu
-haben, ist ein leichtgewichtiges Tool wie z.B. Ansible oder Salt naheliegend. Viele Unternehmen
-setzen allerdings seit einiger Zeit auf Puppet, das allgemein bekannt sein dürfte.
+Da wir für dieses Beispiel gar nicht so viele Dinge zu installieren, bzw. konfigurieren haben, ist ein leichtgewichtiges Tool wie z.B. [Ansible](http://www.ansible.com) oder [SaltStack](http://www.saltstack.com/) naheliegend. Viele Unternehmen
+setzen allerdings seit geraumer Zeit auf [Puppet](https://www.puppetlabs.com/), das allgemein bekannt sein dürfte.
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
 mit Puppet auf. Um die Installation testbar zu bekommen, empfiehlt
-sich der Einsatz von [serverspec](http://www.serverspec.org).
+sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unsere [Einführungs Post](2014-04-25-serverspec-server-spezifizieren-und-testen.md) dazu hier kurz lesen.
 
 
 ## Vagrant/Docker-Provisioner
@@ -115,7 +114,7 @@ Vagrant und dem Plugin noch nicht ideal. Außerdem möchten wir Serverspec-Spezi
 auch später ohne Vagrant weiterverwenden können. Von daher installieren wir mit einem
 Shell Provisioner Serverspec plus Abhängigkeiten und gehen davon aus, dass wir unsere Specs
 über eine Synced-Folder in die VM reinreichen. Bei den gems geben wir zumindest
-für serverspec, specinfra, rspec und rake feste Versionen an.
+für serverspec, specinfra, rspec und rake feste Versionen an. Die beiden Projekte serverspec und specinfra sind aktuell sehr in der Entwicklung, also aufgepasst mit der Repoduzierbarkeit!
 
 ```bash
 $ mkdir spec.d
@@ -331,7 +330,7 @@ Failed examples:
 
 ### ... und Docker über Puppet installieren lassen
 
-Im Serverspec-Teil sind allerdings die 4 Examples für Puppet grün, nur die Docker-Examples
+Im Serverspec-Teil sind allerdings die vier `Examples` für Puppet grün, nur die Docker-Examples
 sind rot. Also müssen wir jetzt Docker installieren. Dazu bauen wir ein Puppet-Modul,
 welches über den Puppet-Provisioner in Vagrant ausgerollt wird. Erst einmal eine leere Hülle:
 
@@ -461,22 +460,22 @@ installiert wird:
 
 ### Fertig!
 
-9 Examples, 0 Failures: geschafft. Wir haben jetzt eine virtuelle Maschine, die
+`9 Examples, 0 Failures`: geschafft. Wir haben jetzt eine virtuelle Maschine, die
 
- * Puppet und das Docker-Modul beinhaltet,
- * ein lauffähigen Docker-Server über Puppet installiert hat und
- * das ganze mit Hilfe von Serverspec testbar macht.
+  - Puppet und das Docker-Modul beinhaltet,
+  - ein lauffähigen Docker-Server über Puppet installiert hat und
+  - das ganze mit Hilfe von Serverspec testbar macht.
 
-Wenn man die Serverspec-Ausgabe detailliert mitverfolgen möchte, hilft ein --format-Eintrag im
-Rakefile:
+Wenn man die Serverspec-Ausgabe detailliert mitverfolgen möchte, hilft ein `--format`-Eintrag im
+`Rakefile`:
 
-```
+```bash
 $ vi spec.d/Rakefile
 RSpec::Core::RakeTask.new(:spec) do |t|
- t.pattern = 'spec/*/*_spec.rb'
- t.rspec_opts = '--format documentation'
+  t.pattern = 'spec/*/*_spec.rb'
+  t.rspec_opts = '--format documentation'
 end
-````
+```
 
 Damit kann man serverspec bei der Arbeit zusehen, allerdings kann die Ausgabe mit steigendem Umfang
 der Spec auch recht lang werden. Zu Debugging-Zwecken lohnt es sich allerdings sehr.
@@ -490,4 +489,4 @@ Am Ende haben wir die Basis für eine vollautomatische und nachvollziehbare Inst
 Docker-Hosts.
 
 --
-Andreas
+Andreas & Peter
