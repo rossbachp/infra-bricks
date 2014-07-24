@@ -31,7 +31,11 @@ setzen allerdings seit geraumer Zeit auf [Puppet](https://www.puppetlabs.com/), 
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
 mit Puppet auf. Um die Installation testbar zu bekommen, empfiehlt
+<<<<<<< HEAD:_drafts/hosts-mit-docker-und-puppet-provisionieren.md
+sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unseren [Einführungs- Post](2014-04-25-serverspec-server-spezifizieren-und-testen.md) dazu kurz lesen.
+=======
 sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unsere [Einführungs Post](http://www.infrabricks.de/blog/2014/04/25/serverspec-server-spezifizieren-und-testen/) dazu hier kurz lesen.
+>>>>>>> 5e5297c3ca7a484d46993998d7c958f8acef6456:_posts/2014-07-24-hosts-mit-docker-und-puppet-provisionieren.md
 
 
 ## Vagrant/Docker-Provisioner
@@ -81,7 +85,7 @@ der eigenen Plattform haben möchte.
 
 Vagrant.configure("2") do |config|
   config.vm.box = "trusty64"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/20140723/   /trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.define "docker-test1", primary: true do |s|
   end
