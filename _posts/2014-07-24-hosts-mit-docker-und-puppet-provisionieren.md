@@ -31,7 +31,11 @@ setzen allerdings seit geraumer Zeit auf [Puppet](https://www.puppetlabs.com/), 
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
 mit Puppet auf. Um die Installation testbar zu bekommen, empfiehlt
+<<<<<<< HEAD:_drafts/hosts-mit-docker-und-puppet-provisionieren.md
 sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unseren [Einführungs- Post](2014-04-25-serverspec-server-spezifizieren-und-testen.md) dazu kurz lesen.
+=======
+sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unsere [Einführungs Post](http://www.infrabricks.de/blog/2014/04/25/serverspec-server-spezifizieren-und-testen/) dazu hier kurz lesen.
+>>>>>>> 5e5297c3ca7a484d46993998d7c958f8acef6456:_posts/2014-07-24-hosts-mit-docker-und-puppet-provisionieren.md
 
 
 ## Vagrant/Docker-Provisioner
@@ -384,7 +388,7 @@ $ vagrant provision
 ```
 (Git-Tag v6)
 
-Damit fehlt jetzt "nur" noch das was eigentlich wollten, nämlich Docker zu installieren :-)
+Damit fehlt jetzt "nur" noch das was eigentlich wollten, nämlich Docker auch zu installieren :-)
 Das geht mit dem Modul aus der Puppetforge sehr einfach. Wir implementieren ein Modul,
 bestehend aus Subklassen install, run in eigenen .pp-Dateien
 und der Abhängigkeit. Im install-Bereich kommt die Docker-Klasse ins Spiel, wo
