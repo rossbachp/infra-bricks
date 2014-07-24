@@ -31,7 +31,7 @@ setzen allerdings seit geraumer Zeit auf [Puppet](https://www.puppetlabs.com/), 
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
 mit Puppet auf. Um die Installation testbar zu bekommen, empfiehlt
-sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unsere [Einführungs Post](2014-04-25-serverspec-server-spezifizieren-und-testen.md) dazu hier kurz lesen.
+sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unseren [Einführungs- Post](2014-04-25-serverspec-server-spezifizieren-und-testen.md) dazu kurz lesen.
 
 
 ## Vagrant/Docker-Provisioner
@@ -81,7 +81,7 @@ der eigenen Plattform haben möchte.
 
 Vagrant.configure("2") do |config|
   config.vm.box = "trusty64"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/20140723/   /trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.define "docker-test1", primary: true do |s|
   end
