@@ -32,7 +32,7 @@ setzen allerdings seit geraumer Zeit auf [Puppet](https://www.puppetlabs.com/), 
 
 Um die Hürde nicht zu hoch zu legen und zuviel Veränderung auf einmal anzubringen, bauen wir dieses Beispiel
 mit Puppet auf. Um die Installation testbar zu bekommen, empfiehlt
-sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unseren [Einführungs- Post](_posts/2014-07-24-hosts-mit-docker-und-puppet-provisionieren.md) dazu kurz lesen.
+sich der Einsatz von [serverspec](http://www.serverspec.org). Wer noch nicht so vertraut mit ServerSpec ist, sollte unseren [Einführungs- Post](http://www.infrabricks.de/blog/2014/04/25/serverspec-server-spezifizieren-und-testen/) dazu kurz lesen.
 
 ## Vagrant/Docker-Provisioner
 
