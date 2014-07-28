@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Docker entschlüsselt: Netzwerk-Teil 2"
-modified: 2014-06-26 15:33:08 +0200
+modified: 2014-07-11 15:33:08 +0200
 tags: [draft, docker, network, pipework, andreasschmidt ]
 category: docker
 links:
