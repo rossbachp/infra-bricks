@@ -14,6 +14,7 @@ links:
   - Ansible: http://www.ansible.com/
   - Chef: http://www.getchef.com/
   - Packer: http://www.packer.io/
+  - Puppet & Docker Webinar: https://cc.readytalk.com/cc/s/registrations/new?cid=dfv2fhe1mhpn
 keywords:
   - docker
   - serverspec
