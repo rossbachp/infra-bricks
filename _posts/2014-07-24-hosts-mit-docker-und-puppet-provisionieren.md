@@ -481,12 +481,9 @@ Damit kann man serverspec bei der Arbeit zusehen, allerdings kann die Ausgabe mi
 der Spec auch recht lang werden. Zu Debugging-Zwecken lohnt es sich allerdings sehr.
 
 Wir können jetzt damit fortfahren, die Spezifikation wasserdicht zu machen, und alle
-Einstellungen, die wir über das Puppet-Modul in die Docker-Konfiguration einbringen können,
-auch abzutesten. Das werden wir nicht im Detail erläutern, wer mag, checkt sich den Master-Branch
-aus und schaut sich die Specs an.
+Einstellungen, die wir über das Puppet-Modul in die Docker-Konfiguration einbringen können, auch abzutesten. Das werden wir nicht im Detail erläutern, wer mag, checkt sich den Master-Branch aus und schaut sich die Specs an.
 
-Am Ende haben wir die Basis für eine vollautomatische und nachvollziehbare Installation eines
-Docker-Hosts.
+Am Ende haben wir die Basis für eine vollautomatische und nachvollziehbare Installation eines Docker-Hosts.  
 
 --
 Andreas & Peter
