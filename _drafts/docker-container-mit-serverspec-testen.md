@@ -268,15 +268,19 @@ abgelaufenen Container, da er nach Beendigung des Serverspec-Prüfkommandos (nat
 gestoppt ist.
 
 Vorteile:
-* Man muss serverspec im Container nicht installieren, es reicht die Installation
+
+  * Man muss serverspec im Container nicht installieren, es reicht die Installation
 auf dem Host
 
+
 Nachteile:
-* Das Setzen der Container-ID im spec_helper ist in der Form unschön, d.h. man
+
+  * Das Setzen der Container-ID im spec_helper ist in der Form unschön, d.h. man
 benötigt weiteren Code um z.B. Ziel-Images abzufragen oder als Parameter entgegen
 zu nehmen.
-* Es lassen sich wieder nur statische Aspekte prüfen, da der eigentliche Zielprozess
+  * Es lassen sich wieder nur statische Aspekte prüfen, da der eigentliche Zielprozess
 nicht ausgeführt, sondern durch serverspec ersetzt wird.
+
 
 **Fazit**: Schon besser, da der Container so ohne Serverspec-Overhead auskommt.
 Aber es lässt sich immer noch kein laufender Service prüfen.
@@ -373,12 +377,16 @@ $ sudo nsenter --target $PID --mount --uts --ipc --net --pid -- /bin/bash -c 'cd
 ```
 
 Vorteile:
-* Dynamische Aspekte sind in der Spec nun auch prüfbar, da man sich zur Laufzeit auf
+
+  * Dynamische Aspekte sind in der Spec nun auch prüfbar, da man sich zur Laufzeit auf
 einen Container aufschalten kann.
 
+
 Nachteile:
-* Die Installation von nsenter wird notwendig.
-* Serverspec muss im Container installiert sein.
+
+  * Die Installation von nsenter wird notwendig.
+  * Serverspec muss im Container installiert sein.
+
 
 **Fazit**: Hier ergeben sich noch nicht soviele Vorteile gegenüber der Variante mit
 dem Docker-Backend in Serverspec.
@@ -484,7 +492,7 @@ Select number: 2
  + Rakefile
  ```
 
- Zu testzwecken wird die Spezifikation verkleinert:
+ Zu Testzwecken wird die Spezifikation verkleinert:
 
  ```bash
   $ vim spec/localhost/httpd_spec.rb
@@ -579,17 +587,23 @@ Finished in 0.05324 seconds
 ```
 
 Vorteile:
-* Wenn nsenter als Backend in Serverspec integriert wäre, könnte man so sehr einfach
+
+  * Wenn nsenter als Backend in Serverspec integriert wäre, könnte man so sehr einfach
 laufende Container testen, d.h. mit allen statischen und dynamischen Aspekten
-* serverspec muss nicht im Container installiert sein, es reicht wenn die Prüfkommandos
+  * serverspec muss nicht im Container installiert sein, es reicht wenn die Prüfkommandos
 im Container funktionieren.
 
 Nachteile:
-* Der Aufruf von serverspec klappt nur noch als Root bzw. mit sudo-Rechte auf nsenter.
-* Es wird nsenter als zusätzliches Paket auf dem Host benötigt.
-* Die Integration der Prozess-PID in spec_helper erfordert noch geeignete Wrapper.
 
-**Fazit**: Whew, what a ride. In a nutshell: Don't try this at home! Der Prototyp
+  * Der Aufruf von serverspec klappt nur noch als Root bzw. mit sudo-Rechte auf nsenter.
+  * Es wird nsenter als zusätzliches Paket auf dem Host benötigt.
+  * Die Integration der Prozess-PID in spec_helper erfordert noch geeignete Wrapper.
+
+
+**Fazit**: _Whew, what a ride. In a nutshell: Don't try this at home!_
+
+
+Der Prototyp
 hat zwar in Bezug auf Ubuntu und den Apache2-Package-Test funktioniert, er besitzt
 aber noch keine Testabdeckung und deckt sicherlich nicht alle Eventualitäten ab.
 Wenn nsenter als regulär installierbares Paket in die Package-Repositories der
