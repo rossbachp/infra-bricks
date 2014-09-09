@@ -2,15 +2,17 @@
 layout: post
 title: "Docker-Container mit Serverspec testen"
 modified: 2014-09-06 20:03:56 +0200
-tags: [draft, docker, tech, serverspec, andreasschmidt ]
+tags: [docker, tech, serverspec, andreasschmidt ]
 category: Docker
 links:
 - http://supervisord.org/: Supervisor, a process control system.
+- https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/: 4 Wege in den Docker Container
+- https://github.com/jpetazzo/nsenter: nsenter als Container
 keywords:
 ---
 
-Nachdem wir vor einiger Zeit [Serverspec](www.serverspec.org) in [Posts](http://www.infrabricks.de/tags.html)
-vorgestellt haben, brauchen wir jetzt natürlich auch noch eine sinnvolle Verbindung
+Nachdem wir in [diversen Posts](http://www.infrabricks.de/tags.html) vor einiger Zeit [Serverspec](www.serverspec.org)
+für Server und VMs vorgestellt haben, brauchen wir jetzt natürlich auch noch eine sinnvolle Verbindung
 zu Docker. Die Frage ist also, wie kann man innerhalb von Containern eine
 Spezifikation prüfen?
 
@@ -26,6 +28,8 @@ VM oder einen Container handelt.
 Das wiederum führt aber zu größeren Umbauarbeiten im Container, da man nun neben
 dem eigentlichen Service, den man laufen lassen möchte, noch einen SSH-Daemon
 benötigt. Es gibt dazu Möglichkeiten, z.B. mit [Supervisor.d](http://supervisord.org/).
+
+![Serverspec über ssh ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_ssh.png)
 
 Letzen Endes muss man an der Stelle aber eigentlich die Grundlagen-Entscheidung
 treffen, wie der eigene Container ausgestaltet sein soll: Als Microservice,
@@ -147,24 +151,30 @@ Finished in 0.32489 seconds
 /usr/bin/ruby1.9.1 -S rspec spec/localhost/httpd_spec.rb failed
 2014/09/06 18:35:10 The command [/bin/sh -c ( cd /opt/spec.d; rake spec )] returned a non-zero code: 1
 ```
-
 Natürlich schlägt das Beispiel fehl, da der Container kein httpd enthält (Das
 ist die Demo-Spezifikation von serverspec-init). Aber man sieht den Aufruf.
+In der Übersicht sieht das ganze so aus:
+
+![Serverspec zur Build-Zeit ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_buildtime.png)
 
 Vorteile:
-* Man muss nichts an serverspec ändern, außer es im Container zu installieren.
-* Es passt zum Ablauf in Build-Chains: Beim Bau des Containers wird eine Spezifikation
+
+  * Man muss nichts an serverspec ändern, außer es im Container zu installieren.
+  * Es passt zum Ablauf in Build-Chains: Beim Bau des Containers wird eine Spezifikation
 geprüft. Das Ergebnis kann von außen nachgeschaut werden, bei Failures stoppt die
 Build-Chain.
-* Bei aufeinander aufbauenden Images (z.B. FROM my-tomcat-image:latest) kann
-man den darunterliegenden Containerinhalt prüfen, wenn man sich nicht darauf
+  * Bei aufeinander aufbauenden Images (z.B. FROM my-tomcat-image:latest) kann
+man den darunterliegenden Containerinhalt auf Korrektheit prüfen, wenn man sich nicht darauf
 verlassen möchte.
 
 Nachteile:
-* Man muss serverspec (und Abhängigkeiten, inkl. ruby) im Container installieren.
-* Man kann nur statische Aspekte der Betriebssystem-Installation prüfen (z.B.
+
+  * Man muss serverspec (und Abhängigkeiten, inkl. ruby) im Container installieren, obwohl
+man es zur Laufzeit nicht mehr braucht. D.h. eigentlich sollten die Pakete nach
+erfolgreichem Spec-Lauf wieder deinstalliert werden (inkl. Squashen des Images)
+  * Man kann nur statische Aspekte der Betriebssystem-Installation prüfen (z.B.
 Files, Verzeichnisstrukturen, Pakete, Kernel-Settings).
-* Dynamische Aspekte des Service (z.B. läuft der Service, horcht der Port, ...)
+  * Dynamische Aspekte des Service (z.B. läuft der Service, horcht der Port, ...)
 können nicht getestet werden, da der Zielprozess ja noch gar nicht läuft.
 
 **Fazit**: Wem es reicht, innerhalb der Buildchain statische Aspekte seines
@@ -208,8 +218,8 @@ Installing RDoc documentation for archive-tar-minitar-0.5.2...
 Installing RDoc documentation for docker-api-1.13.2...
 ```
 
-Dann muss Serverspec mitgeteilt werden, das statt SSH ein Docker-Container
-geprüft wird, von auch, welcher Container es sein soll. Das ganze spielt sich
+Dann muss Serverspec mitgeteilt werden, dass statt SSH ein Docker-Container
+geprüft wird, und auch, welcher Container es sein soll. Das ganze spielt sich
 im File `spec_helper.rb` ab:
 
 ```ruby
@@ -217,11 +227,13 @@ require 'serverspec'
 
 # - - - - - Docker einbauen (statt Exec-Helper)- - - - -
 include SpecInfra::Helper::Docker
+# - - - - - Docker einbauen (statt Exec-Helper)- - - - -
 include SpecInfra::Helper::DetectOS
 
 RSpec.configure do |c|
   # - - - - - Image setzen - - - - -
   c.docker_image = '9590610349ba'
+  # - - - - - Image setzen - - - - -
 
   if ENV['ASK_SUDO_PASSWORD']
     require 'highline/import'
@@ -270,26 +282,25 @@ gestoppt ist.
 Vorteile:
 
   * Man muss serverspec im Container nicht installieren, es reicht die Installation
-auf dem Host
-
+auf dem Host.
 
 Nachteile:
 
-  * Das Setzen der Container-ID im spec_helper ist in der Form unschön, d.h. man
+  * Das Setzen der Container-ID im spec_helper ist in dieser Form unschön, d.h. man
 benötigt weiteren Code um z.B. Ziel-Images abzufragen oder als Parameter entgegen
 zu nehmen.
   * Es lassen sich wieder nur statische Aspekte prüfen, da der eigentliche Zielprozess
 nicht ausgeführt, sondern durch serverspec ersetzt wird.
-
 
 **Fazit**: Schon besser, da der Container so ohne Serverspec-Overhead auskommt.
 Aber es lässt sich immer noch kein laufender Service prüfen.
 
 ## nsenter
 
-Die nächste Stufe besteht darin, in einen laufenden Container reinzuschauen und
-dabei die Spec auszuführen. Hierbei hilft [nsenter](http://man7.org/linux/man-pages/man1/nsenter.1.html).
+Die nächste Stufe besteht darin, in einen laufenden Container hineinzuschauen und
+dabei die Spec auszuführen.
 
+Hierbei hilft [nsenter](http://man7.org/linux/man-pages/man1/nsenter.1.html).
 Die Installation ist im [Blogeintrag von Lukas Pustina](https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/)
 sehr schön beschrieben. nsenter liegt auch als [Docker-Container](https://github.com/jpetazzo/nsenter) von
 @jpetazzo vor. Wir wählen die manuelle Installationsvariante:
@@ -306,13 +317,15 @@ Eine genaue Beschreibung von nsenter führt an der Stelle zu weit, dafür sei
 auf die Blogeinträge verwiesen. In a nutshell: nsenter startet einen neuen Prozess
 und setzt ihn in die Namespaces eines existierenden Containers.
 
-Wir starten einen Container und ermitteln seine Prozess-ID:
+Wir starten einen Container und ermitteln seine Prozess-ID (vorsicht: Die
+Spaces zwischen den geschwungenen Klammern bei .State.Pid gehören da nicht hin,
+aber ohne Space werden sie vom Markup verschluckt.):
 
 ```bash
 $ docker run -tdi ubuntu:14.04
 2c67dc16c6f0c1d90e53f5836b7c1de461578b63f903fd4454fafb32b02706f8
 
-$ PID=$(docker inspect --format '{{.State.Pid}}' 2c67dc16c6f0c1d90e53f5836b7c1de461578b63f903fd4454fafb32b02706f8)
+$ PID=$(docker inspect --format ' { { .State.Pid }} ' 2c67dc16c6f0c1d90e53f5836b7c1de461578b63f903fd4454fafb32b02706f8)
 $ echo $PID
 9452
 ```
@@ -334,7 +347,7 @@ PID 29=über nsenter gestartetes /bin/sh).
 
 Nun könnte man serverspec ausführen, wenn es vorhanden wäre. Leider hat die neue Shell
 den Mount-Namespace des Containers geerbt, und damit nur Zugriff auf das Dateisystem
-innerhalb Containers (und serverspec liegt außerhalb).
+innerhalb Containers (... und serverspec liegt außerhalb).
 
 Um dennoch etwas testen zu können, verwenden wir das gebaute Image aus dem ersten Beispiel,
 in dem ruby und serverspec installiert wurde (ID bei mir 9590610349ba).
@@ -342,7 +355,7 @@ in dem ruby und serverspec installiert wurde (ID bei mir 9590610349ba).
 ```bash
 $ docker run -tdi 9590610349ba
 c84aaa2adeadda9f1ea1fe080110e25b5d68b151aadbe4706ad0538208d82cc9
-$ PID=$(docker inspect --format '{{.State.Pid}}' c84aaa)
+$ PID=$(docker inspect --format ' { {.State.Pid }} ' c84aaa)
 $ echo $PID
 9680
 ```
@@ -381,12 +394,10 @@ Vorteile:
   * Dynamische Aspekte sind in der Spec nun auch prüfbar, da man sich zur Laufzeit auf
 einen Container aufschalten kann.
 
-
 Nachteile:
 
   * Die Installation von nsenter wird notwendig.
   * Serverspec muss im Container installiert sein.
-
 
 **Fazit**: Hier ergeben sich noch nicht soviele Vorteile gegenüber der Variante mit
 dem Docker-Backend in Serverspec.
@@ -397,6 +408,12 @@ dem Docker-Backend in Serverspec.
 Jetzt bleibt noch die Möglichkeit, nsenter in serverspec (bzw. SpecInfra)
 als Backend zu integrieren. Serverspec unterstützt das aktuell noch nicht, wir
 probieren es als Prototyp.
+
+![Serverspec-Kommandos über nsenter ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_nsenter.png)
+
+Dabei wird eine neue Backend-Klasse "Nsenter" implementiert
+und registriert. Sie erhält einen Parameter, die "nsenter_pid", damit das Backend
+weiss, wo der Container liegt.
 
 ```bash
 $ cd
@@ -418,7 +435,6 @@ require 'specinfra/backend/nsenter'
 $ vim helper/backend.rb
 
 ... den typ 'Nsenter' einfügen ...
-
 
 module SpecInfra
   module Helper
@@ -442,6 +458,7 @@ module SpecInfra
 $ curl https://gist.githubusercontent.com/aschmidt75/bb38d971e4f47172e2de/raw/350f9419159ffba282496f90232110e06b77cf69/specinfra_nsenter_prototype >backend/nsenter.rb
 
 # das neue gem muss gebaut werden, der falsche wercker.yml link stört.
+$ cd ../..
 $ rm wercker.yml
 $ touch wercker.yml
 
@@ -449,7 +466,7 @@ $ touch wercker.yml
 # im lokalen Repository
 
 $ git add .
-$ git commit -m "added nsenter"
+$ git commit -m "added nsenter backend"
 
 # das wird gebaut und installiert.
 $ gem build specinfra.gemspec --force
@@ -509,7 +526,7 @@ Ein Image wird gestartet, wir brauchen die PID:
 ```bash
 $ docker run -tdi ubuntu:14.04
 9367d023570d4670ca1d12aa431bb826a131a1dcc0b02797a90372489d7927a6
-vagrant@docker-workshop:~/nsenter-proto$ docker inspect -f '{{ .State.Pid }}' 9367d0
+vagrant@docker-workshop:~/nsenter-proto$ docker inspect -f '{ { .State.Pid }}' 9367d0
 15344
 ```
 
@@ -528,8 +545,8 @@ include Serverspec::Helper::Debian
 
 RSpec.configure do |c|
 
-  # - - - - - PID für NSENTER - - - - -
-  c.nsenter_pid = 15344
+  # - - - - - PID für NSENTER aus Environment - - - - -
+  c.nsenter_pid = ENV['NSENTER_PID']
 
   if ENV['ASK_SUDO_PASSWORD']
 
@@ -538,8 +555,7 @@ RSpec.configure do |c|
 Der spannende Moment beginnt:
 
 ```bash
-$ rake spec
-$ rake spec
+$ NSENTER_PID=15344 rake spec
 /usr/bin/ruby1.9.1 -S rspec spec/localhost/httpd_spec.rb
 nsenter_exec! sudo dpkg-query -f '${Status}' -W apache2 | grep -E '^(install|hold) ok installed$'
 F
@@ -557,7 +573,7 @@ Finished in 0.02865 seconds
 1 example, 1 failure
 ```
 
-Der Debug-Aufruf "nsenter_exec!" zeigt, dass das neue nsenter-Backend aufgerufen
+Die Debug-Ausgabe "nsenter_exec!" zeigt, dass das neue nsenter-Backend aufgerufen
 wird. Die spec liefert natürlich Fehler, weil der Apache nicht installiert ist.
 
 Wir attachen uns in den laufenden Container und installieren es nach:
@@ -577,7 +593,7 @@ Preconfiguring packages ...
 Und die Spec erneut ausführen:
 
 ```bash
-$ rake spec
+$ NSENTER_PID=15344 rake spec
 /usr/bin/ruby1.9.1 -S rspec spec/localhost/httpd_spec.rb
 nsenter_exec! sudo dpkg-query -f '${Status}' -W apache2 | grep -E '^(install|hold) ok installed$'
 .
@@ -586,10 +602,12 @@ Finished in 0.05324 seconds
 1 example, 0 failures
 ```
 
+Das hat funktioniert.
+
 Vorteile:
 
   * Wenn nsenter als Backend in Serverspec integriert wäre, könnte man so sehr einfach
-laufende Container testen, d.h. mit allen statischen und dynamischen Aspekten
+laufende Container testen, d.h. mit allen statischen und dynamischen Aspekten.
   * serverspec muss nicht im Container installiert sein, es reicht wenn die Prüfkommandos
 im Container funktionieren.
 
@@ -602,13 +620,24 @@ Nachteile:
 
 **Fazit**: _Whew, what a ride. In a nutshell: Don't try this at home!_
 
-
 Der Prototyp
 hat zwar in Bezug auf Ubuntu und den Apache2-Package-Test funktioniert, er besitzt
 aber noch keine Testabdeckung und deckt sicherlich nicht alle Eventualitäten ab.
 Wenn nsenter als regulär installierbares Paket in die Package-Repositories der
 Distributionen aufgenommen wird und Serverspec ggf. ab Version 2.X ein nsenter-backend
 mitbringt, kann das ein sinnvoller Weg sein, um Container zu testen.
+
+## Testbarkeit: Gegeben!
+
+ Insgesamt sieht die Testbarkeit von Container-Images über serverspec gar nicht schlecht aus.
+
+  * Zumindest die statischen Aspekte lassen sich über den Ansatz im Dockfile und mit dem
+Docker-Backend von serverspec gut abtesten.
+  * Wer Container als VM-Ersatz betreibt, hat in der Regel volle Testbarkeit über den SSH-Zugang.
+  * Sobald die Entwicklung um nsenter fortgeschritten ist lässt sich die volle Testbarkeit
+sicherlich auch für den Microservice-Container-Ansatz erreichen.
+
+Viel Spaß beim Ausprobieren!
 
 --
 Andreas
