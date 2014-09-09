@@ -9,6 +9,10 @@ links:
 - https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/: 4 Wege in den Docker Container
 - https://github.com/jpetazzo/nsenter: nsenter als Container
 keywords:
+- testing
+- nsenter
+- docker
+- serverspec
 ---
 
 Nachdem wir in [diversen Posts](http://www.infrabricks.de/tags.html) vor einiger Zeit [Serverspec](www.serverspec.org)
@@ -16,7 +20,7 @@ für Server und VMs vorgestellt haben, brauchen wir jetzt natürlich auch noch e
 zu Docker. Die Frage ist also, wie kann man innerhalb von Containern eine
 Spezifikation prüfen?
 
-Dazu gibt es (natürlich ...) mehrere Möglichkeiten.
+Dazu gibt es natürlich mehrere Möglichkeiten.
 
 ## SSH
 
@@ -33,8 +37,7 @@ benötigt. Es gibt dazu Möglichkeiten, z.B. mit [Supervisor.d](http://superviso
 
 Letzen Endes muss man an der Stelle aber eigentlich die Grundlagen-Entscheidung
 treffen, wie der eigene Container ausgestaltet sein soll: Als Microservice,
-ausschließlich mit dem Zielprozess, oder als VM-Ersatz (mit mehreren Services,
-dann z.B. auch dem sshd).
+ausschließlich mit dem Zielprozess, oder als VM-Ersatz mit mehreren Services inklusive sshd.
 
 **Fazit**: Falls die Antwort "VM-Ersatz" lautet, stellt der SSH-Zugang für Serverspec die
 einfachste Möglichkeit dar. Falls der Microservice-Ansatz geplant ist, müssen
@@ -45,9 +48,8 @@ wir uns andere Zugangsmöglichkeiten anschauen.
 Man kann den Serverspec-Aufruf natürlich auch zur Build-Zeit in das Dockerfile
 platzieren. Dabei lassen sich die Spezifikationsfiles per "ADD"-Befehl einsetzen,
 über "RUN" wird serverspec dann ausgeführt und schreibt das Ergebnis in eine
-Datei, zur späteren Einsicht. Die Spezifikationsfiles und die Ergebnisdatei
-dürfen auch auf einem Volume liegen, um das ganze z.B. von außen steuern zu
-können.
+Datei, zur späteren Einsicht. Die Spezifikationsdateien und die Ergebnisdatei
+dürfen auch auf einem Docker Volume liegen, um das ganze z.B. von außen steuern zu können.
 
 Am Beispiel:
 
@@ -82,7 +84,7 @@ Select number: 2
 $ vim Dockerfile
 ```
 
-Hier setzen wir ein:
+Hier setzen wir in den `Dockerfile` folgendes ein:
 
 ```
 FROM ubuntu:14.04
@@ -151,8 +153,9 @@ Finished in 0.32489 seconds
 /usr/bin/ruby1.9.1 -S rspec spec/localhost/httpd_spec.rb failed
 2014/09/06 18:35:10 The command [/bin/sh -c ( cd /opt/spec.d; rake spec )] returned a non-zero code: 1
 ```
-Natürlich schlägt das Beispiel fehl, da der Container kein httpd enthält (Das
-ist die Demo-Spezifikation von serverspec-init). Aber man sieht den Aufruf.
+
+Natürlich schlägt das Beispiel des Serverspec Generators fehl, da der Container kein httpd enthält. Das
+ist die Demo-Spezifikation von serverspec-init, aber man sieht den Aufruf.
 In der Übersicht sieht das ganze so aus:
 
 ![Serverspec zur Build-Zeit ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_buildtime.png)
@@ -163,7 +166,7 @@ Vorteile:
   * Es passt zum Ablauf in Build-Chains: Beim Bau des Containers wird eine Spezifikation
 geprüft. Das Ergebnis kann von außen nachgeschaut werden, bei Failures stoppt die
 Build-Chain.
-  * Bei aufeinander aufbauenden Images (z.B. FROM my-tomcat-image:latest) kann
+  * Bei aufeinander aufbauenden Images (z.B. FROM rossbachp/tomcat8:latest) kann
 man den darunterliegenden Containerinhalt auf Korrektheit prüfen, wenn man sich nicht darauf
 verlassen möchte.
 
@@ -171,14 +174,14 @@ Nachteile:
 
   * Man muss serverspec (und Abhängigkeiten, inkl. ruby) im Container installieren, obwohl
 man es zur Laufzeit nicht mehr braucht. D.h. eigentlich sollten die Pakete nach
-erfolgreichem Spec-Lauf wieder deinstalliert werden (inkl. Squashen des Images)
-  * Man kann nur statische Aspekte der Betriebssystem-Installation prüfen (z.B.
-Files, Verzeichnisstrukturen, Pakete, Kernel-Settings).
-  * Dynamische Aspekte des Service (z.B. läuft der Service, horcht der Port, ...)
+erfolgreichem Spec-Lauf wieder deinstalliert werden, inkl. eine squashen des Docker Images.
+  * Man kann nur statische Aspekte der Betriebssystem-Installation prüfen, z.B.
+Dateien, Verzeichnisstrukturen, Pakete, Kernel-Einstellungen.
+  * Dynamische Aspekte des Service, z.B. läuft der Service, horcht der Port, usw.
 können nicht getestet werden, da der Zielprozess ja noch gar nicht läuft.
 
 **Fazit**: Wem es reicht, innerhalb der Buildchain statische Aspekte seines
-Containers zu prüfen, ist hiermit gut bedient.
+Docker Containers zu prüfen, ist hiermit gut bedient.
 
 
 ## Mit serverspec und dem Docker-Backend
@@ -220,7 +223,7 @@ Installing RDoc documentation for docker-api-1.13.2...
 
 Dann muss Serverspec mitgeteilt werden, dass statt SSH ein Docker-Container
 geprüft wird, und auch, welcher Container es sein soll. Das ganze spielt sich
-im File `spec_helper.rb` ab:
+in der Datei `spec_helper.rb` ab:
 
 ```ruby
 require 'serverspec'
@@ -286,7 +289,7 @@ auf dem Host.
 
 Nachteile:
 
-  * Das Setzen der Container-ID im spec_helper ist in dieser Form unschön, d.h. man
+  * Das Setzen der Container-ID im `spec_helper` ist in dieser Form unschön, d.h. man
 benötigt weiteren Code um z.B. Ziel-Images abzufragen oder als Parameter entgegen
 zu nehmen.
   * Es lassen sich wieder nur statische Aspekte prüfen, da der eigentliche Zielprozess
@@ -317,9 +320,11 @@ Eine genaue Beschreibung von nsenter führt an der Stelle zu weit, dafür sei
 auf die Blogeinträge verwiesen. In a nutshell: nsenter startet einen neuen Prozess
 und setzt ihn in die Namespaces eines existierenden Containers.
 
-Wir starten einen Container und ermitteln seine Prozess-ID (vorsicht: Die
-Spaces zwischen den geschwungenen Klammern bei .State.Pid gehören da nicht hin,
-aber ohne Space werden sie vom Markup verschluckt.):
+Wir starten einen Container und ermitteln seine Prozess-ID.
+
+**Vorsicht**: Die
+Spaces zwischen den geschwungenen Klammern bei `.State.Pid` gehören da nicht hin,
+aber ohne Space werden sie vom Markup verschluckt.:
 
 ```bash
 $ docker run -tdi ubuntu:14.04
@@ -411,8 +416,8 @@ probieren es als Prototyp.
 
 ![Serverspec-Kommandos über nsenter ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_nsenter.png)
 
-Dabei wird eine neue Backend-Klasse "Nsenter" implementiert
-und registriert. Sie erhält einen Parameter, die "nsenter_pid", damit das Backend
+Dabei wird eine neue Backend-Klasse `Nsenter` implementiert
+und registriert. Sie erhält einen Parameter, die `nsenter_pid`, damit das Backend
 weiss, wo der Container liegt.
 
 ```bash
@@ -482,7 +487,7 @@ Installing ri documentation for specinfra-1.27.0...
 Installing RDoc documentation for specinfra-1.27.0...
 ```
 
-Dazu erstellen wir eine kleine Spezifikation und starten ein Image:
+Dazu erstellen wir eine kleine Spezifikation und starten ein Docker-Image:
 
 ```bash
 $ cd
@@ -608,14 +613,14 @@ Vorteile:
 
   * Wenn nsenter als Backend in Serverspec integriert wäre, könnte man so sehr einfach
 laufende Container testen, d.h. mit allen statischen und dynamischen Aspekten.
-  * serverspec muss nicht im Container installiert sein, es reicht wenn die Prüfkommandos
+  * `serverspec` muss nicht im Container installiert sein, es reicht wenn die Prüfkommandos
 im Container funktionieren.
 
 Nachteile:
 
-  * Der Aufruf von serverspec klappt nur noch als Root bzw. mit sudo-Rechte auf nsenter.
-  * Es wird nsenter als zusätzliches Paket auf dem Host benötigt.
-  * Die Integration der Prozess-PID in spec_helper erfordert noch geeignete Wrapper.
+  * Der Aufruf von `serverspec` klappt nur noch als Root bzw. mit sudo-Rechte auf `nsenter`.
+  * Es wird `nsenter` als zusätzliches Paket auf dem Host benötigt.
+  * Die Integration der Prozess-PID in `spec_helper` erfordert noch geeignete Wrapper.
 
 
 **Fazit**: _Whew, what a ride. In a nutshell: Don't try this at home!_
@@ -640,4 +645,4 @@ sicherlich auch für den Microservice-Container-Ansatz erreichen.
 Viel Spaß beim Ausprobieren!
 
 --
-Andreas
+Andreas & Peter
