@@ -186,7 +186,7 @@ Docker Containers zu prüfen, ist hiermit gut bedient.
 
 ## Mit serverspec und dem Docker-Backend
 
-Serverspec (bzw. SpecInfra) besitzt in seiner Architektur einen _Backend_-Teil.
+Serverspec (bzw. SpecInfra) besitzt in seiner Architektur einen Backend-Teil.
 In diesem Backend wird unterschieden, wie die Spec-Kommandos auf dem Ziel
 ausgeführt werden soll (Beispiel: SSH). Seit SpecInfra v0.4.0 gibt es ein
 Docker-Backend, das wiederum auf dem `docker-api` gem aufbaut.
@@ -408,7 +408,7 @@ dem Docker-Backend in Serverspec.
 
 ## nsenter + serverspec
 
-Jetzt bleibt noch die Möglichkeit, nsenter in serverspec, genaugenommen im Projeckt specinfra,
+Jetzt bleibt noch die Möglichkeit, nsenter in serverspec, genaugenommen im Projekt specinfra,
 als Backend zu integrieren. Serverspec unterstützt das aktuell noch nicht, wir
 probieren es als Prototyp.
 
