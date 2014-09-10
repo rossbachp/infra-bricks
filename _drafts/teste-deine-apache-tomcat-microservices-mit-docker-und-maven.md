@@ -12,24 +12,30 @@ links:
   - boot2docker-fwd: https://gist.github.com/deinspanjer/9215467
   - simple management docker-maven-plugin: https://github.com/etux/docker-maven-plugin
   - ci with docker: http://www.wouterdanes.net/2014/04/11/continuous-integration-using-docker-maven-and-jenkins.html
+  - Docker Meetup Slides von Roland Huß: http://ro14nd.de/meetup-docker-developer-slides
+  - Fatjar demo: https://github.com/rhuss/docker-fatjar-demo
+  - maven-shade-plugin: http://maven.apache.org/plugins/maven-shade-plugin/
+  - /docker-java: https://github.com/docker-library/docker-java
 keywords:
-  - testing
-  - apache tomcat
+  - maven
+  - integration test
   - docker
+  - apache tomcat
   - jolokia
   - microservice
-  - maven
   - java
 
 ---
+Als Java Entwickler hat man oft mit einer komplexen Infrastruktur zu kämpfen. Nicht immer ist es leicht in allen Umgebung ähnliche Software-Stände vorzuhalten. Die Entwicklung von Microservices wird diese Aufgabe nicht zwangsläufig vereinfachen und leider weitere Integrationstests erfordern. In diesem Blog Post ist beschrieben wie wir Docker-Container mit Maven produzieren und auf einem Docker Host verwalten.
 
-Microservices wirklich selbst entwickeln stellt jeden vor neue Herausforderungen. Nicht nur das wir eine neue kleinere Aufteilung finden müssen, sondern auch das wir die einzelnen Teile fertiger für die Produktion liefern müssen. Das eigene System, das heute in einem Projekt in einem Java-WAR's oder -EAR's geliefert wird, muss sinnvoll geteilt werden. Nicht mehr der Betrieb konfiguriert den JEE-Container und schliesst die Backends an, sondern alles geschieht schon in der Entwicklung. Ein Netz von kooperativen Services entsteht. Jeder Prozess kooperiert mit einer Service Discovery und muss Autoscaling durch entsprechende Loadbalancer und Proxy bereitstellen. Der Microservice Architektur Trend fordert, dass wir in kleineren abgeschlosseneren, kooperativen Containern unsere Anwendungen liefern soll. Alles muss automatisiert, vermessbar und überprüfbar sein. Horror oder Segen liegen da oft nicht weit auseinander. Wenn die Probleme sich türmen ist es ein guter Rat mit weniger Teilen zu beginnen und diese wirklich zu verstehen. In diesem Post wollen wir deshalb einen Rest-Service auf der Basis von Apache Tomcat erstellen und in einem Docker-Container zum laufen bringen.
 
-## Harmonien mit Docker aufspielen
+Wer einen Java-Microservices wirklich selbst entwickeln möchte stellt sich einer neuen Herausforderungen. Nicht nur das wir eine kleinere Aufteilung unsere Software finden müssen, sondern auch das wir die einzelnen Teile fertiger für die Produktion liefern müssen. Das eigene System, das heute in einem Projekt in einem Java-WAR's oder -EAR's geliefert wird, muss sinnvoll geteilt werden und fit für die Produktion sein. Nicht mehr der Betrieb konfiguriert den JEE-Container und schliesst die Backends an, sondern alles geschieht schon in der Entwicklung. Ein Netz von kooperativen Services entsteht. Jeder Prozess kooperiert mit einer Service Discovery und muss Autoscaling durch entsprechende Loadbalancer und Proxy bereitstellen. Der Microservice Architektur Trend fordert, dass wir in kleineren abgeschlosseneren, kooperativen Containern unsere Anwendungen liefern soll. Alles muss automatisiert, vermessbar und überprüfbar sein. Horror oder Segen liegen da oft nicht weit auseinander. Wenn die Probleme sich türmen, ist es ein guter Rat mit weniger Teilen zu beginnen und diese wirklich zu verstehen. In diesem Post wollen wir deshalb einen Rest-Service auf der Basis von Apache Tomcat erstellen und in einem Docker-Container zum laufen bringen.
 
-Damit ein Microservice wirklich durchgängig von der Entwicklung in die Produktion geliefert werden können, muss die Umgebung harmonisiert werden. Exakt gleich ist dabei nicht immer möglich, ähnlich genug reicht oft. [Docker](http://www.docker.io) verspricht hier eine gute Lösung zu sein. Statt alle Systembestandteile in einzelne virtuelle Maschine zu verpacken, werden die Prozesse innerhalb leichtgewichtiger Linux Container gestartet. Die Container selbst werden als aufeinander aufbauende Images, mithilfe eines Image-Repositories verwaltet. Also nicht nur die eigenen Teile, sondern das Betriebssystem und alle Backends werden ebenfalls in solche Images verpackt. Möglich wird dies durch den Einsatz eines *layered Filesystems*, sprich [AUFS](http://aufs.sourceforge.net/). Die Brücke zwischen Entwicklung und Betrieb ist mit Docker also eine Harmonie. Das Docker-Orchester spielt einfach gut zusammen! Alles ist ein Container und kann auf dem lokalem Notebook, den Staging Umgebung, der eigenen Produktion, bei einem Provider oder in der Cloud betrieben werden und zwar mit den selben Binaries! Nur die Konfigurationen unterscheiden sich und das macht Sinn. Die Noten und Instrumente sind die selben, nur den guten Ton muss man noch selber treffen. Verflixt nicht einfach!
+## Harmonien mit Docker erzeugen
 
-### Installation von Docker für die Java Webentwicklung
+Damit ein [Microservice](http://martinfowler.com/articles/microservices.html) wirklich durchgängig von der Entwicklung in die Produktion geliefert werden können, muss die Umgebung harmonisiert werden. Exakt gleich ist dabei nicht immer möglich, ähnlich genug reicht oft. [Docker](http://www.docker.io) verspricht hier eine gute Lösung zu sein. Statt alle Systembestandteile in einzelne virtuelle Maschine zu verpacken, werden die Prozesse innerhalb leichtgewichtiger Linux Container gestartet oder verbunden. Die einzelnen Container werden als aufeinander aufbauende Images, mithilfe eines öffentlichen Hub oder einem privaten Image-Repositories verwaltet. Also nicht nur die eigenen Teile, sondern das Betriebssystem und alle Backends werden ebenfalls in solche Images verpackt. Möglich wird dies durch den Einsatz eines *layered Filesystems*, sprich [Device-Mapper] (http://de.wikipedia.org/wiki/Device_Mapper), [aufs](http://aufs.sourceforge.net/) oder [btrfs](https://btrfs.wiki.kernel.org/index.php/Main_Page). Die Brücke zwischen Entwicklung und Betrieb ist mit Docker also eine Harmonie. Das Docker-Orchester spielt einfach gut zusammen! Alles ist ein Container und kann auf dem lokalem Notebook, den Staging Umgebung, der eigenen Produktion, bei einem Provider oder in der Cloud betrieben  werden und zwar mit den selben Binaries! Nur die Konfigurationen unterscheiden sich und das macht Sinn. Die Noten und Instrumente sind die selben, nur den guten Ton muss man noch selber treffen. Verflixt nicht einfach!
+
+### Installation von Docker für die Java-Webentwicklung
 
 In den letzten Monaten, gibt es eine Flut von Projekten, die uns eine Unterstützung in der Entwicklung mit Docker offerieren. Da ist die Wahl nicht einfach und eine Konsolidierung ist noch fern. Der Start beginnt meist auf dem eigenen Notebook in einer *guten alten virtuellen Linux Maschine*. Sehr hilfreich für diese Installation ist das Projekt [boot2docker](http://boot2docker.io/). Eine Installation ist die Voraussetzung für die Entwicklung diese kleinen Micorservices. Die Installation kann detailiert in unserem Blog Post [boot2docker Post]({% post_url 2014-06-30-docker-mit-boot2docker-starten %}) nachgelesen werden.
 
@@ -38,18 +44,22 @@ Folgenden grobe Schritte müssen durchgeführt werden:
   - Installation von VirtuelBox >4.3.12
   - Installation des boot2docker Package für Windows oder OSX
   - Initialisierung der VM mit dem Befehl `boot2docker init`
-  - Exportieren des neuen Docker Host `export DOCKER_HOST=http://<ip>:2375`
-  - Starten der VM mit dem `boot2docker init` und `boot2docker up`
-  - und los geht es mit dem Laden, ausführenen und Verbinden der Container.
+  - Exportieren des neuen Docker Host `export DOCKER_HOST=tcp://192.168.59.103:2375`
+  - Starten der VM mit dem Befehl `boot2docker up`
+  - und los geht es mit dem laden, ausführen und verbinden der Docker-Container.
+
+Für die Entwicklung sollte man noch die Port zwischen 49000 und 49900 zum eigene Host öffenen. Dies geschieht am besten mit dem Skript [boot2docker-fwd](https://gist.github.com/deinspanjer/9215467) und dem Befehl `boot2docker-fwd -A`. Nicht vergessen meinen Patch für dieses Skript vorher einzuspielen :-)
+
+## Erzeugen eines ersten minimalen Java-Microservices
+
+In diesem Post geht es darum einen trivialen Webservice zu bauen, der uns die Monitoring Information einer Java virtuellen Machine besorgt. Egal welche Art von Microservice man bereitstellen möchte, die Prozesse brauchen eine klare Schnittstelle für Metrik-, Log- und Health-Informationen. Moment, das brauchen wir doch gar nicht mehr alles selber bauen, den schon länger gibt es das Projekt [Jolokia](http://jolokia.org), das uns ermöglich sämtliche JMX-Daten und -Operationen als REST-API anzubieten. Netterweise hat [Roland Huß](https://github.com/rhuss/docker-maven-plugin) nun im April 2014 auch ein Docker Maven Plugin für die Integrationstests des Jolokia Projekts bereitgestellt.
 
 
-## Erzeugen eines ersten Java Microservices
+Hah! Also frisch ans Werk, um zu probieren, ob wir diesem Instrument ein paar harmonische Töne zu entlocken sind.
 
-In diesem Post geht es darum einen trivialen Webservice zu bauen, der uns die Monitoring Information einer Java virtuellen Machine besorgt. Egal welche Art von Microservice man bereitstellen möchte, die Prozesse brauchen eine klare Schnittstelle für Metrik-, Log- und Health-Informationen. Moment, das brauchen wir doch gar nicht mehr alles selber bauen, den schon länger gibt es das Projekt [Jolokia](http://jolokia.org), das uns ermöglich sämtliche JMX-Daten und -Operationen als REST-Service anzubieten. Netterweise hat [Roland Huß](https://github.com/rhuss) nun im April 2014 auch ein Docker Maven Plugin für die Integrations Tests des Jolokia Projekts bereitgestellt. Hah! Also frisch ans Werk, um zu probieren, ob wir diesem Instrument ein paar harmonische Töne zu entlocken sind.
+### Das Docker Maven Plugin im ersten Einsatz
 
-### Hello World auf Java *Restisch*!
-
-Die Konstruktion eines *Hello World* Java-Rest Service ist immer mit etwas Aufwand verbunden. Damit wird etwas Luxus in der Entwicklung haben, bauen wir den Service mit Jersey und bauen die Artifakte mit maven.
+Die Konstruktion eines Java-Rest Service ist immer mit etwas Aufwand verbunden. Der Start beginnt meinst mit der Erzeugung eines Maven Web Projekts [maven](http://maven.apache.org/) und der Erweiterung dieser Build Umgebung um Abhängigkeiten, Plugins und Quelldateien.
 
 
   - boot eines kleinen maven Projekts
@@ -59,8 +69,9 @@ Die Konstruktion eines *Hello World* Java-Rest Service ist immer mit etwas Aufwa
   - Keine Reporter
 
 ```bash
-$ mkdir -p tomcat-microservice-demo/src/main/java/com/bee42
-$ cd tomcat-microservice-demo
+$ mvn archetype:generate -DgroupId=com.bee42.rest -DartifactId=ping -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+$ mkdir -p ping/src/main/java/com/bee42/rest/ping
+$ cd ping
 $ vi pom.xml
 ```
 
@@ -70,15 +81,15 @@ $ vi pom.xml
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.bee42</groupId>
-  <artifactId>tomcat-microservice-demo</artifactId>
+  <groupId>com.bee42.rest</groupId>
+  <artifactId>ping</artifactId>
   <version>0.1.0-SNAPSHOT</version>
 
   <url>http://www.bee42.com</url>
 
   <properties>
     <tomcat>8.0</tomcat>
-    <image>jolokia/tomcat-${tomcat}</image>
+    <image>console/tomcat-${tomcat}</image>
     <jolokia.version>1.2.1</jolokia.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -195,6 +206,15 @@ Hello World Rest Service
 $ mvn package
 $ boot2dockerfwd
 $ mvn test
+```
+
+`docker run -p 8080 -t -i --rm bee42/ping:1.0-SNAPSHOT java -Djava.security.egd=file:/dev/./urandom -jar /maven/ping.jar`
+
+kick ass hatte ich auch gerade vor...
+```
+docker@boot2docker:~$ docker ps
+CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                     NAMES
+f41b5256ecbe        bee42/ping:1.0-SNAPSHOT   java -Djava.security   11 seconds ago      Up 10 seconds       0.0.0.0:49172->8080/tcp   kickass_fermat
 ```
 
 Beispiel finde Ihr unter:
