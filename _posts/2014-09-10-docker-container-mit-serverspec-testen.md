@@ -5,9 +5,9 @@ modified: 2014-09-06 20:03:56 +0200
 tags: [docker, testing, serverspec, andreasschmidt, peterrossbach ]
 category: Docker
 links:
-- http://supervisord.org/: Supervisor, a process control system.
-- https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/: 4 Wege in den Docker Container
-- https://github.com/jpetazzo/nsenter: nsenter als Container
+- Supervisor, a process control system: http://supervisord.org/
+- 4 Wege in den Docker Container: https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/
+- nsenter als Container:  https://github.com/jpetazzo/nsenter
 keywords:
 - testing
 - nsenter
@@ -302,7 +302,7 @@ Die nächste Stufe besteht darin, in einen laufenden Container hineinzuschauen u
 dabei die Spec auszuführen.
 
 Hierbei hilft [nsenter](http://man7.org/linux/man-pages/man1/nsenter.1.html).
-Die Installation ist im [Blogeintrag von Lukas Pustina](https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/)
+Die Installation ist im [Blogeintrag von Alexander Berresch](https://blog.codecentric.de/2014/07/vier-wege-in-den-docker-container/)
 sehr schön beschrieben. nsenter liegt auch als [Docker-Container](https://github.com/jpetazzo/nsenter) von
 @jpetazzo vor. Wir wählen die manuelle Installationsvariante:
 
