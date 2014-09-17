@@ -15,7 +15,7 @@ keywords:
 - serverspec
 ---
 
-Nachdem wir in [diversen Posts](http://www.infrabricks.de/tags.html) vor einiger Zeit [Serverspec](www.serverspec.org)
+Nachdem wir in [diversen Posts](http://www.infrabricks.de/tags.html) vor einiger Zeit [Serverspec](serverspec.org)
 für Server und VMs vorgestellt haben, brauchen wir jetzt natürlich auch noch eine sinnvolle Verbindung
 zu Docker. Die Frage ist also, wie kann man innerhalb von Containern eine
 Spezifikation prüfen?
