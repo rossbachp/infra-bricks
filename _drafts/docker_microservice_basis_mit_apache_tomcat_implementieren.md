@@ -12,6 +12,7 @@ links:
   - The Twelve Factor App: http://12factor.net/
   - Introduction microservices: http://www.infoq.com/articles/microservices-intro
   - Docker with Tomcat: http://elsoufy.blogspot.de/2014/04/automating-docker-image-builds-with.html
+  - Entwickler Magazin Spezial Vol.2 Docker: https://entwickler.de/special-issue/entwickler-magazin-spezial-vol-2-docker-117484.html
 keywords:
   - docker
   - apache tomcat
@@ -23,10 +24,11 @@ keywords:
 ## Mit Docker Java Microservices realisieren - SETUP
 
 Das Docker-Ökosystem ist die ideale Umgebung um Microservice zu implementieren. Die Ideen ist verschiedene Services auf einen Rechner isoliert voneinander bereitzustellen. Ähnlichkeiten zu der heute verbreiteten Virtualisierung exitieren, aber ohne die Anhängigkeiten
-zu einem bestimmten Hersteller oder dem Overhead der Ablaufplattform. Die Docker-Container nutzen einfach den Linux-Kernel und können in verschiedenen Umgebungen anpassbar betrieben werden. Die Leichtigkeit beruht auf den schon lange vorhandenen Linux API's, wie Namespaces, CGroups, Capabilities oder SELinux. Docker fügt neben einem Rest-Service noch die Definition einen austauschbaren Image-Format hinzu. Teilen von vorgefertigter Software ist nun also mit Docker wirklich Realität. Docker basiert auf durch die OpenSource Community definierten Schnittstellen und besitzt Plugins die Raum für eigene Erweiterungen bieten. Das bringt jeden Entwickler und Administrator schnell zum schwärmen. Es befeuert die Idee eine kontrollierte Umgebung von der Entwicklung bis in die Produktion zu nutzen. Micorservices lassen sich so einfacher realisieren und orchestrieren.
+zu einem bestimmten Hersteller oder dem Overhead der Ablaufplattform. Die Docker-Container nutzen einfach den Linux-Kernel und können in verschiedenen Umgebungen anpassbar betrieben werden. Die Leichtigkeit beruht auf den schon lange vorhandenen Linux API's, wie Namespaces, CGroups, Capabilities oder SELinux. Docker fügt neben einem Rest-Service noch die Definition einen austauschbaren Image-Format hinzu. Teilen von vorgefertigter Software ist nun also mit Docker wirklich Realität. Docker basiert auf durch die OpenSource Community definierten Schnittstellen und besitzt Plugins die Raum für eigene Erweiterungen bieten. Das bringt jeden Entwickler und Administrator schnell zum schwärmen. Es befeuert die Idee eine kontrollierte Umgebung von der Entwicklung bis in die Produktion zu nutzen. Micorservices lassen sich so einfacher realisieren und orchestrieren. Der Begriff _Microservice_ ist schwer zu fassen, die [12 Factor Rules](http://12factor.net/) bieten eine erste Orientierung für die Entwicklung.
 
 Die Begriffe [Microservice](http://martinfowler.com/articles/microservices.html), Continuous Delivery-Pipeline und Docker berauscht also gerade die IT. Alles in kleine Funktionseinheiten spalten, wird als Heilmittel für die Ablösung der kostenträchtigen aktuellen IT gepriesen. Wir wollen schneller, zuverlässiger und  preiswerter liefern und damit den Wunsch, nach unkompilizieren Änderungen, endlich befriedigen. Schöne neue Welt, aber Hand auf Herz, die IT-Welt ist komplex und die bestehenden Systeme beherrschen unsere tägliches Handeln mehr als uns lieb ist. Wer das Glück hat in seinem Projekt schon jetzt einen Blick in die IT-Zukunft wagen zu können, der kann allerdings nun aus dem vollen Schöpfen. Das Docker-Ökosystem bietet jede Menge neuer exotischer Verführungen.
 
+Eine Übersicht über den aktuellen Stand könnt Ihr im [Entwickler Magazin Spezial Vol.2: Docker](https://entwickler.de/special-issue/entwickler-magazin-spezial-vol-2-docker-117484.html) nachlesen. Hier haben viele unserer Kollegen und wir verschiedene Aspekte von Docker erklärt und berichten vom wirklichem Einsatz.
 
 **Also ran ans Werk!**
 
@@ -43,6 +45,10 @@ Im folgenden entsteht die Basis ein eigenes Java-Images zu erzeugen.
  * Mit minimaler Grösse, damit ein schneller Download möglich ist.
  * Für den Apache Tomcat 8 reicht ein Java-Runtime.
  * Java Anwendungen und Werkzeuge sollen nutzbar sein.
+
+
+![Docker Java Tomcat Base Image]({{ site.BASE_PATH }}/assets/images/docker-java-tomcat-base-image.png)
+
 
 Als _minimales_ Betriebssystem ohne Alles reicht für Java die Distribution [Busybox](https://github.com/progrium/busybox) völlig aus. Mit Hilfe von `curl` ist so schnell ein Oracle JRE-Tarball extrahiert und bereitgestellt.
 
@@ -292,10 +298,14 @@ Natürlichen lassen sich ähnlich Tomcat-Erweiterungen ins Verzeichnis `/opt/boo
 
 ### Tricks
 
-#### Docker Container Composition
+#### Docker Container Overlay
 
 Wenn die JDK-Tools in einem Tomcat benötigt werden, lassen sich
 diese einfach von JDK-Image übernehmen. Das geht problemlos, auch ohne das der Tomcat von diesem Images abgeleitet werden muss.
+
+
+![Docker Java Tomcat JDK Overlay]({{ site.BASE_PATH }}/assets/images/docker-java-tomcat-jdk-overlay.png)
+
 
 ```bash
 $ docker run --name jdk8 infrabricks/ex-java:jdk-8
@@ -313,9 +323,11 @@ Das JDK-Image exportiert mit der Angabe `VOLUME [ "/opt/jdk" ]` die Java-Install
 
 **Happy debugging!!**
 
-#### Tomcat als Data-Container nutzen
+#### Docker Composition: Tomcat als Data-Container nutzen
 
 Wenn man die vollständige Freiheit über die Wahl der Java-Distribution haben möchte, kann man als Alternative den Tomcat als Data-Container liefern. Auf der Basis von `progrium/busybox` lässt sich das schnell erzeugen und die Installation als Volume freigeben.
+
+![Docker Java Tomcat Composition]({{ site.BASE_PATH }}/assets/images/docker-java-tomcat-composition.png)
 
 Mit folgenden Änderungen auf dem bestehenden `tomcat8/Dockerfile` entsteht eine
 Tomcat Data-Container.
@@ -344,15 +356,33 @@ $ docker run -d -p 8080:8080 \
 
 Mit diesem Muster lassen sich nun sehr effizient und schnell verschiedene Java-Versionen mit einer Anwendung testen. Natürlich spricht auch nichts dagegen, einfach einen Apache Tomcat lokal auszupacken und diesen direkt als Volume zu nutzen.
 
+**Quick and Dirty**
+
+
+```bash
+$ T_V=8.0.15
+$ T_URL=http://archive.apache.org/dist/tomcat/tomcat-8
+$ curl -O ${T_URL}/v${T_V}/bin/apache-tomcat-${T_V}.tar.gz
+$ tar xzf apache-tomcat-${T_V}.tar.gz
+$ docker run -d -p 8080 \
+ -v `pwd`/apache-tomcat-${T_V}:/opt/tomcat \
+ -v `pwd`/status/webapp:/opt/tomcat/webapps/status \
+  --entrypoint /opt/tomcat/bin/catalina.sh \
+ infrabricks/ex-java:jdk-8 run
+```
+
+Ein flexibleres `tscratch.sh`-Script für diese Anwendung, findet ihr im [Beispiel Projekt](https://github.com/infrabricks/docker-simple-tomcat8) zu diesem Post.
+
 ## Fazit
 
-Mit dieser Basis kann nun der Start für die eigenen Webapps oder REST-Microservices gewagt werden. In einer der nächsten Post wird ein entsprechendes REST-Beispiel vorgestellt und im folgenden schrittweise zu einer eigenen Microservice-Plattform weiterentwickelt.
+Mit dieser Docker Tomcat Basis kann nun der Start für die eigenen Webapps oder REST-Microservices gewagt werden. In einer der nächsten Post wird ein entsprechendes REST-Beispiel vorgestellt und im folgenden schrittweise zu einer eigenen Microservice-Plattform weiterentwickelt.
 
   * Java-Installationen für die Produktion sollten auf einem minimalen Base-Image beruhen.
   * Alle Downloads sollten mit Checksum validiert werden.
   * Das vorgestellte Tomcat Basis-Image lässt sich sehr einfach mit eigenen Konfigurationen, Anwendungen und Libs erweitern.
   * Die Komposition von verschiedenen Container macht den Test und die Entwicklung einfacher.
-  * **WARNUNG**: Um die visuellen Java-Tools zu nutzen, kann es sein, dass eine Debian Base Images mit entsprechenden X-Libs benötigt wird.
+  * Jede der gezeigten Varianten hat seinen Nutzen. Die reine Docker-Images-Lehre immer alles in ein auslieferbares Image zu packen ist richtig, aber während der Entwicklung und Test nicht immer die flexibelste und schnellste Lösung.
+  * **WARNUNG**: Um die visuellen Java-Tools zu nutzen, kann es sein, dass eine Ubuntu Host mit X11 und ein Debian Base Images mit entsprechenden X-Libs benötigt wird [Running Docker  gui apps](http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/).
 
 In diesem Sinne, viel Spaß beim probieren oder selber gestalten.
 
