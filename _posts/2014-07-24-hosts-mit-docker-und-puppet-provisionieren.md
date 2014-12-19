@@ -49,7 +49,7 @@ unterstützt wird, kommt man mit dem Docker-Provisioner an der Stelle nicht weit
 Dann werden Entwicklungs- und vielleicht auch Testsystem nachvollziehbar bestückt, beim Sprung
 auf das Livesystem ergibt sich ein Bruch.
 
-## Puppet-Modul für Docker
+## Puppet-Modul für Docker 
 
 Eine mögliche Lösung ist, Puppet für die Installation und Konfiguration des Docker-Servers
 zu verwenden. Ein Puppet-Modul kann getestet werden, lässt sich in Vagrant über den
