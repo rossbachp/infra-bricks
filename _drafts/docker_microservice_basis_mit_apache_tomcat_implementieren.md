@@ -22,8 +22,6 @@ keywords:
   - 12factor
 ---
 
-## Mit Docker Java Microservices realisieren - SETUP
-
 Das Docker-Ökosystem ist die ideale Umgebung, um Microservices zu implementieren. Die Ideen ist, verschiedene Services auf einem Rechner isoliert von einander bereitzustellen. Ähnlichkeiten zu der heute verbreiteten Virtualisierung existieren, aber ohne die Abhängigkeiten zu einem bestimmten Hersteller oder dem Overhead der Ablaufplattform. In diesem Post werden verschiedene Weg zur Verwendung eines eigenen Java- und Tomcat-Image beschrieben.
 
 ![Docker Java Tomcat Base Image]({{ site.BASE_PATH }}/assets/images/docker-java-tomcat-base-image.png)
@@ -58,6 +56,8 @@ Im folgenden entsteht eine Basis, die ein eigenes Java-Images erzeugt.
 Als _minimales_ Betriebssystem ohne alles reicht für Java die Distribution [Busybox](https://github.com/progrium/busybox) völlig aus. Mit Hilfe von `curl` ist so schnell ein Oracle JRE-Tarball extrahiert und bereitgestellt.
 
 **jre8/Dockerfile**
+
+
 ```
 # Busybox with a Java installation
 FROM progrium/busybox
@@ -117,6 +117,8 @@ Wenn ein Java Development-Kit gewünscht wird, kann dies analog erstellt werden.
 Dazu müssen im Dockerfile folgenden Veränderung erfolgen:
 
 **jdk8/Dockerfile**
+
+
 ```
 ...
 ENV JAVA_PACKAGE       jdk
@@ -157,6 +159,7 @@ In der Auflistung wird deutlich, welch große Mengen Plattenplatz die visuellen 
 Auf der Basis des Java-Images kann nun die Bereitstellung des Tomcats erfolgen:
 
 **tomcat8/Dockerfile**
+
 ```
 FROM infrabricks/ex-java:jre-8
 MAINTAINER Peter Rossbach <peter.rossbach@bee42.com>
@@ -199,6 +202,7 @@ $ docker run --rm --entrypoint=/opt/tomcat/bin/version.sh infrabricks/ex-tomcat:
 Die folgende Status-Anwendung kann nun implementiert und eingebunden werden.
 
 **index.jsp**
+
 ```jsp
 <%@ page session="false" %>
 <%
@@ -231,6 +235,13 @@ $ zip -r ../status.war .
 $ cd ../..
 $ CID=$(docker run -d -v `pwd`/status/webapp:/opt/tomcat/webapps/status) infrabricks/ex-tomcat:8
 $ docker logs $CID
+18-Dec-2014 17:45:18.678 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version:        Apache Tomcat/8.0.15
+18-Dec-2014 17:45:18.681 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Nov 2 2014 19:25:20 UTC
+18-Dec-2014 17:45:18.682 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server number:         8.0.15.0
+18-Dec-2014 17:45:18.683 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
+18-Dec-2014 17:45:18.683 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            3.16.7-tinycore64
+18-Dec-2014 17:45:18.687 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+...
 ```
 
 Ausführen kann man die Anwendung mittels `curl`. Wenn ein Browser-Zugriff gewünscht ist, muss der Tomcat-Port mit der Option `-p 8080:8080` von außen erreichbar gemacht werden.
@@ -261,6 +272,7 @@ Der Zugriff auf die Manager Anwendung des Tomcats kann nur mit entsprechender
 Autorisierung erfolgen. Die Konfiguration erfolgt hier durch die folgenden Dateien:
 
 **tomcat8/conf/tomcat-users.xml**
+
 ```xml
 <?xml version='1.0' encoding='utf-8'?>
 <tomcat-users xmlns="http://tomcat.apache.org/xml"
@@ -276,6 +288,7 @@ version="1.0">
 Die Anbindung ist etwas aufwendiger, da nur Verzeichnisse in einen Container eingebunden werden können. Es wird also ein Startskript benötigt, das vor dem Start des Containers die Datei verlinkt oder kopiert.
 
 **tomcat8/bin/tomcat.sh**
+
 ```bash
 #!/bin/sh
 ln -s /opt/bootstrap/conf/tomcat-users.xml /opt/tomcat8/conf/tomcat-users.xml
@@ -297,6 +310,9 @@ $ docker run -d \
 $ CID=$(docker ps -lq)
 $ IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${CID})
 $ curl -u manager:tomcat http://$IP:8080/manager/text/list
+OK - Listed applications for virtual host localhost
+/status:running:0:status
+/manager:running:0:manager
 ```
 
 Natürlichen lassen sich ähnliche Tomcat-Erweiterungen ins Verzeichnis `/opt/bootstrap/lib` einbinden oder andere Konfigurationen austauschen. Im Git Projekt [infrabricks docker-simple-tomcat8](https://github.com/infrabricks/docker-simple-tomcat8)  ist ein erweitertes Skript zu finden. Ein weiteres Projekt einer echten Infrabricks Tomcat-Line ist in der Realisierung. Dort entsteht eine ganzen Tomcat-Familie, die auf verschiedenen Java- und Tomcat-Versionen besteht.
@@ -338,6 +354,7 @@ Mit folgenden Änderungen auf dem bestehenden `tomcat8/Dockerfile` entsteht ein
 Tomcat Data-Container.
 
 **tomcat8-volume/Dockerfile**
+
 ```
 FROM progrium/busybox
 MAINTAINER Peter Rossbach <peter.rossbach@bee42.com>
