@@ -38,6 +38,7 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
     git tag -a v0.0.4 -m 'blog version 0.0.4'
     git push origin v0.0.4
     git checkout gh-pages
+    git pull
     git merge master
     git push origin gh-pages
 
