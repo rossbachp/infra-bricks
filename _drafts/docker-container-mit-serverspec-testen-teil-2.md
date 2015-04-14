@@ -2,10 +2,14 @@
 layout: post
 title: "Docker Container mit serverspec testen - Teil 2"
 modified: 2015-03-30 10:12:30 +0200
-tags: [draft, docker, testing, serverspec ]
+tags: [draft, docker, testing, serverspec, andreasschmidt, peterrossbach ]
 category: docker
 links:
+  - serverspec: http://serverspec.org/
 keywords:
+  - testing
+  - docker
+  - serverspec
 ---
 
 Vor einiger Zeit hatten wir in einem Post gezeigt, welche Möglichkeiten existieren, um [Container mit Serverspec zu testen](http://www.infrabricks.de/blog/2014/09/10/docker-container-mit-serverspec-testen).
@@ -14,6 +18,8 @@ einfach zu handhaben. Nur mit einer eigene Erweiterung von serverspec mit einem 
 
 Seitdem hat sich im Projekt Serverspec einiges getan. Zum einen gibt es nun *Resource Types* für Docker-Container und -Images. Damit lassen sich auf einem Docker-Host die Eigenschaften von lokal liegenden Images und laufenden Containern prüfen. Zum anderen wurde das Docker-Backend so erweitert, dass auch über den API-Call von `docker exec`
 Prüfkommandos in einem laufenden Container mit ausgeführt werden können. Zeit, sich das Ganze im Detail anzuschauen.
+
+![Serverspec-Kommandos über docker-exec ausführen]({{ site.BASE_PATH }}/assets/images/docker_serverspec_docker-exec.png)
 
 # Resource Types
 
@@ -126,11 +132,11 @@ ENTRYPOINT ["/bin/entrypoint"]
 Gebaut:
 
 ```bash
-# docker build -t testimage .
+$ docker build -t testimage .
 (...)
 Successfully built aeb232471f6f
 
-# docker images
+$ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED              VIRTUAL SIZE
 testimage           latest              aeb232471f6f        54 seconds ago       241.3 MB
 ```
@@ -152,7 +158,7 @@ end
 Ergibt:
 
 ```bash
-# rake spec
+$ bundle exec rspec --pattern spec/localhost/\*_spec.rb
 
 Docker image "testimage"
   should exist
@@ -213,10 +219,8 @@ end
 Ausgeführt:
 
 ```bash
-# docker run -tdi --name testcontainer -v /tmp:/mnt fedora:21 /bin/bash
-
-# rake spec
-bundle exec rspec --pattern spec/localhost/\*_spec.rb
+$ docker run -tdi --name testcontainer -v /tmp:/mnt fedora:21 /bin/bash
+$ bundle exec rspec --pattern spec/localhost/\*_spec.rb
 
 Docker container "testcontainer"
   should have volume "/mnt", "/tmp"
@@ -261,13 +265,11 @@ Es kennt zwei Modi:
 * Wenn `docker_container` gesetzt ist, wird ein laufender Container geprüft. Dazu werden die Befehle mit `docker exec` in den Container gebeamt und ausgeführt.
 
 Hier ein Beispiel, um Container zu testen. Wir möchten den Namen des Containers als Environmentvariable mitgeben, also
-brauchen wir einen angepassten `spec_helper.rb`. Damit das Docker-Backend läuft, müssen vorher noch abhängige Pakete installiert werden (Das `docker-api` gem, ggf. `ruby-dev` auf debian-Hosts)
+brauchen wir einen angepassten `spec_helper.rb`. Damit das Docker-Backend läuft, müssen vorher noch abhängige Pakete installiert werden (s. Gemfile).
 
 
 ```bash
-# gem install docker-api
-(...)
-# serverspec-init
+$ bundle exec serverspec-init
 Select number: 1
 Select number: 2
 
@@ -290,7 +292,7 @@ set :backend, :docker
 set :docker_container, ENV['TARGET']
 ```
 
-Damit können wir beim `rake spec`-Aufruf ein TARGET=xyz vorstellen und so den Containernamen (oder ID) mitgeben, der wir testen möchten.
+Damit können wir beim `rake spec`-Aufruf ein `TARGET=xyz` vorstellen und so den Containernamen (oder ID) mitgeben, der wir testen möchten.
 
 Als Beispiel nehmen wir den laufenden Fedora21-Testcontainer von oben, mit einer Demo-Spec:
 
@@ -356,7 +358,7 @@ Das Thema Testing und Docker wird langsam rund :) Wir haben ausreichend Möglich
 
 Buildchains führen seit einger Zeit automatisierte Tests mit dem Applikationcode aus. Viele Unternehmen, die Konfigurationsmanagement-Tools einsetzen lassen in Buildchains diesen Code ebenfalls Unit-testen.
 
-Beim Einsatz von Docker kommt Buildchains eine neue Aufgabe zu: Sie "produzieren" nicht mehr nur Applikationscode, sie produzieren Infrastrukturen. Und diese lassen sich genau so gut testen wie die Applikationen selber.
+Beim Einsatz von Docker kommt Buildchains eine neue Aufgabe zu: Sie _produzieren_ nicht mehr nur Anwendungscode, sie produzieren Infrastrukturen. Und diese Infrastruktur-Artefakte lassen sich genau so gut testen, wie die Anwendung selbst.
 
 Viel Spaß beim Ausprobieren wünschen:
 
