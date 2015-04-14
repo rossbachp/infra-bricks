@@ -14,7 +14,7 @@ keywords:
 
 Vor einiger Zeit hatten wir in einem Post gezeigt, welche Möglichkeiten existieren, um [Container mit Serverspec zu testen](http://www.infrabricks.de/blog/2014/09/10/docker-container-mit-serverspec-testen).
 Zu diesem Zeitpunkt waren die Möglichkeiten im Großen und Ganzen in Ordnung, aber sicherlich nicht
-einfach zu handhaben. Nur mit einer eigene Erweiterung von serverspec mit einem experimentellem nsenter-Backend, war das Testen von Docker-Container sinnvoll möglich.
+einfach zu handhaben. Nur durch eigene Erweiterungen von serverspec mit einem experimentellem nsenter-Backend war das Testen von Docker-Container sinnvoll möglich.
 
 Seitdem hat sich im Projekt Serverspec einiges getan. Zum einen gibt es nun *Resource Types* für Docker-Container und -Images. Damit lassen sich auf einem Docker-Host die Eigenschaften von lokal liegenden Images und laufenden Containern prüfen. Zum anderen wurde das Docker-Backend so erweitert, dass auch über den API-Call von `docker exec`
 Prüfkommandos in einem laufenden Container mit ausgeführt werden können. Zeit, sich das Ganze im Detail anzuschauen.
@@ -251,8 +251,8 @@ Scenario: NGINX Container
   And container volume '/var/log/nginx' should not be mounted
 ```
 
-Ein [konkreteres Beispiel](https://github.com/de-wiring/containerspec/wiki/Specifying-and-testing-a-docker-setup) ist im
-Wiki hinterlegt.
+Der Ausdruck "When there is a running container..." selektiert alle laufenden Container mit bestimmten Eigenschaften, hier z.B. einen Container-Namen der auf "nginx.*" matcht.
+Ein [ausführlicheres Beispiel](https://github.com/de-wiring/containerspec/wiki/Specifying-and-testing-a-docker-setup) ist im Github-Wiki hinterlegt.
 
 
 # Docker-Backend
