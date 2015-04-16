@@ -29,7 +29,7 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
 ### mv a draft
     git mv _drafts/blackbox-und-whitebox-testing.md _posts/2014-05-20-blackbox-und-whitebox-testing.md
     git add .
-    git commit -m "xxx"
+    git commit -sm "xxx"
     git push origin master
 ### release master to gh-pages
     git pull
@@ -38,6 +38,7 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
     git tag -a v0.0.4 -m 'blog version 0.0.4'
     git push origin v0.0.4
     git checkout gh-pages
+    git pull
     git merge master
     git push origin gh-pages
 

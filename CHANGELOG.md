@@ -1,5 +1,7 @@
 ## Changelog
 
+- **0.0.7 : 2015.04.16**
+  publish serverspec docker backend post
 - **0.0.5 : 2014.12.19**
   publish first post about docker and microservices
 
