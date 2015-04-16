@@ -29,7 +29,7 @@ In diesem Blog beginnen wir nun die testgetriebene Vorgehensweise auch für die 
 ### mv a draft
     git mv _drafts/blackbox-und-whitebox-testing.md _posts/2014-05-20-blackbox-und-whitebox-testing.md
     git add .
-    git commit -m "xxx"
+    git commit -sm "xxx"
     git push origin master
 ### release master to gh-pages
     git pull
